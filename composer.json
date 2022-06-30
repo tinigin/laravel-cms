@@ -1,0 +1,60 @@
+{
+    "name": "tinigin/laravel-cms",
+    "description": "CMS for Laravel framework",
+    "keywords": [
+        "tinigin",
+        "laravel",
+        "CMS"
+    ],
+    "homepage": "https://github.com/tinigin/laravel-cms",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Dmitrii Tinigin",
+            "email": "tinigin@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^9.0",
+        "myclabs/php-enum": "^1.8",
+        "socialiteproviders/yandex": "^4.1"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.5",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "LaravelCms\\": "src",
+            "LaravelCms\\Tests\\": "tests/",
+            "LaravelCms\\Database\\Factories\\": "database/factories",
+            "LaravelCms\\Database\\Seeders\\": "database/seeders"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LaravelCms\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LaravelCms\\LaravelCmsServiceProvider"
+            ],
+            "aliases": {
+            }
+        }
+    }
+}

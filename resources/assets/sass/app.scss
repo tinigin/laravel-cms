@@ -1,0 +1,156 @@
+@charset "UTF-8";
+
+// table sortable
+.sortable {
+    padding-right: 30px !important;
+    position: relative;
+
+    &::before {
+        right: 1em;
+        content: "↑";
+        position: absolute;
+        bottom: 0.9em;
+        display: block;
+        opacity: 0.3;
+    }
+
+    &::after {
+        right: 0.5em;
+        content: "↓";
+        position: absolute;
+        bottom: 0.9em;
+        display: block;
+        opacity: 0.3;
+    }
+
+    &.asc::before {
+        opacity: 1;
+    }
+
+    &.desc::after {
+        opacity: 1;
+    }
+}
+
+// nav
+.nav {
+    .nav-item {
+        position: relative;
+    }
+
+    .badge {
+        position: relative;
+        top: -7px;
+        right: -5px;
+    }
+}
+
+// sortable
+.ui-sortable-handle {
+    td {
+        cursor: move;
+    }
+}
+
+// forms
+.btn-group-sm + .pagination {
+    margin-right: 2em;
+}
+
+.form-group-row {
+    align-items: start;
+}
+
+.custom-switch {
+    margin-top: 0.5em;
+}
+
+.swal2-popup.swal2-toast {
+    .swal2-title {
+        margin: .5em 1em;
+    }
+}
+
+.swal2-popup.swal2-toast {
+    .swal2-title + .swal2-html-container {
+        margin-top: 0;
+    }
+}
+
+// thumbnails
+.img-thumbnail {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    object-position: center;
+    vertical-align: baseline;
+}
+
+.thumbnail-link {
+    display: inline-block;
+    position: relative;
+
+    .delete {
+        display: block;
+        font-size: 20px;
+        line-height: 40px;
+        position: absolute;
+        right: .25rem;
+        top: .25rem;
+        opacity: 0;
+        cursor: pointer;
+
+        border-radius: 50%;
+        text-align: center;
+        width: 40px;
+        height: 40px;
+    }
+
+    .file-thumbnail {
+        font-size: 80px;
+        line-height: 140px;
+        width: 150px;
+        height: 150px;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    &:hover {
+        .delete {
+            opacity: .6;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+// others
+.min-width-150 {
+    min-width: 150px;
+}
+
+.width-50 {
+    max-width: 50px;
+    width: 50px;
+}
+
+.width-100 {
+    max-width: 100px;
+    width: 100px;
+}
+
+.width-150 {
+    max-width: 150px;
+    width: 150px;
+}
+
+.width-200 {
+    max-width: 200px;
+    width: 200px;
+}
+
+.hidden {
+    display: none;
+}
