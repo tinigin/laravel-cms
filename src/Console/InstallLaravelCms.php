@@ -32,6 +32,7 @@ class InstallLaravelCms extends Command
                     'lang',
                     'handler'
                 ],
+                '--force' => ''
             ])
             ->executeCommand('migrate')
             ->executeCommand('storage:link')
