@@ -29,8 +29,7 @@ class InstallLaravelCms extends Command
                     'config',
                     'migrations',
                     'assets',
-                    'lang',
-                    'handler'
+                    'lang'
                 ],
                 '--force' => ''
             ])
@@ -45,11 +44,11 @@ class InstallLaravelCms extends Command
 
     protected function updateErrorHandler(): self
     {
-        $str = $this->fileGetContent(app_path('Exceptions\Handler.php'));
+        $str = $this->fileGetContent(app_path('Exceptions/Handler.php'));
 
         if ($str !== false && strpos($str, 'LaravelCms\Exceptions\Handler') === false) {
             file_put_contents(
-                app_path('Exceptions\Handler.php'),
+                app_path('Exceptions/Handler.php'),
                 str_replace(
                     "use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;",
                     'use LaravelCms\Exceptions\Handler as ExceptionHandler;',
