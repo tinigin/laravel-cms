@@ -37,9 +37,28 @@ class InstallLaravelCms extends Command
             ->executeCommand('migrate')
             ->executeCommand('storage:link')
             ->initDbRecords()
+            ->updateErrorHandler()
             ->showMeLove();
 
         $this->info('Completed!');
+    }
+
+    protected function updateErrorHandler(): self
+    {
+        $str = $this->fileGetContent(app_path('Exceptions\Handler.php'));
+
+        if ($str !== false && strpos($str, 'LaravelCms\Exceptions\Handler') === false) {
+            file_put_contents(
+                app_path('Exceptions\Handler.php'),
+                str_replace(
+                    "use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;",
+                    'use LaravelCms\Exceptions\Handler as ExceptionHandler;',
+                    $str
+                )
+            );
+        }
+
+        return $this;
     }
 
     protected function initDbRecords(): self

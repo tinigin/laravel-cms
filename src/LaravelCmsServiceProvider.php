@@ -60,10 +60,6 @@ class LaravelCmsServiceProvider extends ServiceProvider
                 __DIR__.'/../config/config.php' => config_path('cms.php'),
             ], 'config');
 
-            $this->publishes([
-                __DIR__.'/Exceptions/Handler.php' => app_path('Exceptions/Handler.php'),
-            ], 'handler');
-
             // Registering package commands.
             $this->commands([
                 InstallLaravelCms::class
