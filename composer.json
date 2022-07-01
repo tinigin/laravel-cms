@@ -20,7 +20,8 @@
         "php": "^8.0",
         "illuminate/support": "^9.0",
         "myclabs/php-enum": "^1.8",
-        "socialiteproviders/yandex": "^4.1"
+        "socialiteproviders/yandex": "^4.1",
+        "laravel/ui": "^3.4"
     },
     "require-dev": {
         "orchestra/testbench": "^7.5",

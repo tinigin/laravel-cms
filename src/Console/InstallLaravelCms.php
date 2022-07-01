@@ -35,7 +35,7 @@ class InstallLaravelCms extends Command
             ])
             ->executeCommand('migrate')
             ->executeCommand('storage:link')
-//            ->initDbRecords()
+            ->initDbRecords()
             ->showMeLove();
 
         $this->info('Completed!');
@@ -47,8 +47,6 @@ class InstallLaravelCms extends Command
             'name' => 'System',
             'sort_order' => 1,
             'is_published' => true,
-            'created_at' => time(),
-            'updated_at' => time()
         ]);
 
         $groups = Section::firstOrCreate([
@@ -56,8 +54,6 @@ class InstallLaravelCms extends Command
             'folder' => 'section-groups',
             'cms_section_group_id' => $group->getKey(),
             'is_published' => true,
-            'created_at' => time(),
-            'updated_at' => time()
         ]);
 
         $sections = Section::firstOrCreate([
@@ -65,8 +61,6 @@ class InstallLaravelCms extends Command
             'folder' => 'sections',
             'cms_section_group_id' => $group->getKey(),
             'is_published' => true,
-            'created_at' => time(),
-            'updated_at' => time()
         ]);
 
         $users = Section::firstOrCreate([
@@ -74,8 +68,6 @@ class InstallLaravelCms extends Command
             'folder' => 'users',
             'cms_section_group_id' => $group->getKey(),
             'is_published' => true,
-            'created_at' => time(),
-            'updated_at' => time()
         ]);
 
         $settings = Section::firstOrCreate([
@@ -83,8 +75,6 @@ class InstallLaravelCms extends Command
             'folder' => 'settings',
             'cms_section_group_id' => $group->getKey(),
             'is_published' => true,
-            'created_at' => time(),
-            'updated_at' => time()
         ]);
 
         $user = User::firstOrCreate([
