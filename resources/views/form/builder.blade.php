@@ -4,20 +4,26 @@
         @if ($method)
             @method($method)
         @endif
-		@if ($tabs)
+		@if ($groups)
     		<div class="card-header p-2">
     			<ul class="nav nav-pills">
-    				@foreach ($tabs as $tab)
-    					{!! $tab->renderNavItem() !!}
+    				@foreach ($groups as $key => $group)
+                        <li class="nav-item">
+                            <a class="nav-link {{ $group['active'] ? 'active' : ''}}" href="#{{$key}}" data-tab-id="{{$key}}" data-toggle="tab">{{$group['title']}}</a>
+                        </li>
     				@endforeach
     			</ul>
     		</div>
 		@endif
 		<div class="card-body">
-			@if ($tabs)
+			@if ($groups)
 				<div class="tab-content">
-					@foreach ($tabs as $tab)
-						{!! $tab !!}
+					@foreach ($groups as $key => $group)
+                        <div class="tab-pane {{$group['active'] ? 'active' : ''}}" id="{{$key}}">
+                            @foreach($fields[$key] as $field)
+                                {!! $field !!}
+                            @endforeach
+                        </div>
 					@endforeach
 				</div>
 			@elseif ($fields)

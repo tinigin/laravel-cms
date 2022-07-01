@@ -4,11 +4,10 @@ namespace LaravelCms\Form;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cookie;
 use LaravelCms\Form\Contracts\Fieldable;
 use LaravelCms\Form\Contracts\Groupable;
 use Throwable;
-use LaravelCms\Form\Contracts\Tabable;
-use LaravelCms\Form\Fields\Tab;
 
 class Builder
 {
@@ -48,9 +47,9 @@ class Builder
 
     /**
      * Tabs
-     * @var Tabable[]
+     * @var array
      */
-    protected $tabs = [];
+    protected $groups = [];
 
     /**
      * Fields
@@ -142,6 +141,21 @@ class Builder
     }
 
     /**
+     * Set|Get groups
+     * @param $groups
+     * @return array|$this
+     */
+    public function groups($groups = null): self|array
+    {
+        if ($groups) {
+            $this->groups = $groups;
+            return $this;
+        }
+
+        return $this->groups;
+    }
+
+    /**
      * Setting form method
      * @param string $method
      * @return $this
@@ -170,40 +184,16 @@ class Builder
      *
      * @return string
      */
-    public function generateForm(): string
-    {
-        collect($this->fields)->each(function (Fieldable $field) {
-            if (is_subclass_of($field, Tabable::class)) {
-                $this->form .= $this->renderTabs($field);
-            } else if (is_subclass_of($field, Groupable::class)) {
-                $this->form .= $this->renderGroup($field);
-            } else {
-                $this->form .= $this->renderField($field);
-            }
-        });
-
-        return $this->form;
-    }
-
-    /**
-     * Generate a ready-made html form for display to the user.
-     *
-     * @throws Throwable
-     *
-     * @return string
-     */
     public function render()
     {
         $this->process();
 
         switch ($this->view) {
             case 'default':
-                return $this->generateForm();
-
             case 'card':
                 return view('cms::form.builder', [
                     'view' => $this->view,
-                    'tabs' => $this->tabs,
+                    'groups' => $this->groups(),
                     'fields' => $this->fields,
                     'buttons' => $this->buttons,
                     'action' => $this->action,
@@ -216,17 +206,49 @@ class Builder
      * Process form data
      * @return self
      */
-    protected function process(): self
+    public function process(): self
     {
+        if ($this->groups()) {
+            $activeTab = request()->cookie('active_tab', null);
+            if ($activeTab == 'undefined' || !$activeTab) {
+                $activeTab = array_key_first($this->groups);
+            }
+
+            $groups = [];
+            foreach ($this->groups() as $groupKey => $groupTitle) {
+                $groups[$groupKey]['title'] = $groupTitle;
+                $groups[$groupKey]['fields'] = [];
+                $groups[$groupKey]['errors'] = 0;
+
+                if ($activeTab == $groupKey) {
+                    $groups[$groupKey]['active'] = true;
+                } else {
+                    $groups[$groupKey]['active'] = false;
+                }
+            }
+
+            $this->groups($groups);
+            unset($groups);
+        }
+
         $this->items->each(function ($item) {
-            if (is_subclass_of($item, Tabable::class)) {
-                $this->tabs[] = $item;
-            } elseif (is_subclass_of($item, Action::class)) {
+            $f = &$this->fields;
+            if ($item->get('group')) {
+                if (!array_key_exists($item->get('group'), $this->fields))
+                    $this->fields[$item->get('group')] = [];
+                $f = &$this->fields[$item->get('group')];
+            }
+
+            if (is_subclass_of($item, Action::class)) {
                 $this->buttons[] = $item;
             }elseif (is_subclass_of($item, Groupable::class)) {
-                $this->fields[] = $this->renderGroup($item);
+                $f[] = $this->renderGroup($item);
             }elseif (is_subclass_of($item, Fieldable::class)) {
-                $this->fields[] = $this->renderField($item);
+                $f[] = $this->renderField($item);
+
+                if ($item->hasErrors() && $item->get('group')) {
+                    $this->groups[$item->get('group')]['errors'] += 1;
+                }
             }
         });
 
@@ -356,6 +378,5 @@ class Builder
     public function __toString()
     {
         return $this->render()->toHtml();
-        ;
     }
 }

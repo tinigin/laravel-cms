@@ -8,15 +8,6 @@
 </script>
 <!-- Bootstrap 4 -->
 <script src="{{ asset('assets/cms/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<!-- ChartJS -->
-<script src="{{ asset('assets/cms/plugins/chart.js/Chart.min.js') }}"></script>
-<!-- Sparkline -->
-<script src="{{ asset('assets/cms/plugins/sparklines/sparkline.js') }}"></script>
-<!-- JQVMap -->
-<script src="{{ asset('assets/cms/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
-<script src="{{ asset('assets/cms/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
-<!-- jQuery Knob Chart -->
-<script src="{{ asset('assets/cms/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
 <!-- daterangepicker -->
 <script src="{{ asset('assets/cms/plugins/moment/moment.min.js') }}"></script>
 <script src="{{ asset('assets/cms/plugins/daterangepicker/daterangepicker.js') }}"></script>

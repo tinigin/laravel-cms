@@ -91,7 +91,7 @@ class SectionsController extends ModuleController
      * Return array of form fields
      * @return array
      */
-    protected function getFormFields(): array
+    protected function formFields(): array
     {
         return [
             Input::make('name')

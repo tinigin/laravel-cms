@@ -90,6 +90,16 @@ class ModuleController extends BaseController
             ->with('title', $this->getSection()->name);
     }
 
+    protected function formFields(): array
+    {
+        return [];
+    }
+
+    protected function formGroups(): array
+    {
+        return [];
+    }
+
     /**
      * Return form Builder object
      * @param boolean $create
@@ -100,7 +110,7 @@ class ModuleController extends BaseController
     {
         $repository = null;
 
-        $formFields = $this->getFormFields();
+        $formFields = $this->formFields();
         if ($objectId) {
             $model = $this->className::findOrFail($objectId);
             $values = $model->getAttributes();
@@ -120,7 +130,7 @@ class ModuleController extends BaseController
             }
 
             foreach ($formFields as $field) {
-                if ($field instanceof \App\Core\Form\Fields\File) {
+                if ($field instanceof \LaravelCms\Form\Fields\File) {
                     $group = str_replace('[]', '', $field->get('name'));
 
                     if ($files) {
@@ -138,6 +148,7 @@ class ModuleController extends BaseController
         }
 
         $form = new Builder($formFields, $repository);
+        $form->groups($this->formGroups());
 
         if ($create) {
             $form->push(

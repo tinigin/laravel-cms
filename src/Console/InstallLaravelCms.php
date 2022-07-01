@@ -37,9 +37,28 @@ class InstallLaravelCms extends Command
             ->executeCommand('storage:link')
             ->initDbRecords()
             ->updateErrorHandler()
+            ->updateEncryptedCookies()
             ->showMeLove();
 
         $this->info('Completed!');
+    }
+
+    protected function updateEncryptedCookies(): self
+    {
+        $str = $this->fileGetContent(app_path('Http/Middleware/EncryptedCookies.php'));
+
+        if ($str !== false && strpos($str, 'active_tab') === false) {
+            file_put_contents(
+                app_path('Http/Middleware/EncryptedCookies.php'),
+                str_replace(
+                    "protected \$except = [",
+                    'protected $except = [' . PHP_EOL . '        \'active_tab\'' . PHP_EOL,
+                    $str
+                )
+            );
+        }
+
+        return $this;
     }
 
     protected function updateErrorHandler(): self

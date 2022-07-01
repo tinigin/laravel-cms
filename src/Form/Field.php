@@ -21,6 +21,7 @@ use Throwable;
  *
  * @method self accesskey($value = true)
  * @method self class($value = true)
+ * @method self group(string $value)
  * @method self dir($value = true)
  * @method self hidden($value = true)
  * @method self id($value = true)
@@ -344,7 +345,7 @@ class Field implements Fieldable, Htmlable
     /**
      * @return bool
      */
-    private function hasError(): bool
+    public function hasError(): bool
     {
         return optional(session('errors'))->has($this->getOldName()) ?? false;
     }
