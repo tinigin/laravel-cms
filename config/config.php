@@ -14,6 +14,6 @@ return [
     */
     'attachment' => [
         'disk'      => 'public',
-        'generator' => \App\Core\Attachment\Engines\Generator::class,
+        'generator' => \LaravelCms\Attachment\Engines\Generator::class,
     ],
 ];
