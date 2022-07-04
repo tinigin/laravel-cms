@@ -83,6 +83,12 @@ class Builder
     protected $method = 'POST';
 
     /**
+     * Tabs
+     * @var array
+     */
+    protected $images = [];
+
+    /**
      * Builder constructor.
      *
      * @param Fieldable[]     $items
@@ -155,6 +161,13 @@ class Builder
         return $this->groups;
     }
 
+    public function images(string $url): self
+    {
+        $this->images = $url;
+
+        return $this;
+    }
+
     /**
      * Setting form method
      * @param string $method
@@ -197,7 +210,8 @@ class Builder
                     'fields' => $this->fields,
                     'buttons' => $this->buttons,
                     'action' => $this->action,
-                    'method' => $this->method
+                    'method' => $this->method,
+                    'images' => $this->images,
                 ]);
         }
     }

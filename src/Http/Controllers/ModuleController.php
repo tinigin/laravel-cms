@@ -168,11 +168,13 @@ class ModuleController extends BaseController
             );
             $form->push(
                 Link::make('Удалить')
-                    ->href(route('cms.module.destroy', ['controller' => $this->getSectionController(), 'objectId' => $objectId]))
+                    ->href(route('cms.module.destroy', ['controller' => $this->getSectionController(), 'objectId' => $objectId], false))
                     ->class('btn btn-danger float-right')
                     ->confirm('true')
                     ->withoutFormType()
             );
+
+            $form->images(route('cms.module.images', ['controller' => $this->getSectionController(), 'objectId' => $objectId], false));
 
             $form->setAction(route('cms.module.update', [
                 'controller' => $this->getSectionController(),
@@ -221,6 +223,17 @@ class ModuleController extends BaseController
             ->with('title', 'Редактирование');
     }
 
+    protected function getFieldByKey($key)
+    {
+        $fields = $this->formFields();
+        foreach ($fields as $field) {
+            if ($field->get('name') == $key)
+                return $field;
+        }
+
+        return false;
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -229,6 +242,7 @@ class ModuleController extends BaseController
      */
     public function update($objectId = null)
     {
+        $formFields = $this->formFields();
         $validated = $this->validate(
             request(),
             $this->rules($objectId)
@@ -282,12 +296,16 @@ class ModuleController extends BaseController
         if(request()->allFiles()) {
             $attachments = [];
             foreach (request()->allFiles() as $key => $files) {
+                $field = $this->getFieldByKey($key);
+                if (!$field)
+                    continue;
+
                 if (!is_array($files))
                     $files = [$files];
 
                 if (is_array($files) && $files) {
                     foreach ($files as $file) {
-                        $f = new File($file, group: $key);
+                        $f = new File($file, group: $key, rename: $field->get('rename'));
                         $attachments[] = $f->path($model->getUploadPath())->allowDuplicates()->load();
                     }
                 }
@@ -306,7 +324,8 @@ class ModuleController extends BaseController
 
         redirect()->to(route(
             'cms.module.edit',
-            ['controller' => $this->getSectionController(), 'objectId' => $model->id]
+            ['controller' => $this->getSectionController(), 'objectId' => $model->id],
+            false
         ))->send();
     }
 
@@ -324,7 +343,24 @@ class ModuleController extends BaseController
         Toast::success('Запись удалена');
 
         return redirect(
-            route('cms.module.index', ['controller' => $this->getSectionController()])
+            route('cms.module.index', ['controller' => $this->getSectionController()], false)
         )->send();
+    }
+
+    public function images($objectId)
+    {
+        $result = [];
+
+        $model = $this->className::findOrFail($objectId);
+        if ($model && ($images = $model->images)) {
+            foreach ($images as $image) {
+                $result[] = [
+                    'title' => $image->name . '.' . $image->extension,
+                    'value' => $image->url()
+                ];
+            }
+        }
+
+        return response()->json($result);
     }
 }

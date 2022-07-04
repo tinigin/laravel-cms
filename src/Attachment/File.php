@@ -50,13 +50,19 @@ class File
     protected $duplicate = false;
 
     /**
+     * orig, hash, value
+     * @var string|null
+     */
+    protected $rename = 'orig';
+
+    /**
      * File constructor.
      *
      * @param UploadedFile $file
      * @param string|null  $disk
      * @param string|null  $group
      */
-    public function __construct(UploadedFile $file, string $disk = null, string $group = null)
+    public function __construct(UploadedFile $file, string $disk = null, string $group = null, string $rename = 'orig')
     {
         abort_if($file->getSize() === false, 415, 'File failed to load.');
 
@@ -67,8 +73,9 @@ class File
         /** @var string $generator */
         $generator = config('cms.attachment.generator', Generator::class);
 
-        $this->engine = new $generator($file);
+        $this->engine = new $generator($file, $rename);
         $this->group = $group;
+        $this->rename = $rename;
     }
 
     /**

@@ -7,6 +7,7 @@ use LaravelCms\Attachment\Models\Attachment;
 use LaravelCms\Form\Field;
 use LaravelCms\Support\Assert;
 use LaravelCms\Support\Init;
+use phpDocumentor\Reflection\Types\Boolean;
 
 /**
  * Class File.
@@ -22,6 +23,7 @@ use LaravelCms\Support\Init;
  * @method File resizeWidth($value = true)
  * @method File resizeHeight($value = true)
  * @method File title(string $value = null)
+ * @method File rename(string $value = null)
  */
 class File extends Field
 {
@@ -68,7 +70,6 @@ class File extends Field
      */
     public function __construct()
     {
-
         // Set max file size
         $this->addBeforeRender(function () {
             $maxFileSize = $this->get('maxFileSize');
@@ -86,37 +87,6 @@ class File extends Field
                 'Cannot set the desired maximum file size. This contradicts the settings specified in .ini'
             );
         });
-
-        // set load relation attachment
-//        $this->addBeforeRender(function () {
-//            $value = Arr::wrap($this->get('value'));
-//
-//            if (! Assert::isIntArray($value)) {
-//                return;
-//            }
-//
-//            /** @var Attachment $attach */
-//            $attach = Dashboard::model(Attachment::class);
-//
-//            $value = $attach::whereIn('id', $value)->orderBy('sort')->get()->toArray();
-//
-//            $this->set('value', $value);
-//        });
-
-        // Division into groups
-//        $this->addBeforeRender(function () {
-//            $group = $this->get('groups');
-//
-//            if ($group === null) {
-//                return;
-//            }
-//
-//            $value = collect($this->get('value', []))
-//                ->where('group', $group)
-//                ->toArray();
-//
-//            $this->set('value', $value);
-//        });
     }
 
     /**

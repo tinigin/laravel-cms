@@ -11,7 +11,7 @@
                 target="_blank"
                 class="thumbnail-link"
                 @if ($file->isImage()) data-lightbox="{{$attributes['id'] }}" @endif
-                title="{{ $file->original_name }}"
+                title="{{ $file->name }}"
             >
                 <span
                     class="delete bg-danger"

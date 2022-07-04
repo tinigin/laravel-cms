@@ -32,4 +32,28 @@ trait Attachable
         return $query
             ->orderBy('sort');
     }
+
+    /**
+     * @param string|null $group
+     *
+     * @return MorphToMany
+     */
+    public function images(string $group = null): MorphToMany
+    {
+        $query = $this->attachment($group);
+
+        $query->whereIn('mime', [
+            'image/png',
+            'image/jpeg',
+            'image/gif',
+            'image/pjpeg',
+            'image/svg+xml',
+            'image/tiff',
+            'image/vnd.microsoft.icon',
+            'image/vnd.wap.wbmp',
+            'image/webp'
+        ]);
+
+        return $query;
+    }
 }

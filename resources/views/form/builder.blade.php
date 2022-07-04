@@ -1,5 +1,11 @@
 @if ($view == 'card')
-	<form class="form-horizontal" action="{{ $action }}" method="post" enctype="multipart/form-data">
+	<form
+        class="form-horizontal"
+        action="{{ $action }}"
+        method="post"
+        enctype="multipart/form-data"
+        data-images-url="{{ $images ? $images : '' }}"
+    >
         @csrf
         @if ($method)
             @method($method)

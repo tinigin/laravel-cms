@@ -32,6 +32,25 @@
 <script src="{{ asset('assets/cms/plugins/lightbox/2.11.1/js/lightbox.min.js') }}"></script>
 <!-- Bootbox -->
 <script src="{{ asset('assets/cms/plugins/bootbox/bootbox.all.min.js') }}"></script>
+<!-- TinyMCE -->
+<script src="{{ asset('assets/cms/plugins/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea.wysiwyg', // Replace this CSS selector to match the placeholder element for TinyMCE
+        language: 'ru',
+        language_url: '{{ asset('assets/cms/plugins/tinymce/langs/ru.js') }}',
+        height: 500,
+        plugins: [
+            "advlist autolink link image lists charmap print preview hr anchor pagebreak",
+            "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+            "save table directionality emoticons template paste"
+        ],
+        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image imagetools | media fullpage emoticons",
+        browser_spellcheck: true,
+        image_list: $('textarea.wysiwyg').parents('form').attr('data-images-url'),
+        convert_urls: false
+    });
+</script>
 
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/cms/js/adminlte.js') }}"></script>

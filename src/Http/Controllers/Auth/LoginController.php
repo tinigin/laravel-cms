@@ -23,7 +23,7 @@ class LoginController extends \Illuminate\Routing\Controller
      */
     public function __construct()
     {
-        $this->middleware('cms.guest:cms')->except('cms.logout');
+        $this->middleware('cms.guest:cms')->except('logout');
     }
 
     public function showLoginForm()

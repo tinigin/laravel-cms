@@ -44,10 +44,8 @@ Route::name('cms.')->group(function() {
                     $namespace = config('cms.namespace');
                     $controller = Str::studly($controller);
 
-                    // Generate App\Http\Controllers\Cms\{name}Controller
                     $controllerName = sprintf('%s\\%sController', $namespace, $controller);
                     if (!class_exists($controllerName)) {
-                        // @todo Change namespace
                         $namespace = 'LaravelCms\\Http\\Controllers';
                         $controllerName = sprintf('%s\\%sController', $namespace, $controller);
                     }
@@ -82,6 +80,10 @@ Route::name('cms.')->group(function() {
                 $router->get('{controller}/destroy/{objectId}', function ($controller, $objectId) use ($resolver) {
                     return $resolver($controller, 'destroy', $objectId);
                 })->name('module.destroy');
+
+                $router->get('{controller}/images/{objectId}', function ($controller, $objectId) use ($resolver) {
+                    return $resolver($controller, 'images', $objectId);
+                })->name('module.images');
 
                 // Ajax
                 $router->post('ajax/remove-file', [\LaravelCms\Http\Controllers\AjaxController::class, 'removeFile'])->name('ajax.remove.file');

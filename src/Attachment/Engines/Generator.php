@@ -39,12 +39,13 @@ class Generator implements Engine
      *
      * @param UploadedFile $file
      */
-    public function __construct(UploadedFile $file)
+    public function __construct(UploadedFile $file, $rename = false)
     {
         $this->file = $file;
         $this->path = null;
         $this->time = time();
         $this->mimes = new MimeTypes();
+        $this->rename = $rename;
         $this->uniqueId = uniqid('', true);
     }
 
@@ -56,7 +57,16 @@ class Generator implements Engine
      */
     public function name(): string
     {
-        return sha1($this->uniqueId.$this->file->getClientOriginalName());
+        switch ($this->rename) {
+            case 'hash':
+                return sha1($this->uniqueId . $this->file->getClientOriginalName());
+
+            case 'orig':
+                return str_replace('.' . $this->file->getClientOriginalExtension(), '', $this->file->getClientOriginalName());
+
+            default:
+                return $this->rename;
+        }
     }
 
     /**
@@ -66,7 +76,7 @@ class Generator implements Engine
      */
     public function fullName(): string
     {
-        return Str::finish($this->name(), '.').$this->extension();
+        return Str::finish($this->name(), '.') . $this->extension();
     }
 
     /**
