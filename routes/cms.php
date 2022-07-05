@@ -87,6 +87,7 @@ Route::name('cms.')->group(function() {
 
                 // Ajax
                 $router->post('ajax/remove-file', [\LaravelCms\Http\Controllers\AjaxController::class, 'removeFile'])->name('ajax.remove.file');
+                $router->post('ajax/resize-image', [\LaravelCms\Http\Controllers\AjaxController::class, 'resizeImage'])->name('ajax.resize.image');
             });
 
             Route::fallback(function () {

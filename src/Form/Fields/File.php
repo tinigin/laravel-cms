@@ -41,7 +41,7 @@ class File extends Field
         'class'           => 'custom-file-input',
         'type'            => 'file',
         'value'           => null,
-        'multiple'        => true,
+        'multiple'        => false,
         'maxFileSize'     => null,
         'maxFiles'        => 9999,
         'acceptedFiles'   => null,

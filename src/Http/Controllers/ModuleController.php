@@ -300,12 +300,29 @@ class ModuleController extends BaseController
                 if (!$field)
                     continue;
 
+                $settings = $field->getSettings();
+                $multiple = $field->get('multiple');
+
+                if (!$multiple) {
+                    $exitsFiles = $model->attachment($key)->get();
+                    if ($exitsFiles) {
+                        foreach ($exitsFiles as $exitsFile) {
+                            $exitsFile->delete();
+                        }
+                    }
+                }
+
                 if (!is_array($files))
                     $files = [$files];
 
                 if (is_array($files) && $files) {
                     foreach ($files as $file) {
-                        $f = new File($file, group: $key, rename: $field->get('rename'));
+                        $f = new File(
+                            $file,
+                            group: $key,
+                            rename: $field->get('rename'),
+                            thumbnails: $settings['thumbnails']
+                        );
                         $attachments[] = $f->path($model->getUploadPath())->allowDuplicates()->load();
                     }
                 }

@@ -13,6 +13,7 @@ use LaravelCms\Attachment\Engines\Generator;
 use LaravelCms\Attachment\Models\Attachment;
 use LaravelCms\Events\ReplicateFileEvent;
 use LaravelCms\Events\UploadFileEvent;
+use Gumlet\ImageResize;
 
 /**
  * Class File.
@@ -55,6 +56,8 @@ class File
      */
     protected $rename = 'orig';
 
+    protected $thumbnails = [];
+
     /**
      * File constructor.
      *
@@ -62,7 +65,7 @@ class File
      * @param string|null  $disk
      * @param string|null  $group
      */
-    public function __construct(UploadedFile $file, string $disk = null, string $group = null, string $rename = 'orig')
+    public function __construct(UploadedFile $file, string $disk = null, string $group = null, string $rename = 'orig', array $thumbnails = [])
     {
         abort_if($file->getSize() === false, 415, 'File failed to load.');
 
@@ -76,6 +79,7 @@ class File
         $this->engine = new $generator($file, $rename);
         $this->group = $group;
         $this->rename = $rename;
+        $this->thumbnails = $thumbnails;
     }
 
     /**
@@ -95,6 +99,7 @@ class File
             'original_name' => $this->file->getClientOriginalName(),
             'sort'          => 0,
             'user_id'       => Auth::id(),
+            'user_type'     => get_class(Auth::user()),
             'group'         => $this->group,
         ]);
 
@@ -140,6 +145,48 @@ class File
             'mime_type' => $this->engine->mime(),
         ]);
 
+        $additional = [];
+
+        if ($this->thumbnails) {
+            $additional['thumbnails'] = [];
+
+            foreach ($this->thumbnails as $thumbnailData) {
+                $filename = $thumbnailData['w'] . 'x' . $thumbnailData['h'] . '_' . $this->engine->fullName();
+                $tmpFile = tempnam(sys_get_temp_dir(), $filename);
+
+                $resizer = new ImageResize(is_string($this->file) ? $this->file : $this->file->getRealPath());
+                switch ($thumbnailData['mode']) {
+                    case 'width':
+                        $resizer->resizeToWidth($thumbnailData['w']);
+                        break;
+
+                    case 'height':
+                        $resizer->resizeToHeight($thumbnailData['h']);
+                        break;
+
+                    case 'force':
+                        $resizer->resize($thumbnailData['w'], $thumbnailData['h'], true);
+                        break;
+
+                    case 'crop':
+                        $resizer->crop(
+                            $thumbnailData['w'],
+                            $thumbnailData['h'],
+                            true,
+                            ImageResize::CROPCENTER
+                        );
+                        break;
+                }
+                $resizer->save($tmpFile);
+
+                $additional['thumbnails'][$thumbnailData['w'] . 'x' . $thumbnailData['h']] = $filename;
+
+                $this->storage->putFileAs($this->engine->path(), $tmpFile, $filename, [
+                    'mime_type' => $this->engine->mime(),
+                ]);
+            }
+        }
+
         $attachment = Attachment::create([
             'name'          => $this->engine->name(),
             'mime'          => $this->engine->mime(),
@@ -151,6 +198,8 @@ class File
             'disk'          => $this->disk,
             'group'         => $this->group,
             'user_id'       => Auth::id(),
+            'user_type'     => get_class(Auth::user()),
+            'additional'    => $additional
         ]);
 
         event(new UploadFileEvent($attachment, $this->engine->time()));

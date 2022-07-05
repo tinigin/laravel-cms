@@ -62,7 +62,7 @@ class Generator implements Engine
                 return sha1($this->uniqueId . $this->file->getClientOriginalName());
 
             case 'orig':
-                return str_replace('.' . $this->file->getClientOriginalExtension(), '', $this->file->getClientOriginalName());
+                return Str::finish($this->file->getClientOriginalName(), '.');
 
             default:
                 return $this->rename;

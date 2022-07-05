@@ -6,6 +6,7 @@ use LaravelCms\Attachment\Attachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use LaravelCms\Attachment\Models\Attachment;
 use LaravelCms\Models\Cms\Section;
 use LaravelCms\Notifications\MailResetPasswordToken;
 use LaravelCms\Filters\Filterable;
@@ -64,5 +65,13 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new MailResetPasswordToken($token));
+    }
+
+    /**
+     * Get all of the user's files.
+     */
+    public function files()
+    {
+        return $this->morphMany(Attachment::class, 'user');
     }
 }

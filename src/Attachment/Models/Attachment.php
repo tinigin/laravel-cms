@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Storage;
 use LaravelCms\Attachment\MimeTypes;
 use LaravelCms\Filters\Filterable;
@@ -33,12 +34,14 @@ class Attachment extends Model
         'size',
         'path',
         'user_id',
+        'user_type',
         'description',
         'alt',
         'sort',
         'hash',
         'disk',
         'group',
+        'additional'
     ];
 
     /**
@@ -54,6 +57,7 @@ class Attachment extends Model
      */
     protected $casts = [
         'sort' => 'integer',
+        'additional' => 'array'
     ];
 
     /**
@@ -79,11 +83,12 @@ class Attachment extends Model
     ];
 
     /**
-     * @return BelongsTo
+     * Get the parent user model.
+     * @return MorphTo
      */
-    public function user(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->morphTo();
     }
 
     /**
@@ -98,6 +103,25 @@ class Attachment extends Model
         /** @var Filesystem|Cloud $disk */
         $disk = Storage::disk($this->getAttribute('disk'));
         $path = $this->physicalPath();
+
+        return $path !== null && $disk->exists($path)
+            ? $disk->url($path)
+            : $default;
+    }
+
+    /**
+     * Return the address by which you can access the thumbnail file.
+     *
+     * @param string $dimension
+     * @param string|null $default
+     *
+     * @return string|null
+     */
+    public function thumbnailUrl(string $dimension, string $default = null): ?string
+    {
+        /** @var Filesystem|Cloud $disk */
+        $disk = Storage::disk($this->getAttribute('disk'));
+        $path = $this->physicalThumbnailPath($dimension);
 
         return $path !== null && $disk->exists($path)
             ? $disk->url($path)
@@ -129,13 +153,45 @@ class Attachment extends Model
     /**
      * @return string|null
      */
+    public function getFilename(): ?string
+    {
+        return $this->name . '.' . $this->extension;
+    }
+
+    public function hasThumbnail($dimension): bool
+    {
+        return $this->additional && isset($this->additional['thumbnails'][$dimension]);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getThumbnailFilename($dimension): string
+    {
+        if (!$this->additional || !isset($this->additional['thumbnails'][$dimension])) {
+            $values = $this->additional;
+
+            if (!array_key_exists('thumbnails', $values)) {
+                $values['thumbnails'] = [];
+            }
+
+            $values['thumbnails'][$dimension] = $dimension . "_" . $this->getFilename();
+            $this->additional = $values;
+        }
+
+        return $this->additional['thumbnails'][$dimension];
+    }
+
+    /**
+     * @return string|null
+     */
     public function getTitleAttribute(): ?string
     {
         if ($this->original_name !== 'blob') {
             return $this->original_name;
         }
 
-        return $this->name.'.'.$this->extension;
+        return $this->name . '.' . $this->extension;
     }
 
     /**
@@ -147,7 +203,16 @@ class Attachment extends Model
             return null;
         }
 
-        return $this->path.$this->name.'.'.$this->extension;
+        return $this->path . $this->name . '.' . $this->extension;
+    }
+
+    public function physicalThumbnailPath($dimension): ?string
+    {
+        if ($this->path === null || !isset($this->additional['thumbnails'][$dimension])) {
+            return null;
+        }
+
+        return $this->path . $this->additional['thumbnails'][$dimension];
     }
 
     /**
@@ -158,10 +223,17 @@ class Attachment extends Model
     public function delete()
     {
         if ($this->exists) {
-            if (static::where('hash', $this->hash)->where('disk', $this->disk)->count() <= 1) {
-                //Physical removal of all copies of a file.
-                Storage::disk($this->disk)->delete($this->physicalPath());
+            // Physical removal of all copies of a file.
+            if ($this->additional && isset($this->additional['thumbnails'])) {
+                foreach ($this->additional['thumbnails'] as $dimension => $filename) {
+                    Storage::disk($this->disk)->delete(
+                        $this->physicalThumbnailPath($dimension)
+                    );
+                }
             }
+
+            Storage::disk($this->disk)->delete($this->physicalPath());
+
             $this->relationships()->delete();
         }
 

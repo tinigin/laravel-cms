@@ -32,6 +32,8 @@
 <script src="{{ asset('assets/cms/plugins/lightbox/2.11.1/js/lightbox.min.js') }}"></script>
 <!-- Bootbox -->
 <script src="{{ asset('assets/cms/plugins/bootbox/bootbox.all.min.js') }}"></script>
+<!-- Jcrop -->
+<script src="{{ asset('assets/cms/plugins/jcrop/jcrop.min.js') }}"></script>
 <!-- TinyMCE -->
 <script src="{{ asset('assets/cms/plugins/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
 <script>

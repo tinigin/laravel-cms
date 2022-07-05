@@ -21,7 +21,8 @@
         "illuminate/support": "^9.0",
         "myclabs/php-enum": "^1.8",
         "socialiteproviders/yandex": "^4.1",
-        "laravel/ui": "^3.4"
+        "laravel/ui": "^3.4",
+        "gumlet/php-image-resize": "^2.0"
     },
     "require-dev": {
         "orchestra/testbench": "^7.5",

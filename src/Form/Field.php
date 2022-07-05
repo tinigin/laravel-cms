@@ -22,6 +22,7 @@ use Throwable;
  * @method self accesskey($value = true)
  * @method self class($value = true)
  * @method self group(string $value)
+ * @method self settings(array $value)
  * @method self dir($value = true)
  * @method self hidden($value = true)
  * @method self id($value = true)
@@ -46,7 +47,7 @@ class Field implements Fieldable, Htmlable
     private $beforeRender = [];
 
     /**
-     * View template show.
+     * View template.
      *
      * @var string
      */
@@ -119,27 +120,29 @@ class Field implements Fieldable, Htmlable
      */
     protected $inlineAttributes = [];
 
+    protected $settings = null;
+
     /**
-     * @param string $name
+     * @param string $method
      * @param array  $arguments
      *
      * @return mixed|static
      */
-    public function __call(string $name, array $arguments)
+    public function __call(string $method, array $arguments)
     {
-        if (static::hasMacro($name)) {
-            return $this->macroCall($name, $arguments);
+        if (static::hasMacro($method)) {
+            return $this->macroCall($method, $arguments);
         }
 
         $arguments = collect($arguments)->map(static function ($argument) {
             return $argument instanceof Closure ? $argument() : $argument;
         });
 
-        if (method_exists($this, $name)) {
-            $this->$name($arguments);
+        if (method_exists($this, $method)) {
+            $this->$method($arguments);
         }
 
-        return $this->set($name, $arguments->first() ?? true);
+        return $this->set($method, $arguments->first() ?? true);
     }
 
     /**
@@ -211,6 +214,7 @@ class Field implements Fieldable, Htmlable
             'slug'           => $this->getSlug(),
             'oldName'        => $this->getOldName(),
             'typeForm'       => $this->typeForm ?? $this->vertical()->typeForm,
+            'settings'       => $this->settings,
         ]))
             ->withErrors($errors);
     }
@@ -239,6 +243,23 @@ class Field implements Fieldable, Htmlable
     public function getAttributes(): array
     {
         return $this->attributes;
+    }
+
+    public function settings(array $value = []): self
+    {
+        $this->settings = $value;
+
+        return $this;
+    }
+
+    public function getSettings(): array
+    {
+        return $this->settings;
+    }
+
+    public function getSettingsByKey(string $key): mixed
+    {
+        return isset($this->settings[$key]) ?? $this->settings[$key];
     }
 
     /**

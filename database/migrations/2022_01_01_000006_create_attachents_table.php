@@ -15,18 +15,20 @@ return new class extends Migration
     {
         Schema::create('attachments', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('name');
-            $table->text('original_name');
-            $table->string('mime');
-            $table->string('extension')->nullable();
+            $table->string('name', 512);
+            $table->string('original_name', 512);
+            $table->string('mime', 64);
+            $table->string('extension', 10)->nullable();
             $table->bigInteger('size')->default(0);
             $table->integer('sort')->default(0);
-            $table->text('path');
-            $table->text('description')->nullable();
-            $table->text('alt')->nullable();
-            $table->text('hash')->nullable();
-            $table->string('disk')->default('public');
+            $table->string('path', 512);
+            $table->string('description', 512)->nullable();
+            $table->string('alt')->nullable();
+            $table->string('hash')->nullable();
+            $table->string('disk', 64)->default('public');
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('user_type', 128)->nullable();
+            $table->json('additional')->nullable();
             $table->string('group')->nullable();
             $table->timestamps();
         });

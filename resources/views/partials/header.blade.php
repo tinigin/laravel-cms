@@ -33,6 +33,8 @@
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
     <!-- Lightbox -->
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/lightbox/2.11.1/css/lightbox.min.css') }}">
+    <!-- Jcrop -->
+    <link rel="stylesheet" href="{{ asset('assets/cms/plugins/jcrop/jcrop.min.css') }}">
 
     <!-- Styles -->
     <link href="{{ asset('assets/cms/css/app.css') }}" rel="stylesheet">
