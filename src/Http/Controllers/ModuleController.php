@@ -2,6 +2,7 @@
 
 namespace LaravelCms\Http\Controllers;
 
+use Illuminate\Support\Str;
 use LaravelCms\Facades\Toast;
 use LaravelCms\Form\Actions\Link;
 use LaravelCms\Form\Repository;
@@ -227,7 +228,7 @@ class ModuleController extends BaseController
     {
         $fields = $this->formFields();
         foreach ($fields as $field) {
-            if ($field->get('name') == $key)
+            if (trim($field->get('name'), '[]') == $key)
                 return $field;
         }
 

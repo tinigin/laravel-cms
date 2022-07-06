@@ -42,14 +42,20 @@ class AjaxController extends BaseController
 
                 list($x, $y, $width, $height) = explode(';', request()->get('coords'));
                 $ratio = (float) request()->get('ratio');
+                $finalWidth = (int) request()->get('width');
+                $finalHeight = (int) request()->get('height');
 
-                $x = $x * $ratio;
-                $y = $y * $ratio;
-                $width = $width * $ratio;
-                $height = $height * $ratio;
+                $x = (float) $x * $ratio;
+                $y = (float) $y * $ratio;
+                $selectedWidth = (float) $width * $ratio;
+                $selectedHeight = (float) $height * $ratio;
 
                 $resizer = new ImageResize($tmpFile);
-                $resizer->freecrop($width, $height, $x, $y);
+                $resizer->freecrop($selectedWidth, $selectedHeight, $x, $y);
+                $resizer->save($tmpFile);
+
+                $resizer = new ImageResize($tmpFile);
+                $resizer->resize($finalWidth, $finalHeight, true);
                 $resizer->save($tmpFile);
 
                 $thumbnail = request()->get('thumbnail');

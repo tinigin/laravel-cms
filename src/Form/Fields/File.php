@@ -19,11 +19,9 @@ use phpDocumentor\Reflection\Types\Boolean;
  * @method File maxFileSize($value = true)
  * @method File maxFiles($value = true)
  * @method File accept($value = true)
- * @method File resizeQuality($value = true)
- * @method File resizeWidth($value = true)
- * @method File resizeHeight($value = true)
  * @method File title(string $value = null)
  * @method File rename(string $value = null)
+ * @method File multiple($value = true)
  */
 class File extends Field
 {
@@ -45,9 +43,6 @@ class File extends Field
         'maxFileSize'     => null,
         'maxFiles'        => 9999,
         'acceptedFiles'   => null,
-        'resizeQuality'   => 0.8,
-        'resizeWidth'     => null,
-        'resizeHeight'    => null,
         'accept'          => null
     ];
 

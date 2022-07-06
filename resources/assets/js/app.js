@@ -240,6 +240,8 @@ let imgCrop = function(element) {
     this.coords = '';
     this.maxWidth = 766;
     this.maxHeight = 575;
+    this.originalWidth = 0;
+    this.originalHeight = 0;
 
     this.init = function() {
         this.width = parseInt(this.element.attr('data-width'), 10);
@@ -276,7 +278,7 @@ let imgCrop = function(element) {
                             '<h4 class="modal-title" id="myModalLabel">Выберите область на изображении</h4>' +
                             '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>' +
                         '</div>' +
-                        '<div class="modal-body">' +
+                        '<div class="modal-body image-crop-container">' +
                         '</div>' +
                         '<div class="modal-footer">' +
                             '<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>' +
@@ -324,47 +326,78 @@ let imgCrop = function(element) {
         this.imgId = this.randomString(8);
 
         this.img.onload = function() {
-            let imageHtml = '<img src="' + self.url + '" id="' + self.imgId + '" alt="" />';
+            self.originalWidth = this.naturalWidth;
+            self.originalHeight = this.naturalHeight;
+
+            let imageHtml = '<img src="' + self.url + '" id="' + self.imgId + '" style="max-width: 100%; height: auto;" alt="" />';
 
             $('#' + self.modalId + ' .modal-body').append(imageHtml);
 
-            if(
-                this.width > self.maxWidth &&
-                this.width >= this.height
-            ) {
-                $('#' + self.imgId).css('width', self.maxWidth);
-                self.ratio = this.width / self.maxWidth;
+            self.setImageSizes();
 
-            } else if(
-                this.height > self.maxHeight &&
-                this.width < this.height
-            ) {
-                $('#' + self.imgId).css('height', self.maxHeight);
-                self.ratio = this.height / self.maxHeight;
-
-            } else {
-                self.ratio = 1;
-
-            }
-
-            let aspectRatio = null;
-
+            self.aspectRatio = null;
             if(self.width && self.height) {
-                aspectRatio = self.width / self.height;
+                self.aspectRatio = self.width / self.height;
             }
 
             setTimeout(function() {
-                $('#' + self.imgId).Jcrop({
-                    aspectRatio: aspectRatio,
-                    maxSize: [self.maxWidth, self.maxHeight],
-                    onSelect: function(coords) {
-                        self.onEndCrop(coords, self.imgId);
-                    }
+                self.initJcrop();
+
+                window.addEventListener('resize', function(e) {
+                    self.resize();
                 });
+
             }, 1);
         };
 
         this.img.src = this.url;
+    }
+
+    this.setImageSizes = function() {
+        this.maxWidth = parseFloat($('.image-crop-container').width());
+        this.maxHeight = (this.maxWidth / 4) * 3;
+
+        $('#' + this.imgId).css('width', 'auto');
+        $('#' + this.imgId).css('height', 'auto');
+
+        if (
+            this.originalWidth > this.maxWidth &&
+            this.originalWidth >= this.originalHeight
+        ) {
+            $('#' + this.imgId).css('width', this.maxWidth);
+            this.ratio = this.originalWidth / this.maxWidth;
+
+        } else if(
+            this.originalHeight > this.maxHeight &&
+            this.originalWidth < this.originalHeight
+        ) {
+            $('#' + this.imgId).css('height', this.maxHeight);
+            this.ratio = this.originalHeight / this.maxHeight;
+
+        } else {
+            this.ratio = 1;
+
+        }
+    }
+
+    this.initJcrop = function() {
+        let self = this;
+
+        $('#' + self.imgId).Jcrop({
+            aspectRatio: self.aspectRatio,
+            maxSize: [self.maxWidth, self.maxHeight],
+            onSelect: function(coords) {
+                self.onEndCrop(coords, self.imgId);
+            }
+        }, function() {
+            self.jcrop = this;
+        });
+    }
+
+    this.resize = function(e) {
+        this.jcrop.destroy();
+        this.setImageSizes();
+        this.initJcrop();
     }
 
     this.onEndCrop = function(coords, imgId) {
