@@ -58,8 +58,3 @@
 <script src="{{ asset('assets/cms/js/adminlte.js') }}"></script>
 <!-- App -->
 <script src="{{ asset('assets/cms/js/app.js') }}"></script>
-
-<!-- AdminLTE for demo purposes -->
-{{--<script src="{{ asset('assets/cms/js/demo.js') }}"></script>--}}
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-{{--<script src="{{ asset('assets/cms/js/pages/dashboard.js') }}"></script>--}}

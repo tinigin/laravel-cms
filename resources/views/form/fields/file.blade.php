@@ -4,7 +4,7 @@
         <label class="custom-file-label" for="{{ $attributes['id'] }}">{{ __('Choose File') }}</label>
     </div>
 
-    @if ($value->count())
+    @if ($value && $value->count())
         <table class="table table-responsive-md table-striped mt-2">
             <thead>
                 <tr>
