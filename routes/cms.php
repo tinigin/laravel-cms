@@ -37,7 +37,10 @@ Route::name('cms.')->group(function() {
             Route::get('logout', [\LaravelCms\Http\Controllers\Auth\LoginController::class, 'logout'])
                 ->name('logout');
 
-            Route::get('/', [\LaravelCms\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+            if (class_exists('\App\Http\Controllers\Cms\DashboardController'))
+                Route::get('/', [\App\Http\Controllers\Cms\DashboardController::class, 'index'])->name('dashboard');
+            else
+                Route::get('/', [\LaravelCms\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
             Route::group([], function(\Illuminate\Routing\Router $router) {
                 $resolver = function ($controller, $action, $id = null) {
@@ -86,8 +89,11 @@ Route::name('cms.')->group(function() {
                 })->name('module.images');
 
                 // Ajax
-                $router->post('ajax/remove-file', [\LaravelCms\Http\Controllers\AjaxController::class, 'removeFile'])->name('ajax.remove.file');
-                $router->post('ajax/resize-image', [\LaravelCms\Http\Controllers\AjaxController::class, 'resizeImage'])->name('ajax.resize.image');
+                $ajaxClass = \LaravelCms\Http\Controllers\AjaxController::class;
+                if (class_exists('\App\Http\Controllers\Cms\AjaxController'))
+                    $ajaxClass = \App\Http\Controllers\Cms\AjaxController::class;
+                $router->post('ajax/remove-file', [$ajaxClass, 'removeFile'])->name('ajax.remove.file');
+                $router->post('ajax/resize-image', [$ajaxClass, 'resizeImage'])->name('ajax.resize.image');
             });
 
             Route::fallback(function () {

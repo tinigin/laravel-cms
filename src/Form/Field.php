@@ -22,7 +22,6 @@ use Throwable;
  * @method self accesskey($value = true)
  * @method self class($value = true)
  * @method self group(string $value)
- * @method self settings(array $value)
  * @method self dir($value = true)
  * @method self hidden($value = true)
  * @method self id($value = true)
@@ -381,11 +380,11 @@ class Field implements Fieldable, Htmlable
         $lang = $this->get('lang');
 
         if ($prefix !== null && $lang !== null) {
-            return $this->set('name', $prefix.'['.$lang.']'.$name);
+            return $this->set('name', $prefix . '[' . $lang . ']' . $name);
         }
 
         if ($prefix !== null) {
-            return $this->set('name', $prefix.$name);
+            return $this->set('name', $prefix . $name);
         }
 
         if ($lang !== null) {

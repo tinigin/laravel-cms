@@ -59,7 +59,7 @@ class Generator implements Engine
     {
         switch ($this->rename) {
             case 'hash':
-                return sha1($this->uniqueId . $this->file->getClientOriginalName());
+                return Str::limit(sha1($this->uniqueId . $this->file->getClientOriginalName()), 10, '');
 
             case 'orig':
                 return Str::finish($this->file->getClientOriginalName(), '.');

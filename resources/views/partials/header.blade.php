@@ -19,14 +19,10 @@
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
     <!-- iCheck -->
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('assets/cms/css/adminlte.min.css') }}">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
     <!-- Daterange picker -->
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/daterangepicker/daterangepicker.css') }}">
-    <!-- summernote -->
-    <link rel="stylesheet" href="{{ asset('assets/cms/plugins/summernote/summernote-bs4.min.css') }}">
     <!-- Bootstrap-select -->
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/twbs-select/1.13.12/bootstrap-select.min.css') }}">
     <!-- Sweet alert 2 -->
@@ -35,6 +31,17 @@
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/lightbox/2.11.1/css/lightbox.min.css') }}">
     <!-- Jcrop -->
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/jcrop/jcrop.min.css') }}">
+    <!-- Dropzone -->
+{{--    <link rel="stylesheet" href="{{ asset('assets/cms/plugins/dropzone/min/basic.min.css') }}">--}}
+{{--    <link rel="stylesheet" href="{{ asset('assets/cms/plugins/dropzone/min/dropzone.min.css') }}">--}}
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"
+        type="text/css"
+    />
+
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ asset('assets/cms/css/adminlte.min.css') }}">
 
     <!-- Styles -->
     <link href="{{ asset('assets/cms/css/app.css') }}" rel="stylesheet">

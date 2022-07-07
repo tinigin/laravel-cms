@@ -6,6 +6,11 @@ let toast = Swal.mixin({
 });
 
 $(function () {
+    $(document).on({
+        ajaxStart: function() { $('body').addClass("loading"); },
+        ajaxStop: function() { $('body').removeClass("loading"); }
+    });
+
 	// Filter
 	function toggleFilter() {
 		let filterButton = $('[data-toggle-filter]');
@@ -82,6 +87,33 @@ $(function () {
 		}
 	});
 
+    $('.files-list.sortable-list').sortable({
+        items: ".card",
+        helper: function(e, ui) {
+            ui.children().each(function() {
+                $(this).width($(this).width());
+                $(this).height($(this).height());
+            });
+            return ui;
+        },
+        axis: "y",
+        forcePlaceholderSize: true,
+        opacity: 0.5,
+        start: function(e, ui){
+            ui.placeholder.height(ui.item.height());
+        },
+        cursor: "move",
+        update: function() {
+            // $('button[name=save-sorting]').removeAttr('disabled');
+            //
+            // let items = [];
+            // $('input[name="sort-order[]"]').each(function() {
+            //     items.push($(this).attr('value'));
+            // });
+            // $('#sort-form input[name=items]').val(items.join(','));
+        }
+    });
+
 	$('.multiple-delete').bind(
 		'change',
 		function() {
@@ -141,8 +173,7 @@ $(function () {
     });
 
     $('[data-remove]').click(function() {
-        let element = $(this).parents('tr');
-        let table = $(this).parents('table');
+        let element = $(this).parents('.file-card');
         let filename = $(this).attr('title');
         let id = this.getAttribute('data-remove');
         let url = this.getAttribute('data-url')
@@ -177,9 +208,6 @@ $(function () {
                                 });
 
                                 element.remove();
-                                if (!table.find('tbody tr').length) {
-                                    table.remove();
-                                }
 
                             } else {
                                 toast.fire({
@@ -252,6 +280,25 @@ $(function () {
                 mapToRadix: ['.'],  // symbols to process as radix
             });
         }
+    });
+
+    $('dropzone').each(function() {
+        new Dropzone(this, {
+            url: "/file/post"
+        });
+    });
+
+    $('[data-tippy]').each(function() {
+        tippy(this, {
+            content: $(this).attr('data-tippy-content'),
+            allowHTML: true,
+            placement: 'left',
+        });
+    });
+
+    $('[data-toggle=card-footer]').click(function() {
+        $(this).parents('.file-card').find('.card-footer').toggleClass('hidden');
+        return false;
     });
 });
 

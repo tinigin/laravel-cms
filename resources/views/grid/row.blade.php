@@ -27,8 +27,17 @@
 		@endif
 	</td>
 	@if ($grid->multipleDelete())
-	<td class="centered">
-			<input type="checkbox" name="items-to-delete[]" class="multiple-delete" value="{{ $row['attributes']['id'] }}" />
+	    <td class="centered">
+            <div class="custom-control custom-checkbox">
+                <input
+                    id="item-to-delete-{{$row['attributes']['id']}}"
+                    class="custom-control-input multiple-delete"
+                    type="checkbox"
+                    name="items-to-delete[]"
+                    value="{{ $row['attributes']['id'] }}"
+                />
+                <label for="item-to-delete-{{$row['attributes']['id']}}" class="custom-control-label"> </label>
+            </div>
 		</td>
 	@endif
 </tr>
