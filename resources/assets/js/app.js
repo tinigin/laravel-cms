@@ -232,6 +232,27 @@ $(function () {
     $('a.crop-image').each(function() {
         new imgCrop(this);
     });
+
+    $('input[mask]').each(function() {
+        let mask = $(this).attr('mask');
+
+        if (mask.startsWith('cost')) {
+            let options = mask.split(':');
+
+            IMask(this, {
+                mask: Number,  // enable number mask
+
+                // other options are optional with defaults below
+                scale: options[1],  // digits after point, 0 for integers
+                signed: false,  // disallow negative
+                thousandsSeparator: '',  // any single char
+                padFractionalZeros: false,  // if true, then pads zeros at end to the length of scale
+                normalizeZeros: true,  // appends or removes zeros at ends
+                radix: '.',  // fractional delimiter
+                mapToRadix: ['.'],  // symbols to process as radix
+            });
+        }
+    });
 });
 
 let imgCrop = function(element) {

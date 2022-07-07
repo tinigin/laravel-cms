@@ -120,7 +120,7 @@ class Field implements Fieldable, Htmlable
      */
     protected $inlineAttributes = [];
 
-    protected $settings = null;
+    protected $settings = [];
 
     /**
      * @param string $method

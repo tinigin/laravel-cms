@@ -43,7 +43,8 @@ class File extends Field
         'maxFileSize'     => null,
         'maxFiles'        => 9999,
         'acceptedFiles'   => null,
-        'accept'          => null
+        'accept'          => null,
+        'rename'          => 'hash'
     ];
 
     /**

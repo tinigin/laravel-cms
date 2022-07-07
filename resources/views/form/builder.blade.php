@@ -15,7 +15,12 @@
     			<ul class="nav nav-pills">
     				@foreach ($groups as $key => $group)
                         <li class="nav-item">
-                            <a class="nav-link {{ $group['active'] ? 'active' : ''}}" href="#{{$key}}" data-tab-id="{{$key}}" data-toggle="tab">{{$group['title']}}</a>
+                            <a class="nav-link {{ $group['active'] ? 'active' : ''}}" href="#{{$key}}" data-tab-id="{{$key}}" data-toggle="tab">
+                                {{$group['title']}}
+                                @if (isset($group['errors']) && $group['errors'] > 0)
+                                    <span class="badge badge-danger navbar-badge">{{ $group['errors'] }}</span>
+                                @endif
+                            </a>
                         </li>
     				@endforeach
     			</ul>

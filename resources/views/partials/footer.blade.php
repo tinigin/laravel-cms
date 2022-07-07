@@ -53,6 +53,9 @@
         convert_urls: false
     });
 </script>
+<!-- TinyMCE -->
+<script src="{{ asset('assets/cms/plugins/imaskjs/imask.js') }}" referrerpolicy="origin"></script>
+
 
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/cms/js/adminlte.js') }}"></script>

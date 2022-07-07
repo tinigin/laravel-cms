@@ -260,7 +260,7 @@ class Builder
             }elseif (is_subclass_of($item, Fieldable::class)) {
                 $f[] = $this->renderField($item);
 
-                if ($item->hasErrors() && $item->get('group')) {
+                if ($item->hasError() && $item->get('group')) {
                     $this->groups[$item->get('group')]['errors'] += 1;
                 }
             }
