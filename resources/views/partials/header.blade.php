@@ -27,6 +27,8 @@
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/twbs-select/1.13.12/bootstrap-select.min.css') }}">
     <!-- Sweet alert 2 -->
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+    <!-- BS custom file input -->
+    <script src="{{ asset('assets/cms/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
     <!-- Lightbox -->
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/lightbox/2.11.1/css/lightbox.min.css') }}">
     <!-- Jcrop -->
