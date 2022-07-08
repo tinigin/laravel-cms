@@ -94,6 +94,8 @@ Route::name('cms.')->group(function() {
                     $ajaxClass = \App\Http\Controllers\Cms\AjaxController::class;
                 $router->post('ajax/remove-file', [$ajaxClass, 'removeFile'])->name('ajax.remove.file');
                 $router->post('ajax/resize-image', [$ajaxClass, 'resizeImage'])->name('ajax.resize.image');
+                $router->post('ajax/sort-files', [$ajaxClass, 'sortFiles'])->name('ajax.sort.files');
+                $router->post('ajax/data-files', [$ajaxClass, 'dataFiles'])->name('ajax.data.files');
             });
 
             Route::fallback(function () {

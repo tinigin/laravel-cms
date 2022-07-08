@@ -29,6 +29,68 @@ class AjaxController extends BaseController
         return response()->json(['status' => $status], 200);
     }
 
+    public function sortFiles()
+    {
+        $status = 'fail';
+
+        if (request()->has('items')) {
+            $items = request()->get('items');
+            $list = Attachment::whereIn('id', $items)
+                ->orderBy('sort', 'asc')
+                ->get();
+
+            if ($list) {
+                $currentSort = [];
+                $items = array_flip($items);
+
+                foreach ($list AS $item) {
+                    $currentSort[] = $item->sort;
+                }
+
+                foreach ($list AS $item) {
+                    $newSortIndex = $currentSort[$items[$item->id]];
+                    if ($newSortIndex) {
+                        $item->sort = $newSortIndex;
+                        $item->save();
+                    }
+                }
+
+                $status = 'success';
+            }
+        }
+
+        return response()->json(['status' => $status], 200);
+    }
+
+    public function dataFiles()
+    {
+        $status = 'fail';
+
+        if (request()->has('id')) {
+            $postData = request()->all();
+            $item = Attachment::where('id', $postData['id'])->first();
+            unset($postData['id']);
+
+            if ($item) {
+                $info = $item->additional;
+                if (!$info)
+                    $info = [];
+
+                foreach ($postData as $key => $value) {
+                    if ($value)
+                        $info[$key] = $value;
+                }
+
+                $item->additional = $info;
+                $item->save();
+
+                $status = 'success';
+            }
+        }
+
+        return response()->json(['status' => $status], 200);
+    }
+
     public function resizeImage(): JsonResponse
     {
         $status = 'fail';

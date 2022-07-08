@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use LaravelCms\Attachment\MimeTypes;
 use LaravelCms\Filters\Filterable;
@@ -163,6 +164,13 @@ class Attachment extends Model
         return $this->additional && isset($this->additional['thumbnails'][$dimension]);
     }
 
+    public function getAdditionalByKey(string $key): string|array|null
+    {
+        return isset($this->additional[$key])
+            ? $this->additional[$key]
+            : null;
+    }
+
     /**
      * @return string|null
      */
@@ -265,5 +273,17 @@ class Attachment extends Model
     public function isImage(): bool
     {
         return Str::startsWith($this->getMimeType(), 'image');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::created(function(Model $model) {
+            if (in_array('sort', $model->fillable)) {
+                $model->sort = (DB::table($model->table)->max('sort') + 1);
+                $model->save();
+            }
+        });
     }
 }

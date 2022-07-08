@@ -13,8 +13,6 @@
 <script src="{{ asset('assets/cms/plugins/daterangepicker/daterangepicker.js') }}"></script>
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="{{ asset('assets/cms/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-<!-- Summernote -->
-<script src="{{ asset('assets/cms/plugins/summernote/summernote-bs4.min.js') }}"></script>
 <!-- overlayScrollbars -->
 <script src="{{ asset('assets/cms/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 <!-- Bootstrap-select -->
@@ -26,8 +24,6 @@
 <script src="{{ asset('assets/cms/plugins/js.cookie/js.cookie.min.js') }}"></script>
 <!-- Sweet alert 2 -->
 <script src="{{ asset('assets/cms/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
-<!-- BS custom file input -->
-<script src="{{ asset('assets/cms/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
 <!-- Lightbox -->
 <script src="{{ asset('assets/cms/plugins/lightbox/2.11.1/js/lightbox.min.js') }}"></script>
 <!-- Bootbox -->

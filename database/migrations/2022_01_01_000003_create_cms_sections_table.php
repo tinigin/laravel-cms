@@ -23,12 +23,13 @@ return new class extends Migration
             $table->string('name', 255);
             $table->string('folder', 255)->unique();
             $table->string('description', 512)->nullable();
-            $table->boolean('is_published')->default(0);
+            $table->boolean('is_published')->default(0)->index();
             $table
                 ->integer('sort_order')
                 ->default(0)
                 ->nullable(false)
                 ->unsigned();
+            $table->index('cms_section_group_id');
             $table->timestamps();
         });
     }

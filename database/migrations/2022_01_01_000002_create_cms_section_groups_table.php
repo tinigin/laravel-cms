@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('cms_section_groups', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
-            $table->boolean('is_published');
+            $table->boolean('is_published')->index();
             $table
                 ->integer('sort_order')
                 ->default(0)

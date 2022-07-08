@@ -16,15 +16,15 @@
     @if ($value && $value->count())
         <div class="files-list{{ isset($settings['sortable']) && $settings['sortable'] ? ' sortable-list' : '' }}">
             @foreach ($value as $file)
-                <div class="card border-secondary file-card">
+                <div class="card border-secondary file-card" data-id="{{ $file->getKey() }}">
                     <div class="card-body file-card-body">
                         <span class="w-33 d-inline-block overflow-hidden">
                             <a
-                                href="{{ $file->url() }}"
+                                href="{{ $file->url() }}?{{ \Illuminate\Support\Str::random() }}"
                                 @if ($file->isImage())
                                     data-lightbox="{{$attributes['id'] }}"
-                                    data-tippy="true"
-                                    data-tippy-content="<img src='{{ $file->url() }}' style='max-width: 200px; max-height: 200px;' />"
+                                    data-image-tippy="true"
+                                    data-tippy-content="<img src='{{ $file->url() }}?{{ \Illuminate\Support\Str::random() }}' style='max-width: 200px; max-height: 200px;' />"
                                 @endif
                                 title="{{ $file->getFilename() }}"
                                 target="_blank"
@@ -38,12 +38,12 @@
                                 <span class="w-33 d-inline-block overflow-hidden">
                                     @if ($file->hasThumbnail($data['w'] . 'x' . $data['h']))
                                         <a
-                                            href="{{ $file->thumbnailUrl($data['w'] . 'x' . $data['h']) }}"
+                                            href="{{ $file->thumbnailUrl($data['w'] . 'x' . $data['h']) }}?{{ \Illuminate\Support\Str::random() }}"
                                             data-lightbox="{{$attributes['id'] }}"
                                             title="{{ $file->getThumbnailFilename($data['w'] . 'x' . $data['h']) }}"
                                             data-lightbox="{{$attributes['id'] }}"
-                                            data-tippy="true"
-                                            data-tippy-content="<img src='{{ $file->thumbnailUrl($data['w'] . 'x' . $data['h']) }}' style='max-width: 200px; max-height: 200px;' />"
+                                            data-image-tippy="true"
+                                            data-tippy-content="<img src='{{ $file->thumbnailUrl($data['w'] . 'x' . $data['h']) }}?{{ \Illuminate\Support\Str::random() }}' style='max-width: 200px; max-height: 200px;' />"
                                         >
                                             {{ $data['w'] . 'x' . $data['h'] }}
                                         </a>
@@ -53,7 +53,7 @@
                                             href=""
                                             class="crop-image text-muted ml-2"
                                             data-crop="true"
-                                            data-url="{{ $file->url() }}"
+                                            data-url="{{ $file->url() }}?{{ \Illuminate\Support\Str::random() }}"
                                             data-thumbnail="{{ $data['w'] . 'x' . $data['h'] }}"
                                             data-width="{{ $data['w'] }}"
                                             data-height="{{ $data['h'] }}"
@@ -97,9 +97,11 @@
                                         @case('title')
                                             <input
                                                 type="text"
+                                                data-name="{{ $field }}"
                                                 class="form-control"
-                                                name="file_field_{{ $attributes['id'] }}_{{ $field }}"
+                                                name="{{ $attributes['id'] }}_{{ $field }}"
                                                 placeholder="{{ $fieldTitle }}"
+                                                value="{{ $file->getAdditionalByKey($field) }}"
                                             />
                                             @break
 
@@ -107,9 +109,10 @@
                                             <textarea
                                                 rows="5"
                                                 class="form-control"
-                                                name="file_field_{{ $attributes['id'] }}_{{ $field }}"
+                                                data-name="{{ $field }}"
+                                                name="{{ $attributes['id'] }}_{{ $field }}"
                                                 placeholder="{{ $fieldTitle }}"
-                                            ></textarea>
+                                            >{{ $file->getAdditionalByKey($field) }}</textarea>
                                             @break
                                     @endswitch
                                 </div>
@@ -117,7 +120,7 @@
                             <div class="form-group">
                                 <a
                                     href="#"
-                                    data-action="save"
+                                    data-file-action="save"
                                     data-id="{{ $attributes['id'] }}"
                                     class="btn btn-default float-right"
                                 >{{ __('Save') }}</a>

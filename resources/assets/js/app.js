@@ -32,16 +32,6 @@ $(function () {
 	function resetFilter() {
 		window.location.replace(window.location.pathname);
 		return false;
-
-		// let filter = $('[data-filter]');
-		// let inputs = filter.find('input, select, textarea');
-        //
-		// inputs.each(function() {
-		// 	$(this).val('');
-		// 	$(this).selectpicker('refresh');
-		// });
-        //
-		// filter.submit();
 	}
 
 	function setItemsForDelete()
@@ -104,14 +94,71 @@ $(function () {
         },
         cursor: "move",
         update: function() {
-            // $('button[name=save-sorting]').removeAttr('disabled');
-            //
-            // let items = [];
-            // $('input[name="sort-order[]"]').each(function() {
-            //     items.push($(this).attr('value'));
-            // });
-            // $('#sort-form input[name=items]').val(items.join(','));
+            let items = [];
+
+            $(this).find('.file-card[data-id]').each(function() {
+                items.push($(this).attr('data-id'));
+            });
+
+            $.ajax({
+                url: '/cms/ajax/sort-files',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                data: {items: items},
+                type: "POST",
+                response: 'JSON',
+                success: function (response) {
+                    if (response.status == 'success') {
+                        toast.fire({
+                            icon: 'success',
+                            title: 'Файлы отсортированы',
+                        });
+
+                    } else {
+                        toast.fire({
+                            icon: 'error',
+                            title: 'Произошла ошибка, попробуйте еще раз',
+                        });
+                    }
+                }
+            });
         }
+    });
+
+    $('[data-file-action]').click(function() {
+        let id = $(this).parents('.file-card').attr('data-id');
+        let data = {
+            'id': id
+        };
+
+        $(this).parents('.file-card-footer').find('input,textarea').each(function() {
+            data[$(this).attr('data-name')] = $(this).val();
+        });
+
+        console.log(data);
+
+        $.ajax({
+            url: '/cms/ajax/data-files',
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            data: data,
+            type: "POST",
+            response: 'JSON',
+            success: function (response) {
+                if (response.status == 'success') {
+                    toast.fire({
+                        icon: 'success',
+                        title: 'Данные сохранены',
+                    });
+
+                } else {
+                    toast.fire({
+                        icon: 'error',
+                        title: 'Произошла ошибка, попробуйте еще раз',
+                    });
+                }
+            }
+        });
+
+        return false;
     });
 
 	$('.multiple-delete').bind(
@@ -282,17 +329,28 @@ $(function () {
         }
     });
 
-    $('dropzone').each(function() {
-        new Dropzone(this, {
-            url: "/file/post"
+    $('[data-tippy]').each(function() {
+        let self = $(this);
+        tippy(this, {
+            content: self.attr('data-tippy-content'),
+            allowHTML: true,
+            placement: 'top',
         });
     });
 
-    $('[data-tippy]').each(function() {
-        tippy(this, {
-            content: $(this).attr('data-tippy-content'),
+    $('[data-image-tippy]').each(function() {
+        let self = $(this);
+        let instance = tippy(this, {
+            content: self.attr('data-tippy-content'),
             allowHTML: true,
             placement: 'left',
+            onShow: () => {
+                const image = new Image();
+                image.style.display = 'block';
+                image.src = self.attr('href');
+                image.style = 'max-width: 200px; max-height: 200px;';
+                instance.setContent(image);
+            }
         });
     });
 
@@ -492,6 +550,7 @@ let imgCrop = function(element) {
                             title: 'Изображение успешно сохранено'
                         });
                         self.removeModalWrap();
+                        self.updateImageUrls();
 
                     } else {
                         toast.fire({
@@ -527,6 +586,24 @@ let imgCrop = function(element) {
             str += chars[Math.floor(Math.random() * chars.length)];
         }
         return str;
+    }
+
+    this.updateImageUrls = function() {
+        let self = this;
+
+        $('a[data-lightbox]').each(function() {
+            let href = $(this).attr('href');
+            let url = new URL(href);
+            url.search = '?' + self.randomString(10);
+            $(this).attr('href', url.href);
+
+            if ($(this).attr('data-tippy-content')) {
+                $(this).attr(
+                    'data-tippy-content',
+                    "<img src='" + url.href + "' style='max-width: 200px; max-height: 200px;' />"
+                );
+            }
+        });
     }
 
     this.init();

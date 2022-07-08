@@ -31,14 +31,6 @@
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/lightbox/2.11.1/css/lightbox.min.css') }}">
     <!-- Jcrop -->
     <link rel="stylesheet" href="{{ asset('assets/cms/plugins/jcrop/jcrop.min.css') }}">
-    <!-- Dropzone -->
-{{--    <link rel="stylesheet" href="{{ asset('assets/cms/plugins/dropzone/min/basic.min.css') }}">--}}
-{{--    <link rel="stylesheet" href="{{ asset('assets/cms/plugins/dropzone/min/dropzone.min.css') }}">--}}
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"
-        type="text/css"
-    />
 
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('assets/cms/css/adminlte.min.css') }}">

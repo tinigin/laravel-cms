@@ -29,7 +29,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('user_type', 128)->nullable();
             $table->json('additional')->nullable();
-            $table->string('group')->nullable();
+            $table->string('group')->nullable()->index();
+            $table->index(['user_id', 'user_type']);
             $table->timestamps();
         });
 

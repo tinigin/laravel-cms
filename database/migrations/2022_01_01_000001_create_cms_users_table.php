@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('cms_users', function (Blueprint $table) {
             $table->id();
-            $table->integer('status_id')->nullable(true)->default(0);
+            $table->integer('status_id')->nullable(true)->default(0)->index();
             $table->string('name')->nullable(true);
             $table->string('email')->unique()->nullable(false);
             $table->string('password');
