@@ -41,7 +41,9 @@ class BaseModel extends Model
         });
 
         self::deleting(function($model) {
-            $model->attachment->each->delete();
+            if (!method_exists($model, 'runSoftDelete')) {
+                $model->attachment->each->delete();
+            }
         });
     }
 

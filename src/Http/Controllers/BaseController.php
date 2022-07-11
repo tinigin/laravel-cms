@@ -82,7 +82,8 @@ class BaseController extends LaravelController implements BeforeAndAfter
                 foreach ($sections as $section) {
                     $url = route('cms.module.index', ['controller' => $section->folder], false);
                     $currentUrl = '/' . ltrim(request()->path(), '/');
-                    $isSectionActive = Str::startsWith($currentUrl, $url);
+
+                    $isSectionActive = explode('/', $currentUrl)[2] == explode( '/', $url)[2];
 
                     $sectionsData[] = [
                         'name' => $section->name,
