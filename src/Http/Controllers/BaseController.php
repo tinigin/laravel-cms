@@ -83,11 +83,10 @@ class BaseController extends LaravelController implements BeforeAndAfter
                     $url = route('cms.module.index', ['controller' => $section->folder], false);
                     $currentUrl = '/' . ltrim(request()->path(), '/');
 
-                    try {
-                        $isSectionActive = explode('/', $currentUrl)[2] == explode('/', $url)[2];
-                    } catch (Exception as $e) {
-                        $isSectionActive = false;
-                    }
+                    $currentUrlParts = explode('/', $currentUrl);
+                    $urlParts = explode('/', $url);
+
+                    $isSectionActive = isset($currentUrlParts[2]) && isset($urlParts[2]) && $currentUrlParts[2] == $urlParts;
 
                     $sectionsData[] = [
                         'name' => $section->name,
