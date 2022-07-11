@@ -86,7 +86,7 @@ class BaseController extends LaravelController implements BeforeAndAfter
                     $currentUrlParts = explode('/', $currentUrl);
                     $urlParts = explode('/', $url);
 
-                    $isSectionActive = isset($currentUrlParts[2]) && isset($urlParts[2]) && $currentUrlParts[2] == $urlParts;
+                    $isSectionActive = isset($currentUrlParts[2]) && isset($urlParts[2]) && $currentUrlParts[2] == $urlParts[2];
 
                     $sectionsData[] = [
                         'name' => $section->name,
