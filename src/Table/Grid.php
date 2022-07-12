@@ -2,6 +2,7 @@
 
 namespace LaravelCms\Table;
 
+use Illuminate\Support\Str;
 use LaravelCms\Exceptions\BadDataException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -234,7 +235,11 @@ class Grid {
                 foreach ($this->columns AS $column => $options) {
                     $itemData[$column] = '';
 
-                    if (in_array($column, array_keys($item->getAttributes()))) {
+                    if (method_exists($item, 'text' . Str::studly($column))) {
+                        $method = 'text' . Str::studly($column);
+                        $itemData[$column] = $item->$method();
+
+                    } else if (in_array($column, array_keys($item->getAttributes()))) {
                         $itemData[$column] = $item->$column;
 
                     } else if (method_exists($item, $column)) {
