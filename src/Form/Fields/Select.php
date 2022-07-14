@@ -87,6 +87,9 @@ class Select extends Field implements ComplexFieldConcern
     {
         $options = $model->pluck($name, $key);
 
+        if ($this->get('required') === false && !$this->get('multiple')) {
+            $options->prepend(__('Choose an option'), '');
+        }
         $this->set('options', $options);
 
         return $this->addBeforeRender(function () use ($name) {
