@@ -286,4 +286,35 @@ class Attachment extends Model
             }
         });
     }
+
+    public function data(): array
+    {
+        $data = [
+            'url' => $this->url(),
+            'name' => $this->getFilename(),
+            'original_name' => $this->original_name,
+            'mime' => $this->mime,
+            'sort' => $this->sort,
+        ];
+
+        if ($this->getAdditionalByKey('title'))
+            $data['title'] = $this->getAdditionalByKey('title');
+
+        if ($this->getAdditionalByKey('description'))
+            $data['title'] = $this->getAdditionalByKey('description');
+
+        if ($this->getAdditionalByKey('thumbnails')) {
+            $data['thumbnails'] = [];
+
+            $thumbnails = $this->getAdditionalByKey('thumbnails');
+            foreach ($thumbnails as $size => $filename) {
+                $data['thumbnails'][] = [
+                    'url' => $this->thumbnailUrl($size),
+                    'size' => $size
+                ];
+            }
+        }
+
+        return $data;
+    }
 }
