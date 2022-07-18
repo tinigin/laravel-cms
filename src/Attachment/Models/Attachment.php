@@ -301,7 +301,7 @@ class Attachment extends Model
             $data['title'] = $this->getAdditionalByKey('title');
 
         if ($this->getAdditionalByKey('description'))
-            $data['title'] = $this->getAdditionalByKey('description');
+            $data['description'] = $this->getAdditionalByKey('description');
 
         if ($this->getAdditionalByKey('thumbnails')) {
             $data['thumbnails'] = [];
