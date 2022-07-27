@@ -35,7 +35,10 @@
             "LaravelCms\\Tests\\": "tests/",
             "LaravelCms\\Database\\Factories\\": "database/factories",
             "LaravelCms\\Database\\Seeders\\": "database/seeders"
-        }
+        },
+        "files": [
+            "src/Support/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

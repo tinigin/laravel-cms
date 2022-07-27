@@ -62,7 +62,7 @@ class Generator implements Engine
                 return Str::limit(sha1($this->uniqueId . $this->file->getClientOriginalName()), 10, '');
 
             case 'orig':
-                return Str::finish($this->file->getClientOriginalName(), '.');
+                return pathinfo($this->file->getClientOriginalName(), PATHINFO_FILENAME);
 
             default:
                 return $this->rename;
@@ -76,7 +76,7 @@ class Generator implements Engine
      */
     public function fullName(): string
     {
-        return Str::finish($this->name(), '.') . $this->extension();
+        return pathinfo($this->name(), PATHINFO_FILENAME) . '.' . $this->extension();
     }
 
     /**

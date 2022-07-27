@@ -77,6 +77,7 @@ class File
         $generator = config('cms.attachment.generator', Generator::class);
 
         $this->engine = new $generator($file, $rename);
+
         $this->group = $group;
         $this->rename = $rename;
         $this->thumbnails = $thumbnails;
@@ -99,7 +100,7 @@ class File
             'original_name' => $this->file->getClientOriginalName(),
             'sort'          => 0,
             'user_id'       => Auth::id(),
-            'user_type'     => get_class(Auth::user()),
+            'user_type'     => Auth::user() ? get_class(Auth::user()) : '',
             'group'         => $this->group,
         ]);
 
@@ -198,7 +199,7 @@ class File
             'disk'          => $this->disk,
             'group'         => $this->group,
             'user_id'       => Auth::id(),
-            'user_type'     => get_class(Auth::user()),
+            'user_type'     => Auth::user() ? get_class(Auth::user()) : '',
             'additional'    => $additional
         ]);
 

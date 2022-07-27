@@ -231,18 +231,20 @@ class Attachment extends Model
     public function delete()
     {
         if ($this->exists) {
-            // Physical removal of all copies of a file.
-            if ($this->additional && isset($this->additional['thumbnails'])) {
-                foreach ($this->additional['thumbnails'] as $dimension => $filename) {
-                    Storage::disk($this->disk)->delete(
-                        $this->physicalThumbnailPath($dimension)
-                    );
+            if (static::where('hash', $this->hash)->where('disk', $this->disk)->count() <= 1) {
+                // Physical removal of all copies of a file.
+                if ($this->additional && isset($this->additional['thumbnails'])) {
+                    foreach ($this->additional['thumbnails'] as $dimension => $filename) {
+                        Storage::disk($this->disk)->delete(
+                            $this->physicalThumbnailPath($dimension)
+                        );
+                    }
                 }
+
+                Storage::disk($this->disk)->delete($this->physicalPath());
+
+                $this->relationships()->delete();
             }
-
-            Storage::disk($this->disk)->delete($this->physicalPath());
-
-            $this->relationships()->delete();
         }
 
         return parent::delete();
@@ -281,7 +283,7 @@ class Attachment extends Model
 
         self::created(function(Model $model) {
             if (in_array('sort', $model->fillable)) {
-                $model->sort = (DB::table($model->table)->max('sort') + 1);
+                $model->sort = ((int) DB::table($model->table)->max('sort') + 1);
                 $model->save();
             }
         });

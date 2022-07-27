@@ -6,8 +6,12 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use LaravelCms\Console\AdminCommand;
+use LaravelCms\Console\InitSectionsCommand;
+use LaravelCms\Console\InstallCommand;
 use LaravelCms\Console\InstallLaravelCms;
 use Illuminate\Support\Facades\Config;
+use LaravelCms\Console\PublishCommand;
 use LaravelCms\Http\Middleware\Authenticate;
 use LaravelCms\Http\Middleware\RedirectIfAuthenticated;
 use LaravelCms\View\Components\GridTable;
@@ -62,7 +66,10 @@ class LaravelCmsServiceProvider extends ServiceProvider
 
             // Registering package commands.
             $this->commands([
-                InstallLaravelCms::class
+                InstallCommand::class,
+                AdminCommand::class,
+                InitSectionsCommand::class,
+                PublishCommand::class,
             ]);
         }
     }
