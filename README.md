@@ -1,21 +1,35 @@
-# Very short description of the package
+# CMS for Laravel 9
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/tinigin/laravel-cms.svg?style=flat-square)](https://packagist.org/packages/tinigin/laravel-cms)
-[![Total Downloads](https://img.shields.io/packagist/dt/tinigin/laravel-cms.svg?style=flat-square)](https://packagist.org/packages/tinigin/laravel-cms)
-![GitHub Actions](https://github.com/tinigin/laravel-cms/actions/workflows/main.yml/badge.svg)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/tinigin/laravel-cms.svg)](https://packagist.org/packages/tinigin/laravel-cms)
+[![Total Downloads](https://img.shields.io/packagist/dt/tinigin/laravel-cms.svg)](https://packagist.org/packages/tinigin/laravel-cms)
+![GitHub Actions](https://github.com/tinigin/laravel-cms/actions/workflows/php.yml/badge.svg)
+
 
 ## Installation
 
-You can install the package via composer:
+Install Laravel 9
+```bash
+composer create-project laravel/laravel sample-project
+```
 
+Go to project folder
+```bash
+cd sample-project
+```
+
+Install Laravel Cms:
 ```bash
 composer require tinigin/laravel-cms
 ```
 
-### Init CMS core
-
+Run install command
 ```bash
 php artisan cms:install
+```
+
+Setup admin user
+```bash
+php artisan cms:admin
 ```
 
 ### Changelog
