@@ -27,15 +27,37 @@ class InitSectionsCommand extends Command
         if (!SectionGroup::where('name', 'System')->first()) {
             $group = SectionGroup::create([
                 'name' => 'System',
+                'icon' => 'far fa-bars',
                 'sort_order' => 1,
                 'is_published' => true,
             ]);
         }
 
         // Sections
+        if (!Section::where('folder', 'settings')->first()) {
+            $settings = Section::firstOrCreate([
+                'name' => 'Settings',
+                'icon' => 'far fa-cog',
+                'folder' => 'settings',
+                'cms_section_group_id' => $group->getKey(),
+                'is_published' => true,
+            ]);
+        }
+
+        if (!Section::where('folder', 'users')->first()) {
+            $users = Section::firstOrCreate([
+                'name' => 'Users',
+                'icon' => 'fas fa-users',
+                'folder' => 'users',
+                'cms_section_group_id' => $group->getKey(),
+                'is_published' => true,
+            ]);
+        }
+
         if (!Section::where('folder', 'section-groups')->first()) {
             $groups = Section::create([
                 'name' => 'Groups',
+                'icon' => 'far fa-layer-group',
                 'folder' => 'section-groups',
                 'cms_section_group_id' => $group->getKey(),
                 'is_published' => true,
@@ -45,25 +67,8 @@ class InitSectionsCommand extends Command
         if (!Section::where('folder', 'sections')->first()) {
             $sections = Section::firstOrCreate([
                 'name' => 'Sections',
+                'icon' => 'far fa-puzzle-piece',
                 'folder' => 'sections',
-                'cms_section_group_id' => $group->getKey(),
-                'is_published' => true,
-            ]);
-        }
-
-        if (!Section::where('folder', 'users')->first()) {
-            $users = Section::firstOrCreate([
-                'name' => 'Users',
-                'folder' => 'users',
-                'cms_section_group_id' => $group->getKey(),
-                'is_published' => true,
-            ]);
-        }
-
-        if (!Section::where('folder', 'settings')->first()) {
-            $settings = Section::firstOrCreate([
-                'name' => 'Settings',
-                'folder' => 'settings',
                 'cms_section_group_id' => $group->getKey(),
                 'is_published' => true,
             ]);

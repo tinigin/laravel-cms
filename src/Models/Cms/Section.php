@@ -13,6 +13,7 @@ class Section extends BaseModel
     protected $fillable = [
         'cms_section_group_id',
         'name',
+        'icon',
         'description',
         'folder',
         'sort_order',

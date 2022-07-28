@@ -246,7 +246,7 @@ class Grid {
                         $relation = $item->$column();
 
                         if ($relation instanceof BelongsTo) {
-                            $itemData[$column] = $item->$column->name;
+                            $itemData[$column] = $item->$column ? $item->$column->name : '';
 
                         }  elseif ($relation instanceof BelongsToMany) {
                             $values = [];

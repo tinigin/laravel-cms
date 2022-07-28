@@ -11,6 +11,7 @@ class SectionGroup extends BaseModel
 
     protected $fillable = [
         'name',
+        'icon',
         'sort_order',
         'is_published'
     ];

@@ -66,6 +66,13 @@ class SectionGroupsController extends ModuleController
                 ->title('Название')
                 ->required()
                 ->horizontal(),
+            Input::make('icon')
+                ->title('Иконка')
+                ->placeholder('Например: fas fa-table')
+                ->help(
+                    'Полный список возможных иконок можно посмотреть <a href="https://fontawesome.com/v5/search" target="_blank">тут</a>.'
+                )
+                ->horizontal(),
             Switcher::make('is_published')
                 ->title('Публиковать')
                 ->value(1)

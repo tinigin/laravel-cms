@@ -80,7 +80,7 @@ class SectionsController extends ModuleController
         return [
             'name' => 'required|max:255',
             'folder' => ['required', Rule::unique('cms_sections')->ignore($currentObjectId), 'max:255'],
-            'cms_section_group_id' => 'required',
+            'cms_section_group_id' => 'nullable',
             'is_published' => 'boolean',
             'users' => 'nullable',
             'general' => 'nullable'
@@ -98,6 +98,13 @@ class SectionsController extends ModuleController
                 ->title('Название')
                 ->required()
                 ->horizontal(),
+            Input::make('icon')
+                ->title('Иконка')
+                ->placeholder('Например: fas fa-table')
+                ->help(
+                    'Полный список возможных иконок можно посмотреть <a href="https://fontawesome.com/v5/search" target="_blank">тут</a>.'
+                )
+                ->horizontal(),
             Input::make('folder')
                 ->title('Папка')
                 ->placeholder('Например: news')
@@ -106,7 +113,7 @@ class SectionsController extends ModuleController
             Select::make('cms_section_group_id')
                 ->title('Группа')
                 ->fromModel(\LaravelCms\Models\Cms\SectionGroup::class, 'name')
-                ->required()
+                ->empty('Ничего не выбрано')
                 ->horizontal(),
             Select::make('users')
                 ->title('Пользователи')

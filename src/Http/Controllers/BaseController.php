@@ -76,7 +76,7 @@ class BaseController extends LaravelController implements BeforeAndAfter
 
             $isActive = false;
 
-            if ($sections) {
+            if ($sections->count()) {
                 $sectionsData = [];
 
                 foreach ($sections as $section) {
@@ -91,6 +91,7 @@ class BaseController extends LaravelController implements BeforeAndAfter
                     $sectionsData[] = [
                         'name' => $section->name,
                         'folder' => $section->folder,
+                        'icon' => $section->icon,
                         'url' => $url,
                         'active' => $isSectionActive,
                         'current' => ($currentUrl == $url)
@@ -102,11 +103,42 @@ class BaseController extends LaravelController implements BeforeAndAfter
 
                 if ($sectionsData) {
                     $result[] = [
+                        'type' => 'group',
                         'name' => $group->name,
+                        'icon' => $group->icon,
                         'sections' => $sectionsData,
                         'active' => $isActive
                     ];
                 }
+            }
+        }
+
+        $sections = Section::query()
+            ->where('is_published', true)
+            ->whereNull('cms_section_group_id')
+            ->whereHas('users', function ($query) {
+            $query->where('id', Auth::id());
+        })->orderBy('sort_order', 'asc')->get();
+
+        if ($sections->count()) {
+            foreach ($sections as $section) {
+                $url = route('cms.module.index', ['controller' => $section->folder], false);
+                $currentUrl = '/' . ltrim(request()->path(), '/');
+
+                $currentUrlParts = explode('/', $currentUrl);
+                $urlParts = explode('/', $url);
+
+                $isSectionActive = isset($currentUrlParts[2]) && isset($urlParts[2]) && $currentUrlParts[2] == $urlParts[2];
+
+                $result[] = [
+                    'type' => 'section',
+                    'name' => $section->name,
+                    'folder' => $section->folder,
+                    'icon' => $section->icon,
+                    'url' => $url,
+                    'active' => $isSectionActive,
+                    'current' => ($currentUrl == $url)
+                ];
             }
         }
 

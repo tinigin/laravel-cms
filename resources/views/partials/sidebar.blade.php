@@ -42,27 +42,36 @@
                     </a>
                 </li>
                 @if (isset($navigation))
-                    @foreach ($navigation as $group)
-                        <li class="nav-item{{ $group['active'] ? ' menu-open' : '' }}">
+                    @foreach ($navigation as $item)
+                        @if ($item['type'] == 'group')
+                        <li class="nav-item{{ $item['active'] ? ' menu-open' : '' }}">
                             <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-list-ul"></i>
+                                <i class="nav-icon {{ $item['icon'] ?: 'fas fa-list-ul' }}"></i>
                                 <p>
-                                    {{ $group['name'] }}
+                                    {{ $item['name'] }}
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
 
                             <ul class="nav nav-treeview">
-                                @foreach ($group['sections'] as $section)
+                                @foreach ($item['sections'] as $section)
                                     <li class="nav-item">
                                         <a href="{{ $section['url'] }}" class="nav-link{{ $section['active'] ? ' active' : '' }}">
-                                            <i class="nav-icon fas fa-table"></i>
+                                            <i class="nav-icon {{ $section['icon'] ?: 'fas fa-table' }}"></i>
                                             <p>{{ $section['name'] }}</p>
                                         </a>
                                     </li>
                                 @endforeach
                             </ul>
                         </li>
+                        @elseif ($item['type'] == 'section')
+                            <li class="nav-item">
+                                <a href="{{ $item['url'] }}" class="nav-link{{ $item['active'] ? ' active' : '' }}">
+                                    <i class="nav-icon {{ $item['icon'] ?: 'fas fa-table' }}"></i>
+                                    <p>{{ $item['name'] }}</p>
+                                </a>
+                            </li>
+                        @endif
                     @endforeach
                 @endif
             </ul>

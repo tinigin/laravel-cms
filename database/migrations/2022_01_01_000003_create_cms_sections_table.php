@@ -17,11 +17,13 @@ return new class extends Migration
             $table->id();
             $table
                 ->foreignId('cms_section_group_id')
+                ->nullable()
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('set null');
             $table->string('name', 255);
             $table->string('folder', 255)->unique();
+            $table->string('icon', 30)->nullable();
             $table->string('description', 512)->nullable();
             $table->boolean('is_published')->default(0)->index();
             $table
