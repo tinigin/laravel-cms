@@ -1,0 +1,34 @@
+<?php
+
+namespace DummyNamespace;
+
+use LaravelCms\Models\BaseModel;
+
+class DummyClass extends BaseModel
+{
+    protected $table = 'TABLE_NAME';
+
+    protected $fillable = [
+        'name',
+        'is_published'
+    ];
+
+    protected $allowedFilters = [
+        'name',
+        'is_published',
+    ];
+
+    protected $allowedSorts = [
+        'id',
+        'is_published',
+    ];
+
+    protected $allowedRelationsFilters = [];
+
+    protected $casts = [
+        'is_published' => 'boolean'
+    ];
+
+    public $defaultSortField = 'id';
+    public $defaultSortOrder = 'asc';
+}

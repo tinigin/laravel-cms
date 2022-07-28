@@ -1,0 +1,77 @@
+<?php
+
+namespace DummyNamespace;
+
+use LaravelCms\Form\Fields\Input;
+use LaravelCms\Form\Fields\Switcher;
+use LaravelCms\Http\Controllers\ModuleController;
+
+class DummyClass extends ModuleController
+{
+    protected $className = CLASS_NAME::class;
+
+    protected $relations = [];
+
+    protected $grid = [
+        'class' => CLASS_NAME::class,
+        'sortable' => false,
+        'add' => true,
+        'delete' => true,
+        'multiple-delete' => false,
+        'limit' => 25,
+        'columns' => [
+            'id' => [
+                'label' => '№',
+                'is-sortable' => true,
+                'type' => 'number',
+                'filter' => false,
+            ],
+            'name' => [
+                'label' => 'Название',
+                'is-sortable' => true,
+                'type' => 'string',
+                'filter' => true,
+            ],
+            'is_published' => [
+                'label' => 'Публиковать',
+                'is-sortable' => true,
+                'type' => 'boolean',
+                'options' => [
+                    false => 'Нет',
+                    true => 'Да'
+                ],
+                'filter' => true,
+            ],
+        ]
+    ];
+
+    /**
+     * Array of validation rules
+     * @return array
+     */
+    public function rules($currentObjectId = null): array
+    {
+        return [
+            'name' => 'required|max:255',
+            'is_published' => 'boolean',
+        ];
+    }
+
+    /**
+     * Return array of form fields
+     * @return array
+     */
+    protected function formFields(): array
+    {
+        return [
+            Input::make('name')
+                ->title('Название')
+                ->required()
+                ->horizontal(),
+            Switcher::make('is_published')
+                ->title('Публиковать')
+                ->value(1)
+                ->horizontal(),
+        ];
+    }
+}

@@ -7,10 +7,12 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use LaravelCms\Console\AdminCommand;
+use LaravelCms\Console\ControllerCommand;
 use LaravelCms\Console\InitSectionsCommand;
 use LaravelCms\Console\InstallCommand;
 use LaravelCms\Console\InstallLaravelCms;
 use Illuminate\Support\Facades\Config;
+use LaravelCms\Console\ModelCommand;
 use LaravelCms\Console\PublishCommand;
 use LaravelCms\Http\Middleware\Authenticate;
 use LaravelCms\Http\Middleware\RedirectIfAuthenticated;
@@ -52,7 +54,7 @@ class LaravelCmsServiceProvider extends ServiceProvider
 
             // Publishing assets.
             $this->publishes([
-                __DIR__.'/../resources/assets' => public_path('assets'),
+                __DIR__.'/../resources/assets' => public_path('assets/cms'),
             ], 'assets');
 
             // Publishing the translation files.
@@ -70,6 +72,8 @@ class LaravelCmsServiceProvider extends ServiceProvider
                 AdminCommand::class,
                 InitSectionsCommand::class,
                 PublishCommand::class,
+                ControllerCommand::class,
+                ModelCommand::class
             ]);
         }
     }
