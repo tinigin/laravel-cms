@@ -111,13 +111,13 @@ class HttpFilter
                     $key = 'id';
                 }
 
-                $builder->whereHas($property, function($query) use($key, $value) {
+                $builder->whereHas($property, function($query) use($key, $value, $property) {
                     if (is_array($value)) {
-                        $query->whereIn($key, $value);
+                        $query->whereIn($property . '.' . $key, $value);
                     } elseif (is_numeric($value)) {
-                        $query->where($key, $value);
+                        $query->where($property . '.' . $key, $value);
                     } else {
-                        $query->where($key, 'like', "%$value%");
+                        $query->where($property . '.' . $key, 'like', "%$value%");
                     }
                 });
             }
