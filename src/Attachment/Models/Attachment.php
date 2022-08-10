@@ -24,6 +24,8 @@ class Attachment extends Model
 {
     use Filterable, HasFactory;
 
+    protected $table = 'attachments';
+
     /**
      * @var array
      */
