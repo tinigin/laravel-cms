@@ -86,7 +86,16 @@ class Grid {
             $this->className = $options['class'];
         }
 
-        foreach (['sortable', 'add', 'delete', 'multiple-delete', 'limit'] as $key) {
+        foreach ([
+                     'sortable',
+                     'add',
+                     'delete',
+                     'multiple-delete',
+                     'limit',
+                     'without-paginator',
+                     'edit',
+                     'view'
+                 ] as $key) {
             if (isset($options[$key])) {
                 $this->options[$key] = $options[$key];
             }
@@ -115,14 +124,17 @@ class Grid {
      * @param null $default
      * @return string
      */
-    protected function getOption(string $key, $default = null): string
+    protected function getOption(string $key, $default = null): string|bool|null
     {
-        return isset($this->options[$key]) && $this->options[$key] ? $this->options[$key] : $default;
+        return isset($this->options[$key]) ? $this->options[$key] : $default;
     }
 
     protected function process()
     {
-        $this->setOption('all', request()->has('all'));
+        $this->setOption(
+            'all',
+            $this->getOption('without-paginator') || request()->has('all')
+        );
 
         $this->query = $this->className::filters();
 
@@ -268,8 +280,6 @@ class Grid {
         }
 
         $this->data = $data;
-
-//         dd($this->filter);
     }
 
     /**
@@ -345,6 +355,11 @@ class Grid {
         return route('cms.module.edit', ['controller' => $this->section->folder, 'objectId' => $id]);
     }
 
+    public function urlView(mixed $id): string
+    {
+        return route('cms.module.view', ['controller' => $this->section->folder, 'objectId' => $id]);
+    }
+
     public function urlDelete(int $id): string
     {
         return route('cms.module.destroy', ['controller' => $this->section->folder, 'objectId' => $id]);
@@ -358,6 +373,16 @@ class Grid {
     public function isAllowedDelete(): bool
     {
         return $this->getOption('delete', false);
+    }
+
+    public function isAllowedEdit(): bool
+    {
+        return $this->getOption('edit', true);
+    }
+
+    public function isAllowedView(): bool
+    {
+        return $this->getOption('view', false);
     }
 
     public function sortable(): bool

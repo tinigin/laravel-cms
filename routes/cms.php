@@ -76,6 +76,10 @@ Route::name('cms.')->group(function() {
                     return $resolver($controller, 'edit', $objectId);
                 })->name('module.edit');
 
+                $router->get('{controller}/view/{objectId}', function ($controller, $objectId) use ($resolver) {
+                    return $resolver($controller, 'view', $objectId);
+                })->name('module.view');
+
                 $router->match(['put', 'patch'],'{controller}/{objectId}', function ($controller, $objectId) use ($resolver) {
                     return $resolver($controller, 'update', $objectId);
                 })->name('module.update');

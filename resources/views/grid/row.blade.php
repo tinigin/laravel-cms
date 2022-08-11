@@ -16,7 +16,14 @@
 		@if ($grid->sortable())
 			<input type="hidden" name="sort-order[]" value="{{ $row['attributes']['id'] }}" />
 		@endif
-		<a href="{{ $grid->urlEdit($row['attributes']['id']) }}"><span class="fa fa-edit text-primary"></span></a>
+
+        @if ($grid->isAllowedEdit())
+		    <a href="{{ $grid->urlEdit($row['attributes']['id']) }}"><span class="fa fa-edit text-primary"></span></a>
+        @endif
+
+        @if ($grid->isAllowedView())
+            <a href="{{ $grid->urlView($row['attributes']['id']) }}"><span class="far fa-eye text-primary"></span></a>
+        @endif
 
 		@if ($grid->isAllowedDelete())
             <a href="{{ $grid->urlDelete($row['attributes']['id']) }}" confirm="true">
