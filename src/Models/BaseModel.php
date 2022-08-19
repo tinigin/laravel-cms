@@ -52,6 +52,9 @@ class BaseModel extends Model
     {
         $path = Str::lower((new \ReflectionClass($this))->getShortName());
 
+        if (config('cms.attachment.parent_folder'))
+            $path = Str::finish(config('cms.attachment.parent_folder'), '/') . $path;
+
         if ($this->directoryLevel > 0) {
             $key = md5($this->getKey());
 
