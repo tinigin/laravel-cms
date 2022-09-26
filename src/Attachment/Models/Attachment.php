@@ -299,6 +299,7 @@ class Attachment extends Model
             'original_name' => $this->original_name,
             'mime' => $this->mime,
             'sort' => $this->sort,
+            'group' => $this->group
         ];
 
         if ($this->getAdditionalByKey('title'))
