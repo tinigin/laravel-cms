@@ -95,9 +95,9 @@ class BaseModel extends Model
 
         if ($files) {
             if (is_bool($files))
-                $availableFiles = $this->attachment;
+                $availableFiles = $this->files;
             else
-                $availableFiles = $this->attachment($files)->get();
+                $availableFiles = $this->files($files)->get();
 
             if ($availableFiles) {
                 $data['files'] = [];
