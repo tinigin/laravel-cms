@@ -347,22 +347,22 @@ class Grid {
 
     public function urlCreate(): string
     {
-        return route('cms.module.create', ['controller' => $this->section->folder]);
+        return route('cms.module.create', ['controller' => $this->section->folder], false);
     }
 
     public function urlEdit(int $id): string
     {
-        return route('cms.module.edit', ['controller' => $this->section->folder, 'objectId' => $id]);
+        return route('cms.module.edit', ['controller' => $this->section->folder, 'objectId' => $id], false);
     }
 
     public function urlView(mixed $id): string
     {
-        return route('cms.module.view', ['controller' => $this->section->folder, 'objectId' => $id]);
+        return route('cms.module.view', ['controller' => $this->section->folder, 'objectId' => $id], false);
     }
 
     public function urlDelete(int $id): string
     {
-        return route('cms.module.destroy', ['controller' => $this->section->folder, 'objectId' => $id]);
+        return route('cms.module.destroy', ['controller' => $this->section->folder, 'objectId' => $id], false);
     }
 
     public function isAllowedAdd(): bool

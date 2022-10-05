@@ -8,7 +8,7 @@
             @if (isset($navigation))
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('cms.dashboard') }}">{{ __("Go Home") }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('cms.dashboard', [], false) }}">{{ __("Go Home") }}</a></li>
                         @foreach ($navigation as $group)
                             @if (isset($group['sections']))
                                 @foreach ($group['sections'] as $section)

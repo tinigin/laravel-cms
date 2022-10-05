@@ -45,7 +45,7 @@ class BaseController extends LaravelController implements BeforeAndAfter
             $this->after();
         }
 
-        return $result ?: redirect(route('cms.dashboard'));
+        return $result ?: redirect(route('cms.dashboard', absolute: false));
     }
 
     public function before()

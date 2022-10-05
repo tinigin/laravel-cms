@@ -46,7 +46,7 @@ class LoginController extends \Illuminate\Routing\Controller
             'status_id' => User::ACTIVE
         ], $request->has('remember'))) {
             // if successful, then redirect to their intended location
-            return redirect()->intended(route('cms.dashboard'));
+            return redirect()->intended(route('cms.dashboard', absolute: false));
         }
 
         // if unsuccessful, then redirect back to the login with the form data
@@ -62,7 +62,7 @@ class LoginController extends \Illuminate\Routing\Controller
         request()->session()->invalidate();
         request()->session()->regenerateToken();
 
-        return redirect(route('cms.login'));
+        return redirect(route('cms.login', absolute: false));
     }
 
     public function yandex()

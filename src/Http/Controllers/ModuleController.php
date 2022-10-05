@@ -180,7 +180,7 @@ class ModuleController extends BaseController
             $form->setAction(route('cms.module.update', [
                 'controller' => $this->getSectionController(),
                 'objectId' => $objectId
-            ]));
+            ], false));
 
             $form->method('PUT');
         }

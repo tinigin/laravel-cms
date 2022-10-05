@@ -61,7 +61,7 @@ class Select extends Field implements ComplexFieldConcern
     ];
 
     /**
-     * @param string|Model $model
+     * @param string|Builder|Model $model
      * @param string       $name
      * @param string|null  $key
      *

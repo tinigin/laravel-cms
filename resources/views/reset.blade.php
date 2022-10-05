@@ -6,7 +6,7 @@
             <div class="card-body login-card-body">
                 <p class="login-box-msg">{{ __('Update Password') }}</p>
 
-                <form method="post" action="{{ route('cms.password.update') }}">
+                <form method="post" action="{{ route('cms.password.update', [], false) }}">
                     @csrf
 
                     <input type="hidden" name="token" value="{{ $token }}">

@@ -68,7 +68,7 @@ class SettingsController extends BaseController
                 ->value('true')
                 ->class('btn btn-primary')
         );
-        $form->setAction(route('cms.module.store', ['controller' => $this->getSectionController()]));
+        $form->setAction(route('cms.module.store', ['controller' => $this->getSectionController()], false));
 
         $form->view('card');
 
@@ -102,7 +102,8 @@ class SettingsController extends BaseController
 
         redirect()->to(route(
             'cms.module.index',
-            ['controller' => $this->getSectionController()]
+            ['controller' => $this->getSectionController()],
+            false
         ))->send();
     }
 }

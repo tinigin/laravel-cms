@@ -12,7 +12,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('cms.password.email') }}" method="post">
+                <form action="{{ route('cms.password.email', [], false) }}" method="post">
                     @csrf
 
                     <div class="input-group mb-3">
@@ -46,7 +46,7 @@
                 </form>
 
                 <p class="mt-3 mb-1">
-                    <a href="{{ route('cms.login') }}">{{ __('Log in') }}</a>
+                    <a href="{{ route('cms.login', [], false) }}">{{ __('Log in') }}</a>
                 </p>
             </div>
             <!-- /.login-card-body -->

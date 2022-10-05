@@ -7,7 +7,7 @@
             <div class="card-body login-card-body">
                 <p class="login-box-msg">{{ __('Authorization') }}</p>
 
-                <form method="post" action="{{ route('cms.login') }}">
+                <form method="post" action="{{ route('cms.login', [], false) }}">
                     @csrf
 
                     <div class="input-group mb-3">
@@ -76,7 +76,7 @@
                 @if (config('services.yandex.client_id'))
                     <div class="social-auth-links text-center mb-3">
                         <p>- ИЛИ -</p>
-                        <a href="{{ route('cms.login.oauth.yandex') }}" class="btn btn-block btn-danger">
+                        <a href="{{ route('cms.login.oauth.yandex', [], false) }}" class="btn btn-block btn-danger">
                             <i class="fab fa-yandex mr-2"></i> {{ __("Sign in with Yandex") }}
                         </a>
                     </div>
@@ -84,7 +84,7 @@
 
                 <p class="mb-0 mt-1">
                     @if (Route::has('cms.password'))
-                        <a href="{{ route('cms.password') }}">
+                        <a href="{{ route('cms.password', [], false) }}">
                             {{ __('Forgot your password?') }}
                         </a>
                     @endif
