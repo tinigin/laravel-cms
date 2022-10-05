@@ -158,7 +158,7 @@ class ModuleController extends BaseController
                     ->value('true')
                     ->class('btn btn-primary')
             );
-            $form->setAction(route('cms.module.store', ['controller' => $this->getSectionController()]));
+            $form->setAction(route('cms.module.store', ['controller' => $this->getSectionController()], false));
 
         } else {
             $form->push(
