@@ -161,6 +161,10 @@ class File
                         $resizer->resizeToWidth($thumbnailData['w']);
                         break;
 
+                    case 'fit':
+                        $resizer->resizeToBestFit($thumbnailData['w'], $thumbnailData['h']);
+                        break;
+
                     case 'height':
                         $resizer->resizeToHeight($thumbnailData['h']);
                         break;
