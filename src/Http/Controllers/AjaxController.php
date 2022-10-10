@@ -18,6 +18,10 @@ class AjaxController extends BaseController
             try {
                 $attachment = Attachment::findOrFail(request()->get('id'));
                 if ($attachment) {
+                    $parent = $attachment->getParentModel();
+                    if ($parent && method_exists($parent, 'cleanCache')) {
+                        $parent->cleanCache();
+                    }
                     $attachment->delete();
                     $status = 'success';
                 }
@@ -52,6 +56,11 @@ class AjaxController extends BaseController
                     if ($newSortIndex) {
                         $item->sort = $newSortIndex;
                         $item->save();
+
+                        $parent = $item->getParentModel();
+                        if ($parent && method_exists($parent, 'cleanCache')) {
+                            $parent->cleanCache();
+                        }
                     }
                 }
 
@@ -83,6 +92,11 @@ class AjaxController extends BaseController
 
                 $item->additional = $info;
                 $item->save();
+
+                $parent = $item->getParentModel();
+                if ($parent && method_exists($parent, 'cleanCache')) {
+                    $parent->cleanCache();
+                }
 
                 $status = 'success';
             }
@@ -127,6 +141,11 @@ class AjaxController extends BaseController
                 ]);
 
                 $file->save();
+
+                $parent = $file->getParentModel();
+                if ($parent && method_exists($parent, 'cleanCache')) {
+                    $parent->cleanCache();
+                }
 
                 $message = 'Изображение обновлено';
                 $status = 'success';

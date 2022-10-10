@@ -94,6 +94,21 @@ class Attachment extends Model
         return $this->morphTo();
     }
 
+    public function attachmentable()
+    {
+        return $this->hasOne(Attachmentable::class);
+    }
+
+    public function getParentModel(): Model|null
+    {
+        $attachmentable = $this->attachmentable;
+        if ($attachmentable) {
+            return $attachmentable->model;
+        }
+
+        return null;
+    }
+
     /**
      * Return the address by which you can access the file.
      *

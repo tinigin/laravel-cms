@@ -243,7 +243,6 @@ class ModuleController extends BaseController
      */
     public function update($objectId = null)
     {
-        $formFields = $this->formFields();
         $validated = $this->validate(
             request(),
             $this->rules($objectId)

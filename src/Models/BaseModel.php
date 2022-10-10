@@ -131,4 +131,33 @@ class BaseModel extends Model
 
         return $data;
     }
+
+    /**
+     * Generate cache key from params
+     *
+     * @param $base
+     * @param null $params
+     * @return string
+     */
+    public static function getCacheKey($base, $params = null): string
+    {
+        $result = '';
+
+        if ($params && is_array($params)) {
+            foreach ($params AS $key => $value) {
+                if (!is_numeric($key))
+                    $result .= $key . '=' . $value . ';';
+                else
+                    $result .= $value . ';';
+            }
+
+        } else if ($params && is_string($params)) {
+            $result .= $params . ';';
+
+        }
+
+        $result = $base . '-' . md5($result);
+
+        return $result;
+    }
 }

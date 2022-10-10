@@ -17,4 +17,9 @@ class Attachmentable extends Model
      * @var string
      */
     protected $table = 'attachmentable';
+
+    public function model()
+    {
+        return $this->morphTo('attachmentable', 'attachmentable_type', 'attachmentable_id');
+    }
 }
