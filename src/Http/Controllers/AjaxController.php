@@ -22,6 +22,9 @@ class AjaxController extends BaseController
                     if ($parent && method_exists($parent, 'cleanCache')) {
                         $parent->cleanCache();
                     }
+                    if ($parent && method_exists($parent, 'updateDependencies')) {
+                        $parent->cleanCache();
+                    }
                     $attachment->delete();
                     $status = 'success';
                 }
@@ -61,6 +64,9 @@ class AjaxController extends BaseController
                         if ($parent && method_exists($parent, 'cleanCache')) {
                             $parent->cleanCache();
                         }
+                        if ($parent && method_exists($parent, 'updateDependencies')) {
+                            $parent->cleanCache();
+                        }
                     }
                 }
 
@@ -95,6 +101,9 @@ class AjaxController extends BaseController
 
                 $parent = $item->getParentModel();
                 if ($parent && method_exists($parent, 'cleanCache')) {
+                    $parent->cleanCache();
+                }
+                if ($parent && method_exists($parent, 'updateDependencies')) {
                     $parent->cleanCache();
                 }
 
@@ -144,6 +153,9 @@ class AjaxController extends BaseController
 
                 $parent = $file->getParentModel();
                 if ($parent && method_exists($parent, 'cleanCache')) {
+                    $parent->cleanCache();
+                }
+                if ($parent && method_exists($parent, 'updateDependencies')) {
                     $parent->cleanCache();
                 }
 
