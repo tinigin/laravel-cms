@@ -22,10 +22,10 @@ class AjaxController extends BaseController
                     if ($parent && method_exists($parent, 'cleanCache')) {
                         $parent->cleanCache();
                     }
+                    $attachment->delete();
                     if ($parent && method_exists($parent, 'updateAttachmentsDependencies')) {
                         $parent->updateAttachmentsDependencies(true);
                     }
-                    $attachment->delete();
                     $status = 'success';
                 }
             } catch (\Exception $e) {
@@ -92,8 +92,7 @@ class AjaxController extends BaseController
                     $info = [];
 
                 foreach ($postData as $key => $value) {
-                    if ($value)
-                        $info[$key] = $value;
+                    $info[$key] = $value;
                 }
 
                 $item->additional = $info;
