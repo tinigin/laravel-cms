@@ -30,6 +30,8 @@ class ModuleController extends BaseController
 
     protected $grid = [];
 
+    protected $model = null;
+
     public function before()
     {
         if (parent::before()) {
@@ -239,7 +241,7 @@ class ModuleController extends BaseController
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Routing\Redirector
      */
     public function update($objectId = null)
     {
@@ -266,16 +268,16 @@ class ModuleController extends BaseController
         }
 
         /**
-         * @var Model $model
+         * @var Model $this->model
          */
         if ($objectId) {
             // update
-            $model = $this->className::findOrFail($objectId);
-            $model->fill($validated);
-            $model->save();
+            $this->model = $this->className::findOrFail($objectId);
+            $this->model->fill($validated);
+            $this->model->save();
         } else {
             // create
-            $model = $this->className::create($validated);
+            $this->model = $this->className::create($validated);
         }
 
         // Relationships
@@ -283,11 +285,11 @@ class ModuleController extends BaseController
             if (in_array($key, $this->relations)) {
                 if ($objectId) {
                     if ($value)
-                        $model->$key()->sync($value);
+                        $this->model->$key()->sync($value);
                     else
-                        $model->$key()->detach();
+                        $this->model->$key()->detach();
                 } else if ($value) {
-                    $model->$key()->attach($value);
+                    $this->model->$key()->attach($value);
                 }
             }
         }
@@ -304,7 +306,7 @@ class ModuleController extends BaseController
                 $multiple = $field->get('multiple');
 
                 if (!$multiple) {
-                    $exitsFiles = $model->attachment($key)->get();
+                    $exitsFiles = $this->model->attachment($key)->get();
                     if ($exitsFiles) {
                         foreach ($exitsFiles as $exitsFile) {
                             $exitsFile->delete();
@@ -323,7 +325,7 @@ class ModuleController extends BaseController
                             rename: $field->get('rename'),
                             thumbnails: isset($settings['thumbnails']) ? $settings['thumbnails'] : []
                         );
-                        $attachments[] = $f->path($model->getUploadPath())->allowDuplicates()->load();
+                        $attachments[] = $f->path($this->model->getUploadPath())->allowDuplicates()->load();
                     }
                 }
 
@@ -331,7 +333,7 @@ class ModuleController extends BaseController
                     return $item->id;
                 }, $attachments);
 
-                $model->attachment()->syncWithoutDetaching(
+                $this->model->attachment()->syncWithoutDetaching(
                     $attachmentIds
                 );
             }
@@ -339,11 +341,11 @@ class ModuleController extends BaseController
 
         Toast::success('Данные успешно сохранены');
 
-        redirect()->to(route(
+        return redirect(route(
             'cms.module.edit',
-            ['controller' => $this->getSectionController(), 'objectId' => $model->id],
+            ['controller' => $this->getSectionController(), 'objectId' => $this->model->getKey()],
             false
-        ))->send();
+        ));
     }
 
     /**
@@ -361,7 +363,7 @@ class ModuleController extends BaseController
 
         return redirect(
             route('cms.module.index', ['controller' => $this->getSectionController()], false)
-        )->send();
+        );
     }
 
     public function images($objectId)
