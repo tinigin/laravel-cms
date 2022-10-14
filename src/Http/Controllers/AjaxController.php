@@ -22,8 +22,8 @@ class AjaxController extends BaseController
                     if ($parent && method_exists($parent, 'cleanCache')) {
                         $parent->cleanCache();
                     }
-                    if ($parent && method_exists($parent, 'updateDependencies')) {
-                        $parent->cleanCache();
+                    if ($parent && method_exists($parent, 'updateAttachmentsDependencies')) {
+                        $parent->updateAttachmentsDependencies(true);
                     }
                     $attachment->delete();
                     $status = 'success';
@@ -64,8 +64,8 @@ class AjaxController extends BaseController
                         if ($parent && method_exists($parent, 'cleanCache')) {
                             $parent->cleanCache();
                         }
-                        if ($parent && method_exists($parent, 'updateDependencies')) {
-                            $parent->cleanCache();
+                        if ($parent && method_exists($parent, 'updateAttachmentsDependencies')) {
+                            $parent->updateAttachmentsDependencies(true);
                         }
                     }
                 }
@@ -103,8 +103,8 @@ class AjaxController extends BaseController
                 if ($parent && method_exists($parent, 'cleanCache')) {
                     $parent->cleanCache();
                 }
-                if ($parent && method_exists($parent, 'updateDependencies')) {
-                    $parent->cleanCache();
+                if ($parent && method_exists($parent, 'updateAttachmentsDependencies')) {
+                    $parent->updateAttachmentsDependencies(true);
                 }
 
                 $status = 'success';
@@ -155,8 +155,8 @@ class AjaxController extends BaseController
                 if ($parent && method_exists($parent, 'cleanCache')) {
                     $parent->cleanCache();
                 }
-                if ($parent && method_exists($parent, 'updateDependencies')) {
-                    $parent->cleanCache();
+                if ($parent && method_exists($parent, 'updateAttachmentsDependencies')) {
+                    $parent->updateAttachmentsDependencies();
                 }
 
                 $message = 'Изображение обновлено';
