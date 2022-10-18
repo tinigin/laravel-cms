@@ -281,16 +281,16 @@ class ModuleController extends BaseController
         }
 
         // Relationships
-        foreach ($validated as $key => $value) {
-            if (in_array($key, $this->relations)) {
-                if ($objectId) {
-                    if ($value)
-                        $this->model->$key()->sync($value);
-                    else
-                        $this->model->$key()->detach();
-                } else if ($value) {
-                    $this->model->$key()->attach($value);
-                }
+        foreach ($this->relations as $key) {
+            $relationValue = isset($validated[$key]) ? $validated[$key] : null;
+
+            if ($objectId) {
+                if ($relationValue)
+                    $this->model->$key()->sync($relationValue);
+                else
+                    $this->model->$key()->detach();
+            } else if ($relationValue) {
+                $this->model->$key()->attach($relationValue);
             }
         }
 

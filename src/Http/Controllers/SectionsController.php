@@ -83,6 +83,7 @@ class SectionsController extends ModuleController
             'cms_section_group_id' => 'nullable',
             'is_published' => 'boolean',
             'users' => 'nullable',
+            'icon' => 'nullable',
             'general' => 'nullable'
         ];
     }
