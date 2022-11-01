@@ -93,7 +93,7 @@ class ModuleController extends BaseController
             ->with('title', $this->getSection()->name);
     }
 
-    protected function formFields(): array
+    protected function formFields(int $objectId = null): array
     {
         return [];
     }
@@ -113,7 +113,7 @@ class ModuleController extends BaseController
     {
         $repository = null;
 
-        $formFields = $this->formFields();
+        $formFields = $this->formFields($objectId);
         if ($objectId) {
             $model = $this->className::findOrFail($objectId);
             $values = $model->getAttributes();

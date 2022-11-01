@@ -3,6 +3,7 @@
 namespace LaravelCms;
 
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -75,6 +76,20 @@ class LaravelCmsServiceProvider extends ServiceProvider
                 ControllerCommand::class,
                 ModelCommand::class
             ]);
+        }
+
+        Blade::directive('generateId', function ($length = 10) {
+            return "<?php $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; echo substr(str_shuffle(str_repeat($x, ceil($length / strlen($x)))), 1, $length); ?>";
+        });
+
+        if (config('cms.blade_functions')) {
+            Blade::directive('spaceless', function () {
+                return "<?php ob_start() ?>";
+            });
+
+            Blade::directive('endspaceless', function () {
+                return "<?php echo preg_replace('/>\\s+</', '><', ob_get_clean()); ?>";
+            });
         }
     }
 

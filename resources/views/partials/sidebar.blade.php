@@ -47,10 +47,7 @@
                         <li class="nav-item{{ $item['active'] ? ' menu-open' : '' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon {{ $item['icon'] ?: 'fas fa-list-ul' }}"></i>
-                                <p>
-                                    {{ $item['name'] }}
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
+                                <p>{{ $item['name'] }}<i class="right fas fa-angle-left"></i></p>
                             </a>
 
                             <ul class="nav nav-treeview">

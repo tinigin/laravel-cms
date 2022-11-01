@@ -1,4 +1,2 @@
 <!-- /.content-wrapper -->
-<footer class="main-footer">
-    {{ __('cms.copyright') }}
-</footer>
+<footer class="main-footer">{{ __('cms.copyright') }}</footer>

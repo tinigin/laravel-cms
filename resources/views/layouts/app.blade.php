@@ -1,3 +1,4 @@
+@spaceless
 @include('cms::partials.header')
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -29,3 +30,4 @@
     @include('cms::partials.toast')
 </body>
 </html>
+@endspaceless

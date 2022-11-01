@@ -13,9 +13,7 @@
                             @if (isset($group['sections']))
                                 @foreach ($group['sections'] as $section)
                                         @if ($section['current'])
-                                            <li class="breadcrumb-item{{ $section['current'] ? ' active' : '' }}">
-                                                {{ $section['name'] }}
-                                            </li>
+                                            <li class="breadcrumb-item{{ $section['current'] ? ' active' : '' }}">{{ $section['name'] }}</li>
                                         @elseif($section['active'])
                                             <li class="breadcrumb-item{{ $section['current'] ? ' active' : '' }}">
                                                 <a href="{{ $section['url'] }}">{{ $section['name'] }}</a>

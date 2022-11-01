@@ -72,6 +72,10 @@ Route::name('cms.')->group(function() {
                     return $resolver($controller, 'store');
                 })->name('module.store');
 
+                $router->post('{controller}/sort', function ($controller) use ($resolver) {
+                    return $resolver($controller, 'sort');
+                })->name('module.sort');
+
                 $router->get('{controller}/{objectId}', function ($controller, $objectId) use ($resolver) {
                     return $resolver($controller, 'edit', $objectId);
                 })->name('module.edit');

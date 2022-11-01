@@ -52,6 +52,7 @@ class SectionGroupsController extends ModuleController
         return [
             'name' => 'required|max:255',
             'is_published' => 'boolean',
+            'icon' => 'nullable'
         ];
     }
 
@@ -59,7 +60,7 @@ class SectionGroupsController extends ModuleController
      * Return array of form fields
      * @return array
      */
-    protected function formFields(): array
+    protected function formFields(int $objectId = null): array
     {
         return [
             Input::make('name')
