@@ -75,11 +75,11 @@ class SectionsController extends ModuleController
      * Array of validation rules
      * @return array
      */
-    public function rules($currentObjectId = null): array
+    public function rules(): array
     {
         return [
             'name' => 'required|max:255',
-            'folder' => ['required', Rule::unique('cms_sections')->ignore($currentObjectId), 'max:255'],
+            'folder' => ['required', Rule::unique('cms_sections')->ignore($this->objectId), 'max:255'],
             'cms_section_group_id' => 'nullable',
             'is_published' => 'boolean',
             'users' => 'nullable',
@@ -92,7 +92,7 @@ class SectionsController extends ModuleController
      * Return array of form fields
      * @return array
      */
-    protected function formFields(int $objectId = null): array
+    protected function formFields(): array
     {
         return [
             Input::make('name')

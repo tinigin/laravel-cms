@@ -69,11 +69,11 @@ class UsersController extends ModuleController
      * Array of validation rules
      * @return array
      */
-    public function rules($currentObjectId = null): array
+    public function rules(): array
     {
         return [
             'name' => 'required|max:255',
-            'email' => ['required', Rule::unique('cms_users')->ignore($currentObjectId), 'max:255', 'email'],
+            'email' => ['required', Rule::unique('cms_users')->ignore($this->objectId), 'max:255', 'email'],
             'password' => 'nullable|required_with:password_confirmation|string|confirmed|min:8',
             'status_id' => 'boolean',
             'sections' => 'nullable',
@@ -85,7 +85,7 @@ class UsersController extends ModuleController
      * Return array of form fields
      * @return array
      */
-    protected function formFields(int $objectId = null): array
+    protected function formFields(): array
     {
         return [
             Input::make('name')

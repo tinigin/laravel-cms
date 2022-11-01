@@ -47,7 +47,7 @@ class SectionGroupsController extends ModuleController
      * Array of validation rules
      * @return array
      */
-    public function rules($currentObjectId = null): array
+    public function rules(): array
     {
         return [
             'name' => 'required|max:255',
@@ -60,7 +60,7 @@ class SectionGroupsController extends ModuleController
      * Return array of form fields
      * @return array
      */
-    protected function formFields(int $objectId = null): array
+    protected function formFields(): array
     {
         return [
             Input::make('name')

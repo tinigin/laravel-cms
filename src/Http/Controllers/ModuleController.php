@@ -34,6 +34,8 @@ class ModuleController extends BaseController
 
     protected $model = null;
 
+    protected $objectId = null;
+
     public function before()
     {
         if (parent::before()) {
@@ -95,7 +97,7 @@ class ModuleController extends BaseController
             ->with('title', $this->getSection()->name);
     }
 
-    protected function formFields(int $objectId = null): array
+    protected function formFields(): array
     {
         return [];
     }
@@ -108,16 +110,15 @@ class ModuleController extends BaseController
     /**
      * Return form Builder object
      * @param boolean $create
-     * @param int|null $objectId
      * @return Builder
      */
-    protected function getForm($create = false, $objectId = null): Builder
+    protected function getForm($create = false): Builder
     {
         $repository = null;
 
-        $formFields = $this->formFields($objectId);
-        if ($objectId) {
-            $model = $this->className::findOrFail($objectId);
+        $formFields = $this->formFields();
+        if ($this->objectId) {
+            $model = $this->className::findOrFail($this->objectId);
             $values = $model->getAttributes();
 
             if ($this->relations) {
@@ -173,17 +174,17 @@ class ModuleController extends BaseController
             );
             $form->push(
                 Link::make('Удалить')
-                    ->href(route('cms.module.destroy', ['controller' => $this->getSectionController(), 'objectId' => $objectId], false))
+                    ->href(route('cms.module.destroy', ['controller' => $this->getSectionController(), 'objectId' => $this->objectId], false))
                     ->class('btn btn-danger float-right')
                     ->confirm('true')
                     ->withoutFormType()
             );
 
-            $form->images(route('cms.module.images', ['controller' => $this->getSectionController(), 'objectId' => $objectId], false));
+            $form->images(route('cms.module.images', ['controller' => $this->getSectionController(), 'objectId' => $this->objectId], false));
 
             $form->setAction(route('cms.module.update', [
                 'controller' => $this->getSectionController(),
-                'objectId' => $objectId
+                'objectId' => $this->objectId
             ], false));
 
             $form->method('PUT');
@@ -221,7 +222,9 @@ class ModuleController extends BaseController
      */
     public function edit($objectId)
     {
-        $form = $this->getForm(false, $objectId);
+        $this->objectId = $objectId;
+
+        $form = $this->getForm(false);
 
         return view('cms::module')
             ->with('form', $form)
@@ -247,9 +250,11 @@ class ModuleController extends BaseController
      */
     public function update($objectId = null)
     {
+        $this->objectId = $objectId;
+
         $validated = $this->validate(
             request(),
-            $this->rules($objectId)
+            $this->rules()
         );
 
         if (array_key_exists('password', $validated) && is_null($validated['password'])) {
@@ -272,9 +277,9 @@ class ModuleController extends BaseController
         /**
          * @var Model $this->model
          */
-        if ($objectId) {
+        if ($this->objectId) {
             // update
-            $this->model = $this->className::findOrFail($objectId);
+            $this->model = $this->className::findOrFail($this->objectId);
             $this->model->fill($validated);
             $this->model->save();
         } else {
@@ -286,7 +291,7 @@ class ModuleController extends BaseController
         foreach ($this->relations as $key) {
             $relationValue = isset($validated[$key]) ? $validated[$key] : null;
 
-            if ($objectId) {
+            if ($this->objectId) {
                 if ($relationValue)
                     $this->model->$key()->sync($relationValue);
                 else
