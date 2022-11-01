@@ -2,6 +2,8 @@
 
 namespace LaravelCms\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use LaravelCms\Facades\Toast;
 use LaravelCms\Form\Actions\Link;
@@ -120,7 +122,7 @@ class ModuleController extends BaseController
 
             if ($this->relations) {
                 foreach ($this->relations as $relation) {
-                    $values[$relation] = $model->$relation()->allRelatedIds();
+                    $values[$relation] = $model->$relation()->allRelatedIds()->toArray();
                 }
             }
 

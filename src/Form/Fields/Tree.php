@@ -32,7 +32,7 @@ class Tree extends Field
         'class' => 'tree',
         'value' => [],
         'tree' => null,
-        'exclude' => null
+        'exclude' => []
     ];
 
     /**
@@ -70,7 +70,7 @@ class Tree extends Field
                     'url' => '',
                 ]];
         }
-
+        
         return $this->set('tree', $tree);
     }
 
