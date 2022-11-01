@@ -54,13 +54,21 @@ class Tree extends Field
         $tree = $model->toTree(exclude: $exclude);
 
         if (!$this->get('required')) {
-            $tree = [[
-                'id' => NULL,
-                'name' => 'Не выбрано',
-                'folder' => 'none',
-                'url' => '',
-                'children' => $tree
-            ]];
+            if ($tree)
+                $tree = [[
+                    'id' => NULL,
+                    'name' => 'Не выбрано',
+                    'folder' => 'none',
+                    'url' => '',
+                    'children' => $tree
+                ]];
+            else
+                $tree = [[
+                    'id' => NULL,
+                    'name' => 'Не выбрано',
+                    'folder' => 'none',
+                    'url' => '',
+                ]];
         }
 
         return $this->set('tree', $tree);

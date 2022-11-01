@@ -6,7 +6,7 @@
     <div class="tree" id="tree" data-url="{{ $url }}" data-type="{{ $type }}">
 @endif
 
-@if (empty($tree))
+@if (empty($tree) && $level == 1)
     <p>Нет</p>
 @else
     <ul @if ($level > 3) style="display: none" @endif>
