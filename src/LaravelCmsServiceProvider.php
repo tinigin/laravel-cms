@@ -90,6 +90,15 @@ class LaravelCmsServiceProvider extends ServiceProvider
             Blade::directive('endspaceless', function () {
                 return "<?php echo preg_replace('/>\\s+</', '><', ob_get_clean()); ?>";
             });
+
+        } else {
+            Blade::directive('spaceless', function () {
+                return "";
+            });
+
+            Blade::directive('endspaceless', function () {
+                return "";
+            });
         }
     }
 
