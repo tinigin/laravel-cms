@@ -3,7 +3,7 @@
 return [
     'url_prefix' => 'cms',
     'namespace' => "\\App\\Http\\Controllers\\Cms",
-    'blade_functions' => false,
+    'blade_functions' => (bool) env('APP_BLADE_FUNCTIONS', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -14,7 +14,8 @@ return [
     |
     */
     'attachment' => [
-        'disk'      => 'public',
+        'disk' => 'public',
+        'parent_folder' => env('CMS_FILESYSTEM_PARENT_FOLDER', ''),
         'generator' => \LaravelCms\Attachment\Engines\Generator::class,
     ],
 ];
