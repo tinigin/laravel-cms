@@ -90,19 +90,6 @@ class LaravelCmsServiceProvider extends ServiceProvider
             Blade::directive('generateId', function ($length = 10) {
                 return "<?php $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; echo substr(str_shuffle(str_repeat($x, ceil($length / strlen($x)))), 1, $length); ?>";
             });
-
-        } else {
-            Blade::directive('spaceless', function () {
-                return "";
-            });
-
-            Blade::directive('endspaceless', function () {
-                return "";
-            });
-
-            Blade::directive('generateId', function ($length = 10) {
-                return "";
-            });
         }
     }
 
