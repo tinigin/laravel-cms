@@ -78,10 +78,6 @@ class LaravelCmsServiceProvider extends ServiceProvider
             ]);
         }
 
-        Blade::directive('generateId', function ($length = 10) {
-            return "<?php $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; echo substr(str_shuffle(str_repeat($x, ceil($length / strlen($x)))), 1, $length); ?>";
-        });
-
         if (config('cms.blade_functions')) {
             Blade::directive('spaceless', function () {
                 return "<?php ob_start() ?>";
@@ -91,12 +87,20 @@ class LaravelCmsServiceProvider extends ServiceProvider
                 return "<?php echo preg_replace('/>\\s+</', '><', ob_get_clean()); ?>";
             });
 
+            Blade::directive('generateId', function ($length = 10) {
+                return "<?php $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; echo substr(str_shuffle(str_repeat($x, ceil($length / strlen($x)))), 1, $length); ?>";
+            });
+
         } else {
             Blade::directive('spaceless', function () {
                 return "";
             });
 
             Blade::directive('endspaceless', function () {
+                return "";
+            });
+
+            Blade::directive('generateId', function ($length = 10) {
                 return "";
             });
         }
