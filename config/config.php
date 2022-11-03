@@ -3,7 +3,6 @@
 return [
     'url_prefix' => 'cms',
     'namespace' => "\\App\\Http\\Controllers\\Cms",
-    'blade_functions' => (bool) env('APP_BLADE_FUNCTIONS', false),
 
     /*
     |--------------------------------------------------------------------------

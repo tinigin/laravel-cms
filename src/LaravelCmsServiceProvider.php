@@ -78,19 +78,17 @@ class LaravelCmsServiceProvider extends ServiceProvider
             ]);
         }
 
-        if (config('cms.blade_functions')) {
-            Blade::directive('spaceless', function () {
-                return "<?php ob_start() ?>";
-            });
+        Blade::directive('spaceless', function () {
+            return "<?php ob_start() ?>";
+        });
 
-            Blade::directive('endspaceless', function () {
-                return "<?php echo preg_replace('/>\\s+</', '><', ob_get_clean()); ?>";
-            });
+        Blade::directive('endspaceless', function () {
+            return "<?php echo preg_replace('/>\\s+</', '><', ob_get_clean()); ?>";
+        });
 
-            Blade::directive('generateId', function ($length = 10) {
-                return "<?php $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; echo substr(str_shuffle(str_repeat($x, ceil($length / strlen($x)))), 1, $length); ?>";
-            });
-        }
+        Blade::directive('generateId', function ($length = 10) {
+            return "<?php $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; echo substr(str_shuffle(str_repeat($x, ceil($length / strlen($x)))), 1, $length); ?>";
+        });
     }
 
     /**
