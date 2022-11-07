@@ -18,7 +18,7 @@
 		@endif
 
         @if ($grid->isAllowedEdit())
-		    <a href="{{ $grid->urlEdit($row['attributes']['id']) }}"><span class="fa fa-edit text-primary"></span></a>
+		    <a href="{{ $grid->urlEdit($row['attributes']['id']) }}" title="Редактировать" data-title="Редактирование"><span class="fa fa-edit text-primary"></span></a>
         @endif
 
         @if ($grid->isAllowedView())

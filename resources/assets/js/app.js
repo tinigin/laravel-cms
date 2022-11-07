@@ -34,8 +34,7 @@ $(function () {
 		return false;
 	}
 
-	function setItemsForDelete()
-	{
+	function setItemsForDelete() {
 		let items = [];
 		$('input[name="items-to-delete[]"]:checked').each(function() {
 			items.push($(this).attr('value'));
@@ -164,7 +163,7 @@ $(function () {
 	$('.multiple-delete').bind(
 		'change',
 		function() {
-			var n = $("input.multiple-delete:checked").length;
+			let n = $("input.multiple-delete:checked").length;
 
 			if (n) {
 				$('button[name=delete-items]').removeAttr('disabled');
@@ -179,7 +178,7 @@ $(function () {
 	$('a.toggle-all-delete-checkbox').bind(
 		'click',
 		function () {
-			var n = $("input.multiple-delete:checked").length;
+			let n = $("input.multiple-delete:checked").length;
 
 			if (n) {
 				$("input.multiple-delete").prop("checked", false);
@@ -217,6 +216,10 @@ $(function () {
     bootbox.setDefaults({
         locale: "ru",
         size: "small",
+    });
+
+    $('.tree').each(function() {
+        new tree(this);
     });
 
     $('[data-remove]').click(function() {
@@ -357,6 +360,10 @@ $(function () {
     $('[data-toggle=card-footer]').click(function() {
         $(this).parents('.file-card').find('.card-footer').toggleClass('hidden');
         return false;
+    });
+
+    document.querySelectorAll('.external-listing').forEach(function (element, index) {
+        new external(element);
     });
 });
 
@@ -605,6 +612,291 @@ let imgCrop = function(element) {
             }
         });
     }
+
+    this.init();
+}
+
+function tree(selector) {
+    this.container = $(selector);
+
+    this.init = function() {
+        let self= this;
+
+        this.type = this.container.attr('data-type');
+        this.url = this.container.attr('data-url');
+
+        if (this.type == 'sortable') {
+            $("ul", this.container).sortable({
+                cursor: "move",
+                delay: 250,
+                forcePlaceholderSize: true,
+                opacity: 0.5,
+                axis: "y",
+                placeholder: "placeholder",
+                update: function(event, ui) {
+                    $.ajax({
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        url: self.url,
+                        data: $(this).sortable('serialize'),
+                        type: "POST"
+                    });
+                }
+            });
+
+            $("ul li", this.container).css('cursor', 'move');
+        }
+
+        $('span.toggle-collapse', this.container).each(function() {
+            $(this).bind(
+                'click',
+                function() {
+                    self.toggle(this);
+                    return false;
+                }
+            );
+        });
+    }
+
+    this.toggle = function(element) {
+        let ul = $(element).parent().parent().children('ul');
+
+        if ($(element).hasClass('icon-plus')) {
+            $(element).removeClass('icon-plus').addClass('icon-minus');
+            ul.show({duration: 100, easing: 'linear'});
+        } else {
+            $(element).addClass('icon-plus').removeClass('icon-minus');
+            ul.hide({duration: 100, easing: 'linear'});
+        }
+    }
+
+    this.init();
+}
+
+function external (element) {
+    this.wrapper = element;
+    this.url = this.wrapper.dataset.url;
+    this.parentId = this.wrapper.dataset.parentId;
+    this.modal = null;
+    this.modalBackdrop = null;
+    this.lastUrl = null;
+
+    this.init = function() {
+        this.load();
+    };
+
+    this.load = function() {
+        let self = this;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open(
+            "GET",
+            this.url + '?parent_id=' + this.parentId,
+            true
+        );
+        xhr.onload = () => {
+            self.wrapper.innerHTML = xhr.response;
+            self.bind();
+        };
+        xhr.send();
+    };
+
+    this.bind = function() {
+        let self = this;
+
+        this.wrapper.querySelectorAll('a').forEach((element, index) => {
+            element.addEventListener("click", function(event) {
+                let target = element.getAttribute('href');
+                let title = element.dataset.title;
+
+                // Open modal window with data from link
+                self.openModal(target, title);
+
+                event.preventDefault();
+            });
+        });
+    };
+
+    this.openModal = function(url, title) {
+        let self = this;
+
+        this.lastUrl = url + '?parent_id=' + this.parentId;
+        this.showModal(title);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open(
+            "GET",
+            this.lastUrl,
+            true
+        );
+        xhr.onload = () => {
+            self.modal.querySelector('.modal-body').innerHTML = xhr.response;
+
+            // Init form elements
+            self.renderFormElements();
+
+            // Bind form buttons
+            self.bindModalForm();
+        };
+        xhr.send();
+    };
+
+    this.bindModalForm = function() {
+        let self = this;
+
+        let form = this.modal.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            self.sendForm();
+            event.preventDefault();
+        });
+
+        form.querySelectorAll('a[confirm]').forEach(function (element) {
+            let url = element.getAttribute('href');
+
+            element.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                bootbox.confirm({
+                    message: 'Вы уверены?',
+                    size: "small",
+                    buttons: {
+                        confirm: {
+                            label: '<i class="fa fa-check"></i> Да',
+                            className: 'btn-danger'
+                        },
+                        cancel: {
+                            label: '<i class="fa fa-times"></i> Нет',
+                            className: 'btn-default'
+                        }
+                    },
+                    callback: function(result) {
+                        if (result) {
+                            let formData = new FormData(form);
+
+                            let xhr = new XMLHttpRequest();
+                            xhr.open(
+                                "GET",
+                                url
+                            );
+                            xhr.onload = () => {
+                                self.hideModal();
+                                self.load();
+                            }
+                            xhr.send(formData);
+                        }
+                    }
+                });
+            });
+        });
+    };
+
+    this.sendForm = function() {
+        let self = this;
+
+        let form = this.modal.querySelector('form');
+        let action = form.getAttribute('action');
+
+        let formData = new FormData(form);
+        formData.set('set-referer', this.lastUrl)
+
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "POST",
+            action + '?parent_id=' + this.parentId
+        );
+        xhr.onload = () => {
+            self.modal.querySelector('.modal-body').innerHTML = xhr.response;
+            self.renderFormElements();
+            self.bindModalForm();
+            self.load();
+        }
+        xhr.send(formData);
+    };
+
+    this.renderFormElements = function() {
+        $('select', self.modal).selectpicker();
+        this.modal.querySelector('input[type=hidden]:not([name=_token]):not([name=_method])').value = this.parentId;
+    };
+
+    this.showModal = function(title) {
+        let self = this;
+
+        let modalHtml =
+            "<div class=\"modal-backdrop fade show\"></div>" +
+            "<div class=\"modal fade\" id=\"external-modal\" style=\"display: none;\" aria-hidden=\"true\">" +
+                "<div class=\"modal-dialog modal-xl\">" +
+                    "<div class=\"modal-content\">" +
+                        "<div class=\"modal-header\">" +
+                            "<h4 class=\"modal-title\">" + title + "</h4>" +
+                            "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">" +
+                                "<span aria-hidden=\"true\">×</span>" +
+                            "</button>" +
+                        "</div>" +
+                        "<div class=\"modal-body\">" +
+                        "</div>" +
+                    "</div>" +
+                "</div>" +
+            "</div>";
+
+        document.querySelector('body').insertAdjacentHTML("beforeend", modalHtml);
+
+        this.modal = document.querySelector('#external-modal');
+        this.modalBackdrop = document.querySelector('.modal-backdrop');
+        this.modal.style.display = 'block';
+        document.querySelector('body').classList.add('modal-open');
+
+        setTimeout(function () {
+            self.modal.classList.add('show');
+        }, 100);
+
+        this.bindModal();
+    };
+
+    this.bindModal = function() {
+        let self = this;
+
+        // Close button
+        this.modal.querySelector('.close').addEventListener('click', function(event) {
+            self.hideModal();
+            event.preventDefault();
+        });
+
+        // Esc to close modal
+        window.addEventListener("keydown", (event) => {
+            if (event.defaultPrevented) {
+                return; // Do nothing if the event was already processed
+            }
+
+            switch (event.key) {
+                case "Esc":
+                case "Escape":
+                    self.hideModal();
+                    break;
+                default:
+                    return;
+            }
+
+            event.preventDefault();
+        }, true);
+    };
+
+    this.hideModal = function() {
+        let self = this;
+
+        this.modal.classList.remove('show');
+
+        setTimeout(function () {
+            self.modalBackdrop.style.display = 'none';
+            self.modal.style.display = 'none';
+            document.querySelector('body').classList.remove('modal-open');
+
+            self.removeModal();
+        }, 200);
+    };
+
+    this.removeModal = function() {
+        this.modalBackdrop.remove();
+        this.modal.remove();
+    };
 
     this.init();
 }

@@ -1,38 +1,40 @@
 <div class="row">
 	<div class="col-12">
 		<div class="card">
-			<div class="card-header">
-				<h3 class="card-title">
-					<a href="" data-toggle-filter>
-						<i class="fas fa-filter"></i>
-					</a>
-				</h3>
+            @if ($grid->filter())
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="" data-toggle-filter>
+                            <i class="fas fa-filter"></i>
+                        </a>
+                    </h3>
 
-				<form method="get" class="hidden" data-filter>
-					<input type="hidden" name="sort" value="{{ request()->get('sort') }}" />
-					<input type="hidden" name="all" value="{{ request()->get('all') }}" />
+                    <form method="get" class="hidden" data-filter>
+                        <input type="hidden" name="sort" value="{{ request()->get('sort') }}" />
+                        <input type="hidden" name="all" value="{{ request()->get('all') }}" />
 
-					<div class="row">
-						@foreach ($grid->filter() as $key => $field)
-							<div class="col-sm-4">
-								{!! $field !!}
-							</div>
-						@endforeach
-					</div>
-    				<div class="btn-group filter-submit-buttons-container">
-    					<button name="filter-submit" type="submit" class="btn btn-primary">Выбрать</button>
-    					<button name="filter-reset" type="submit" class="btn btn-default">Сбросить</button>
-    					<button name="filter-close" type="submit" class="btn btn-default">Закрыть</button>
-    				</div>
+                        <div class="row">
+                            @foreach ($grid->filter() as $key => $field)
+                                <div class="col-sm-4">
+                                    {!! $field !!}
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="btn-group filter-submit-buttons-container">
+                            <button name="filter-submit" type="submit" class="btn btn-primary">Выбрать</button>
+                            <button name="filter-reset" type="submit" class="btn btn-default">Сбросить</button>
+                            <button name="filter-close" type="submit" class="btn btn-default">Закрыть</button>
+                        </div>
 
-    				@foreach ($grid->columns() as $key => $column)
-    					@if (isset($column['active']))
-    						<input type="hidden" name="sort" value="{{ $column['direction'] == 'desc' ? '-' : '' }}{{ $key }}" />
-    					@endif
-    				@endforeach
-    			</form>
-    		</div>
-    		<!-- /.card-header -->
+                        @foreach ($grid->columns() as $key => $column)
+                            @if (isset($column['active']))
+                                <input type="hidden" name="sort" value="{{ $column['direction'] == 'desc' ? '-' : '' }}{{ $key }}" />
+                            @endif
+                        @endforeach
+                    </form>
+                </div>
+                <!-- /.card-header -->
+            @endif
 
 			<div class="card-body table-responsive{{ $grid->data() ? ' p-0' : ''}}">
     			@if ($grid->data())
@@ -68,7 +70,7 @@
 			</div>
 			<div class="card-footer clearfix">
 				@if ($grid->isAllowedAdd())
-					<a href="{{ $grid->urlCreate() }}" class="btn btn-sm btn-success float-left">
+					<a href="{{ $grid->urlCreate() }}" class="btn btn-sm btn-success float-left" title="Добавить" data-title="Добавление">
 						<span class="fa fa-plus"></span>
 					</a>
 				@endif

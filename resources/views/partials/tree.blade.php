@@ -20,7 +20,7 @@
 
                     @elseif ($type == 'multiple')
                         @php ($inputId = Str::ulid())
-                        <input type="checkbox" name="{{ $name }}[]" value="{{ $item['id'] }}" id="{{ $inputId }}" @if (in_array($item['id'], $value)) checked @endif></input>
+                        <input type="checkbox" name="{{ $name }}" value="{{ $item['id'] }}" id="{{ $inputId }}" @if (in_array($item['id'], $value)) checked @endif></input>
                         <label for="{{ $inputId }}">{{ $item['name'] }}</label>
 
                     @elseif ($type == 'single')

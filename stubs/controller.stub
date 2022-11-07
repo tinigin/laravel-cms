@@ -49,7 +49,7 @@ class DummyClass extends ModuleController
      * Array of validation rules
      * @return array
      */
-    public function rules($currentObjectId = null): array
+    public function rules(): array
     {
         return [
             'name' => 'required|max:255',

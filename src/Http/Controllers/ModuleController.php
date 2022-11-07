@@ -32,6 +32,8 @@ class ModuleController extends BaseController
 
     protected $grid = [];
 
+    protected $mode = 'default';
+
     protected $model = null;
 
     protected $objectId = null;
@@ -44,6 +46,10 @@ class ModuleController extends BaseController
                 !$this->getSection()->users()->where('id', Auth::id())->count()
             ) {
                 return false;
+            }
+
+            if (request()->has('set-referer')) {
+                request()->headers->add(['referer' => request()->get('set-referer')]);
             }
 
             return true;
@@ -92,9 +98,14 @@ class ModuleController extends BaseController
 
         $grid = new Grid($this->grid, $this->getSection());
 
-        return view('cms::module')
-            ->with('grid', $grid)
-            ->with('title', $this->getSection()->name);
+        if ($this->mode == 'simple')
+            return view('cms::simple.module')
+                ->with('grid', $grid)
+                ->with('title', $this->getSection()->name);
+        else
+            return view('cms::module')
+                ->with('grid', $grid)
+                ->with('title', $this->getSection()->name);
     }
 
     protected function formFields(): array
@@ -200,9 +211,14 @@ class ModuleController extends BaseController
     {
         $form = $this->getForm(true);
 
-        return view('cms::module')
-            ->with('form', $form)
-            ->with('title', 'Добавление');
+        if ($this->mode == 'simple')
+            return view('cms::simple.module')
+                ->with('form', $form)
+                ->with('title', 'Добавление');
+        else
+            return view('cms::module')
+                ->with('form', $form)
+                ->with('title', 'Добавление');
     }
 
     /**
@@ -226,9 +242,14 @@ class ModuleController extends BaseController
 
         $form = $this->getForm(false);
 
-        return view('cms::module')
-            ->with('form', $form)
-            ->with('title', 'Редактирование');
+        if ($this->mode == 'simple')
+            return view('cms::simple.module')
+                ->with('form', $form)
+                ->with('title', 'Редактирование');
+        else
+            return view('cms::module')
+                ->with('form', $form)
+                ->with('title', 'Редактирование');
     }
 
     protected function getFieldByKey($key)
@@ -348,11 +369,13 @@ class ModuleController extends BaseController
 
         Toast::success('Данные успешно сохранены');
 
-        return redirect(route(
-            'cms.module.edit',
-            ['controller' => $this->getSectionController(), 'objectId' => $this->model->getKey()],
-            false
-        ));
+        return redirect(
+            route(
+                'cms.module.edit',
+                ['controller' => $this->getSectionController(), 'objectId' => $this->model->getKey()],
+                false
+            ) . ($this->mode == 'simple' ? '?parent_id=' . request()->get('parent_id') : '')
+        );
     }
 
     /**
