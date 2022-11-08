@@ -48,6 +48,10 @@ class ModuleController extends BaseController
                 return false;
             }
 
+            if (request()->has('parent_id')) {
+                $this->mode = 'simple';
+            }
+
             if (request()->has('set-referer')) {
                 request()->headers->add(['referer' => request()->get('set-referer')]);
             }

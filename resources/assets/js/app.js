@@ -807,6 +807,11 @@ function external (element) {
             self.modal.querySelector('.modal-body').innerHTML = xhr.response;
             self.renderFormElements();
             self.bindModalForm();
+
+            if (xhr.responseURL.indexOf(this.lastUrl) == -1) {
+                self.hideModal();
+            }
+
             self.load();
         }
         xhr.send(formData);
@@ -814,7 +819,11 @@ function external (element) {
 
     this.renderFormElements = function() {
         $('select', self.modal).selectpicker();
-        this.modal.querySelector('input[type=hidden]:not([name=_token]):not([name=_method])').value = this.parentId;
+
+        let input = this.modal.querySelector('input[type=hidden]:not([name=_token]):not([name=_method])');
+        if (input) {
+            input.value = this.parentId;
+        }
     };
 
     this.showModal = function(title) {
