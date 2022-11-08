@@ -87,15 +87,16 @@ class Grid {
         }
 
         foreach ([
-                     'sortable',
-                     'add',
-                     'delete',
-                     'multiple-delete',
-                     'limit',
-                     'without-paginator',
-                     'edit',
-                     'view'
-                 ] as $key) {
+            'sortable',
+            'add',
+            'delete',
+            'multiple-delete',
+            'limit',
+            'without-paginator',
+            'edit',
+            'view',
+            'where'
+        ] as $key) {
             if (isset($options[$key])) {
                 $this->options[$key] = $options[$key];
             }
@@ -124,7 +125,7 @@ class Grid {
      * @param null $default
      * @return string
      */
-    protected function getOption(string $key, $default = null): string|bool|null
+    protected function getOption(string $key, $default = null): mixed
     {
         return isset($this->options[$key]) ? $this->options[$key] : $default;
     }
@@ -227,6 +228,12 @@ class Grid {
 
                     $this->columns[$key]['url'] = $url . '?' . http_build_query($query);
                 }
+            }
+        }
+
+        if ($this->getOption('where')) {
+            foreach ($this->getOption('where') as $condition) {
+                $this->query->where($condition[0], $condition[1], $condition[2]);
             }
         }
 

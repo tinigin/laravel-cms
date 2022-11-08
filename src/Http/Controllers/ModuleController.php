@@ -38,18 +38,21 @@ class ModuleController extends BaseController
 
     protected $objectId = null;
 
+    protected $parentId = null;
+
     public function before()
     {
         if (parent::before()) {
+            if (request()->has('parent_id')) {
+                $this->parentId = request()->get('parent_id');
+                $this->mode = 'simple';
+            }
+
             if (
-                $this->getSection()->is_published != true ||
+                ($this->getSection()->is_published != true && !$this->parentId) ||
                 !$this->getSection()->users()->where('id', Auth::id())->count()
             ) {
                 return false;
-            }
-
-            if (request()->has('parent_id')) {
-                $this->mode = 'simple';
             }
 
             if (request()->has('set-referer')) {
