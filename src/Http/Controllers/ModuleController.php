@@ -381,7 +381,7 @@ class ModuleController extends BaseController
                 'cms.module.edit',
                 ['controller' => $this->getSectionController(), 'objectId' => $this->model->getKey()],
                 false
-            ) . ($this->mode == 'simple' ? '?parent_id=' . request()->get('parent_id') : '')
+            ) . ($this->mode == 'simple' ? '?modal_parent_id=' . request()->get('modal_parent_id') : '')
         );
     }
 
