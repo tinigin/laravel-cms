@@ -43,8 +43,8 @@ class ModuleController extends BaseController
     public function before()
     {
         if (parent::before()) {
-            if (request()->has('parent_id')) {
-                $this->parentId = request()->get('parent_id');
+            if (request()->has('modal_parent_id')) {
+                $this->parentId = request()->get('modal_parent_id');
                 $this->mode = 'simple';
             }
 

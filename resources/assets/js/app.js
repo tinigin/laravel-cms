@@ -690,7 +690,7 @@ function external (element) {
         const xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            this.url + '?parent_id=' + this.parentId,
+            this.url + '?modal_parent_id=' + this.parentId,
             true
         );
         xhr.onload = () => {
@@ -719,7 +719,7 @@ function external (element) {
     this.openModal = function(url, title) {
         let self = this;
 
-        this.lastUrl = url + '?parent_id=' + this.parentId;
+        this.lastUrl = url + '?modal_parent_id=' + this.parentId;
         this.showModal(title);
 
         const xhr = new XMLHttpRequest();
@@ -801,7 +801,7 @@ function external (element) {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "POST",
-            action + '?parent_id=' + this.parentId
+            action + '?modal_parent_id=' + this.parentId
         );
         xhr.onload = () => {
             self.modal.querySelector('.modal-body').innerHTML = xhr.response;
