@@ -9,10 +9,10 @@ use LaravelCms\Form\Field;
 /**
  * Class CheckBox.
  *
- * @method CheckBox name(string $value = null)
- * @method CheckBox readonly($value = true)
- * @method CheckBox required(bool $value = true)
- * @method CheckBox title(string $value = null)
+ * @method Tree name(string $value = null)
+ * @method Tree readonly($value = true)
+ * @method Tree required(bool $value = true)
+ * @method Tree title(string $value = null)
  */
 class Tree extends Field
 {
@@ -70,7 +70,7 @@ class Tree extends Field
                     'url' => '',
                 ]];
         }
-        
+
         return $this->set('tree', $tree);
     }
 

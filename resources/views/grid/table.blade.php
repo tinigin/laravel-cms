@@ -50,7 +50,9 @@
     									@endif
     								</th>
     							@endforeach
-    							<th class="text-gray-dark">Действие</th>
+                                @if ($grid->sortable() || $grid->isAllowedEdit() || $grid->isAllowedView() || $grid->isAllowedDelete())
+    							    <th class="text-gray-dark">Действие</th>
+                                @endif
     							@if ($grid->multipleDelete())
     								<th class="centered">
                 						<a href="" class="toggle-all-delete-checkbox">#</a>
@@ -68,47 +70,49 @@
     				<h3>Данных не нейдено.</h3>
     			@endif
 			</div>
-			<div class="card-footer clearfix">
-				@if ($grid->isAllowedAdd())
-					<a href="{{ $grid->urlCreate() }}" class="btn btn-sm btn-success float-left" title="Добавить" data-title="Добавление">
-						<span class="fa fa-plus"></span>
-					</a>
-				@endif
+            @if ($grid->sortable() || $grid->multipleDelete() || $grid->isAllowedAdd())
+                <div class="card-footer clearfix">
+                    @if ($grid->isAllowedAdd())
+                        <a href="{{ $grid->urlCreate() }}" class="btn btn-sm btn-success float-left" title="Добавить" data-title="Добавление">
+                            <span class="fa fa-plus"></span>
+                        </a>
+                    @endif
 
-				<form method="post" enctype="multipart/form-data" id="sort-form">
-					@csrf
-					@method('post')
-					<input type="hidden" name="items" value="" />
-					<input type="hidden" name="save-sorting" value="true" />
-				</form>
+                    <form method="post" enctype="multipart/form-data" id="sort-form">
+                        @csrf
+                        @method('post')
+                        <input type="hidden" name="items" value="" />
+                        <input type="hidden" name="save-sorting" value="true" />
+                    </form>
 
-				<form method="post" enctype="multipart/form-data" id="delete-form">
-					@csrf
-					@method('post')
-					<input type="hidden" name="items" value="" />
-					<input type="hidden" name="multiple-delete" value="true" />
-				</form>
+                    <form method="post" enctype="multipart/form-data" id="delete-form">
+                        @csrf
+                        @method('post')
+                        <input type="hidden" name="items" value="" />
+                        <input type="hidden" name="multiple-delete" value="true" />
+                    </form>
 
-				@if (($grid->sortable() || $grid->multipleDelete()) && $grid->count() > 0)
-					<div class="btn-group-sm float-right" role="group">
-    					@if ($grid->sortable())
-    						@if ($grid->all())
-    							<a href="{{ $grid->linkRemoveAll() }}" class="btn btn-default btn-lg" tabindex="-1" role="button" aria-disabled="true">Постранично</a>
-    						@else
-    							<a href="{{ $grid->linkAll() }}" class="btn btn-default btn-lg" tabindex="-1" role="button" aria-disabled="true">Показать все</a>
-    						@endif
+                    @if (($grid->sortable() || $grid->multipleDelete()) && $grid->count() > 0)
+                        <div class="btn-group-sm float-right" role="group">
+                            @if ($grid->sortable())
+                                @if ($grid->all())
+                                    <a href="{{ $grid->linkRemoveAll() }}" class="btn btn-default btn-lg" tabindex="-1" role="button" aria-disabled="true">Постранично</a>
+                                @else
+                                    <a href="{{ $grid->linkAll() }}" class="btn btn-default btn-lg" tabindex="-1" role="button" aria-disabled="true">Показать все</a>
+                                @endif
 
-							<button class="btn btn-default" type="submit" onclick="$('#sort-form').submit(); return false;" name="save-sorting" value="true" disabled="disabled">Сохранить</button>
-    					@endif
+                                <button class="btn btn-default" type="submit" onclick="$('#sort-form').submit(); return false;" name="save-sorting" value="true" disabled="disabled">Сохранить</button>
+                            @endif
 
-    					@if ($grid->multipleDelete())
-							<button class="btn btn-danger" type="submit" confirm="#delete-form" name="delete-items" value="true" disabled="disabled">Удалить</button>
-    					@endif
-    				</div>
-				@endif
+                            @if ($grid->multipleDelete())
+                                <button class="btn btn-danger" type="submit" confirm="#delete-form" name="delete-items" value="true" disabled="disabled">Удалить</button>
+                            @endif
+                        </div>
+                    @endif
 
-				{!! $grid->paginate() !!}
-			</div>
+                    {!! $grid->paginate() !!}
+                </div>
+            @endif
 		</div>
 		<!-- /.card -->
 	</div>
