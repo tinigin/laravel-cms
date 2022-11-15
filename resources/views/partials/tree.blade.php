@@ -7,7 +7,7 @@
 @endif
 
 @if (empty($tree) && $level == 1)
-    <p>Нет</p>
+    <p class="mt-2 ml-3">Нет</p>
 @else
     <ul @if ($level > 3) style="display: none" @endif>
         @foreach ($tree as $item)

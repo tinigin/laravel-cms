@@ -15,7 +15,7 @@
                 ])
 
                 <div>
-                    <a href="{{ route('cms.module.create', ['controller' => $controller]) }}" class="btn btn-sm btn-success mr-3 mt-2 float-left">
+                    <a href="{{ route('cms.module.create', ['controller' => $controller]) }}" class="btn btn-sm btn-success mr-3 mt-2 mb-2 float-left">
                         <span class="fa fa-plus"></span>
                     </a>
                 </div>
