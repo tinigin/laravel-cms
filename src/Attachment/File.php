@@ -162,6 +162,7 @@ class File
                         break;
 
                     case 'fit':
+                    case 'free':
                         $resizer->resizeToBestFit($thumbnailData['w'], $thumbnailData['h']);
                         break;
 

@@ -11,70 +11,70 @@ $(function () {
         ajaxStop: function() { $('body').removeClass("loading"); }
     });
 
-	// Filter
-	function toggleFilter() {
-		let filterButton = $('[data-toggle-filter]');
-		let filter = $('[data-filter]');
-		let parent = $(filterButton).parent();
+    // Filter
+    function toggleFilter() {
+        let filterButton = $('[data-toggle-filter]');
+        let filter = $('[data-filter]');
+        let parent = $(filterButton).parent();
 
-		if (filter.hasClass('hidden')) {
-			filter.removeClass('hidden');
-			parent.hide();
+        if (filter.hasClass('hidden')) {
+            filter.removeClass('hidden');
+            parent.hide();
 
-		} else {
-			filter.addClass('hidden');
-			parent.show();
-		}
+        } else {
+            filter.addClass('hidden');
+            parent.show();
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	function resetFilter() {
-		window.location.replace(window.location.pathname);
-		return false;
-	}
+    function resetFilter() {
+        window.location.replace(window.location.pathname);
+        return false;
+    }
 
-	function setItemsForDelete() {
-		let items = [];
-		$('input[name="items-to-delete[]"]:checked').each(function() {
-			items.push($(this).attr('value'));
-		});
-		$('#delete-form input[name=items]').val(items.join(','));
-	}
+    function setItemsForDelete() {
+        let items = [];
+        $('input[name="items-to-delete[]"]:checked').each(function() {
+            items.push($(this).attr('value'));
+        });
+        $('#delete-form input[name=items]').val(items.join(','));
+    }
 
-	$('a[data-toggle-filter]').click(toggleFilter);
-	$('button[name=filter-close]').click(toggleFilter);
-	$('button[name=filter-reset]').click(resetFilter);
+    $('a[data-toggle-filter]').click(toggleFilter);
+    $('button[name=filter-close]').click(toggleFilter);
+    $('button[name=filter-reset]').click(resetFilter);
 
-	/*
-		Сортировка
-	 */
-	$("table.sortable-table tbody").sortable({
-		items: "> tr:not(.active)",
-		helper: function(e, ui) {
-			ui.children().each(function() {
-				$(this).width($(this).width());
-				$(this).height($(this).height());
-			});
-			return ui;
-		},
-		axis: "y",
-		forcePlaceholderSize: true,
-		opacity: 0.5,
-		start: function(e, ui){
-			ui.placeholder.height(ui.item.height());
-		},
-		cursor: "move",
-		update: function() {
-			$('button[name=save-sorting]').removeAttr('disabled');
+    /*
+        Сортировка
+     */
+    $("table.sortable-table tbody").sortable({
+        items: "> tr:not(.active)",
+        helper: function(e, ui) {
+            ui.children().each(function() {
+                $(this).width($(this).width());
+                $(this).height($(this).height());
+            });
+            return ui;
+        },
+        axis: "y",
+        forcePlaceholderSize: true,
+        opacity: 0.5,
+        start: function(e, ui){
+            ui.placeholder.height(ui.item.height());
+        },
+        cursor: "move",
+        update: function() {
+            $('button[name=save-sorting]').removeAttr('disabled');
 
-			let items = [];
-			$('input[name="sort-order[]"]').each(function() {
-				items.push($(this).attr('value'));
-			});
-			$('#sort-form input[name=items]').val(items.join(','));
-		}
-	});
+            let items = [];
+            $('input[name="sort-order[]"]').each(function() {
+                items.push($(this).attr('value'));
+            });
+            $('#sort-form input[name=items]').val(items.join(','));
+        }
+    });
 
     $('.files-list.sortable-list').sortable({
         items: ".card",
@@ -160,48 +160,48 @@ $(function () {
         return false;
     });
 
-	$('.multiple-delete').bind(
-		'change',
-		function() {
-			let n = $("input.multiple-delete:checked").length;
+    $('.multiple-delete').bind(
+        'change',
+        function() {
+            let n = $("input.multiple-delete:checked").length;
 
-			if (n) {
-				$('button[name=delete-items]').removeAttr('disabled');
-			} else {
-				$('button[name=delete-items]').attr('disabled', 'disabled');
-			}
+            if (n) {
+                $('button[name=delete-items]').removeAttr('disabled');
+            } else {
+                $('button[name=delete-items]').attr('disabled', 'disabled');
+            }
 
-			setItemsForDelete();
-		}
-	);
+            setItemsForDelete();
+        }
+    );
 
-	$('a.toggle-all-delete-checkbox').bind(
-		'click',
-		function () {
-			let n = $("input.multiple-delete:checked").length;
+    $('a.toggle-all-delete-checkbox').bind(
+        'click',
+        function () {
+            let n = $("input.multiple-delete:checked").length;
 
-			if (n) {
-				$("input.multiple-delete").prop("checked", false);
-			} else {
-				$("input.multiple-delete").prop("checked", true);
-			}
+            if (n) {
+                $("input.multiple-delete").prop("checked", false);
+            } else {
+                $("input.multiple-delete").prop("checked", true);
+            }
 
-			$("input.multiple-delete").trigger("change");
+            $("input.multiple-delete").trigger("change");
 
-			setItemsForDelete();
+            setItemsForDelete();
 
-			return false;
-		}
-	);
+            return false;
+        }
+    );
 
-	$('.nav-pills li a').bind(
-		'click',
-		function() {
-			let tabId = $(this).attr('data-tab-id');
+    $('.nav-pills li a').bind(
+        'click',
+        function() {
+            let tabId = $(this).attr('data-tab-id');
 
-			Cookies.set('active_tab', tabId, {'path': window.location.pathname, sameSite: 'Lax'});
-		}
-	);
+            Cookies.set('active_tab', tabId, {'path': window.location.pathname, sameSite: 'Lax'});
+        }
+    );
 
     $('.toast-message').each(function() {
         toast.fire({
@@ -517,7 +517,7 @@ let imgCrop = function(element) {
         let self = this;
 
         $('#' + self.imgId).Jcrop({
-            aspectRatio: self.aspectRatio,
+            aspectRatio: self.mode == 'free' ? null : self.aspectRatio,
             maxSize: [self.maxWidth, self.maxHeight],
             onSelect: function(coords) {
                 self.onEndCrop(coords, self.imgId);

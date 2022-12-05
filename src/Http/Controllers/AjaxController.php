@@ -120,6 +120,7 @@ class AjaxController extends BaseController
 
         if (request()->has(['id', 'coords', 'width', 'height', 'ratio', 'mode', 'thumbnail'])) {
             $file = Attachment::find((int) request()->get('id'));
+            $mode = request()->get('mode');
             if ($file) {
                 $tmpFile = tempnam(sys_get_temp_dir(), $file->physicalPath());
                 file_put_contents($tmpFile, Storage::disk($file->disk)->get($file->physicalPath()));
@@ -139,8 +140,13 @@ class AjaxController extends BaseController
                 $resizer->save($tmpFile);
 
                 $resizer = new ImageResize($tmpFile);
-                $resizer->resize($finalWidth, $finalHeight, true);
-                $resizer->save($tmpFile);
+                if ($mode == 'free') {
+                    $resizer->resizeToBestFit($finalWidth, $finalHeight, true);
+                    $resizer->save($tmpFile, exact_size: [$finalWidth, $finalHeight]);
+                } else {
+                    $resizer->resize($finalWidth, $finalHeight, true);
+                    $resizer->save($tmpFile);
+                }
 
                 $thumbnail = request()->get('thumbnail');
                 $thumbnailPath = $file->getThumbnailFilename($thumbnail);
