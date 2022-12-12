@@ -21,12 +21,15 @@
         "illuminate/support": "^9.0",
         "myclabs/php-enum": "^1.8",
         "socialiteproviders/yandex": "^4.1",
-        "laravel/ui": "^3.4",
-        "gumlet/php-image-resize": "^2.0"
+        "laravel/ui": "^3.4"
     },
     "require-dev": {
         "orchestra/testbench": "^7.5",
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "apigen/apigen": "^4.1",
+        "php-coveralls/php-coveralls": "^2.1",
+        "ext-exif": "*",
+        "ext-gd": "*"
     },
     "autoload": {
         "psr-4": {

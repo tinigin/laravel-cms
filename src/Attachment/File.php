@@ -13,7 +13,7 @@ use LaravelCms\Attachment\Engines\Generator;
 use LaravelCms\Attachment\Models\Attachment;
 use LaravelCms\Events\ReplicateFileEvent;
 use LaravelCms\Events\UploadFileEvent;
-use Gumlet\ImageResize;
+use LaravelCms\Support\ImageResize;
 
 /**
  * Class File.
@@ -163,7 +163,7 @@ class File
 
                     case 'fit':
                     case 'free':
-                        $resizer->resizeToBestFit($thumbnailData['w'], $thumbnailData['h']);
+                        $resizer->resizeToBestFit($thumbnailData['w'], $thumbnailData['h'], true);
                         break;
 
                     case 'height':
@@ -183,7 +183,10 @@ class File
                         );
                         break;
                 }
-                $resizer->save($tmpFile);
+                if (in_array($thumbnailData['mode'], ['free', 'fit']))
+                    $resizer->save($tmpFile, exact_size: [$thumbnailData['w'], $thumbnailData['h']]);
+                else
+                    $resizer->save($tmpFile);
 
                 $additional['thumbnails'][$thumbnailData['w'] . 'x' . $thumbnailData['h']] = $filename;
 
