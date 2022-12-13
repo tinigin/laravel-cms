@@ -251,7 +251,7 @@ class ImageResize
                     $dest_image = imagecreatetruecolor($this->getDestWidth(), $this->getDestHeight());
                 }
 
-                $background = imagecolorallocatealpha($dest_image, 255, 255, 255, 1);
+                $background = imagecolorallocatealpha($dest_image, config('cms.images_default_background_r'), config('cms.images_default_background_g'), config('cms.images_default_background_b'), config('cms.images_default_background_a'));
                 imagecolortransparent($dest_image, $background);
                 imagefill($dest_image, 0, 0, $background);
                 imagesavealpha($dest_image, true);
@@ -260,11 +260,11 @@ class ImageResize
             case IMAGETYPE_JPEG:
                 if( !empty($exact_size) && is_array($exact_size) ){
                     $dest_image = imagecreatetruecolor($exact_size[0], $exact_size[1]);
-                    $background = imagecolorallocate($dest_image, 255, 255, 255);
+                    $background = imagecolorallocate($dest_image, config('cms.images_default_background_r'), config('cms.images_default_background_g'), config('cms.images_default_background_b'));
                     imagefilledrectangle($dest_image, 0, 0, $exact_size[0], $exact_size[1], $background);
                 } else{
                     $dest_image = imagecreatetruecolor($this->getDestWidth(), $this->getDestHeight());
-                    $background = imagecolorallocate($dest_image, 255, 255, 255);
+                    $background = imagecolorallocate($dest_image, config('cms.images_default_background_r'), config('cms.images_default_background_g'), config('cms.images_default_background_b'));
                     imagefilledrectangle($dest_image, 0, 0, $this->getDestWidth(), $this->getDestHeight(), $background);
                 }
                 break;
@@ -275,11 +275,11 @@ class ImageResize
                 }
                 if( !empty($exact_size) && is_array($exact_size) ){
                     $dest_image = imagecreatetruecolor($exact_size[0], $exact_size[1]);
-                    $background = imagecolorallocate($dest_image, 255, 255, 255);
+                    $background = imagecolorallocate($dest_image, config('cms.images_default_background_r'), config('cms.images_default_background_g'), config('cms.images_default_background_b'));
                     imagefilledrectangle($dest_image, 0, 0, $exact_size[0], $exact_size[1], $background);
                 } else{
                     $dest_image = imagecreatetruecolor($this->getDestWidth(), $this->getDestHeight());
-                    $background = imagecolorallocate($dest_image, 255, 255, 255);
+                    $background = imagecolorallocate($dest_image, config('cms.images_default_background_r'), config('cms.images_default_background_g'), config('cms.images_default_background_b'));
                     imagefilledrectangle($dest_image, 0, 0, $this->getDestWidth(), $this->getDestHeight(), $background);
                 }
 
@@ -306,8 +306,16 @@ class ImageResize
                 imagealphablending($dest_image, false);
                 imagesavealpha($dest_image, true);
 
-                $background = imagecolorallocatealpha($dest_image, 255, 255, 255, 127);
-                imagecolortransparent($dest_image, $background);
+                $background = imagecolorallocatealpha(
+                    $dest_image,
+                    config('cms.images_default_background_r'),
+                    config('cms.images_default_background_g'),
+                    config('cms.images_default_background_b'),
+                    config('cms.images_default_background_a')
+                );
+                if (config('cms.png_image_transparent'))
+                    imagecolortransparent($dest_image, $background);
+
                 imagefill($dest_image, 0, 0, $background);
                 break;
 
@@ -318,11 +326,11 @@ class ImageResize
 
                 if(!empty($exact_size) && is_array($exact_size)) {
                     $dest_image = imagecreatetruecolor($exact_size[0], $exact_size[1]);
-                    $background = imagecolorallocate($dest_image, 255, 255, 255);
+                    $background = imagecolorallocate($dest_image, config('cms.images_default_background_r'), config('cms.images_default_background_g'), config('cms.images_default_background_b'));
                     imagefilledrectangle($dest_image, 0, 0, $exact_size[0], $exact_size[1], $background);
                 } else {
                     $dest_image = imagecreatetruecolor($this->getDestWidth(), $this->getDestHeight());
-                    $background = imagecolorallocate($dest_image, 255, 255, 255);
+                    $background = imagecolorallocate($dest_image, config('cms.images_default_background_r'), config('cms.images_default_background_g'), config('cms.images_default_background_b'));
                     imagefilledrectangle($dest_image, 0, 0, $this->getDestWidth(), $this->getDestHeight(), $background);
                 }
                 break;
@@ -335,10 +343,11 @@ class ImageResize
         }
 
         if( !empty($exact_size) && is_array($exact_size) ) {
-            if ($this->getSourceHeight() <= $this->getSourceWidth()) {
+            if ($this->getSourceHeight() > $this->getDestWidth()) {
                 $this->dest_y = ($exact_size[1] - $this->getDestHeight()) / 2;
             }
-            if ($this->getSourceHeight() >= $this->getSourceWidth()) {
+
+            if ($this->getSourceHeight() > $this->getDestHeight()) {
                 $this->dest_x = ($exact_size[0] - $this->getDestWidth()) / 2;
             }
         }
