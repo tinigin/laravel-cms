@@ -303,7 +303,7 @@ class ImageResize
                     }
                 }
 
-                imagealphablending($dest_image, false);
+                imagealphablending($dest_image, true);
                 imagesavealpha($dest_image, true);
 
                 $background = imagecolorallocatealpha(
