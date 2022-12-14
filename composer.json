@@ -24,12 +24,11 @@
         "laravel/ui": "^3.4"
     },
     "require-dev": {
-        "orchestra/testbench": "^7.5",
-        "phpunit/phpunit": "^9.5",
-        "apigen/apigen": "^4.1",
-        "php-coveralls/php-coveralls": "^2.1",
         "ext-exif": "*",
-        "ext-gd": "*"
+        "ext-gd": "*",
+        "orchestra/testbench": "^7.15",
+        "php-coveralls/php-coveralls": "^2.1",
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
