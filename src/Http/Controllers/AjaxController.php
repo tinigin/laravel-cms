@@ -2,7 +2,7 @@
 
 namespace LaravelCms\Http\Controllers;
 
-use Gumlet\ImageResize;
+use LaravelCms\Support\ImageResize;
 use Illuminate\Support\Facades\Storage;
 use LaravelCms\Http\Controllers\BaseController;
 use LaravelCms\Attachment\Models\Attachment;
