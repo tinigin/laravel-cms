@@ -365,6 +365,19 @@ $(function () {
     document.querySelectorAll('.external-listing').forEach(function (element, index) {
         new external(element);
     });
+
+    $('.datetime-picker').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm',
+        locale: 'ru',
+        icons: {
+            time: 'far fa-clock'
+        }
+    });
+
+    $('.date-picker').datetimepicker({
+        format: 'YYYY-MM-DD',
+        locale: 'ru'
+    })
 });
 
 let imgCrop = function(element) {

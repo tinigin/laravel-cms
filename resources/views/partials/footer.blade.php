@@ -51,9 +51,6 @@
 </script>
 <!-- Imask -->
 <script src="{{ asset('assets/cms/plugins/imaskjs/imask.js') }}" referrerpolicy="origin"></script>
-<!-- Dropzone -->
-<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-{{--<script src="{{ asset('assets/cms/plugins/dropzone/min/dropzone.min.js') }}" referrerpolicy="origin"></script>--}}
 <!-- Tippy -->
 <script src="https://unpkg.com/@popperjs/core@2"></script>
 <script src="https://unpkg.com/tippy.js@6"></script>
