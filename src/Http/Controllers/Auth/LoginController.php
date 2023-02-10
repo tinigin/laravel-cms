@@ -79,7 +79,7 @@ class LoginController extends \Illuminate\Routing\Controller
                 if ($user->email) {
                     $user = User::where('email', $user->email)->first();
                     if ($user) {
-                        Auth::guard('cms')->loginUsingId(1, true);
+                        Auth::guard('cms')->loginUsingId($user->getKey(), true);
                         return redirect()->intended(route('cms.dashboard'));
                     }
                 }
