@@ -531,14 +531,22 @@ let imgCrop = function(element) {
 
         $('#' + self.imgId).Jcrop({
             aspectRatio: self.mode == 'free' ? null : self.aspectRatio,
-            maxSize: [self.maxWidth, self.maxHeight],
+            maxSize: self.mode == 'free' ? [0, 0] : [self.maxWidth, self.maxHeight],
             onSelect: function(coords) {
                 self.onEndCrop(coords, self.imgId);
+                self.showSize(coords);
             }
         }, function() {
             self.jcrop = this;
         });
     }
+
+    this.showSize = function(coords) {
+        let size = ((coords.w * this.ratio) / (coords.h * this.ratio)) + ' ~ ' + this.aspectRatio;
+        document.querySelector('.jcrop-tracker').textContent = size;
+        document.querySelector('.jcrop-tracker').style.color = 'white';
+        document.querySelector('.jcrop-tracker').style.opacity = 0.2;
+    };
 
     this.resize = function(e) {
         this.jcrop.destroy();
