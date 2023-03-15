@@ -327,6 +327,7 @@ class Attachment extends Model
             $data['thumbnails'] = [];
 
             $thumbnails = $this->getAdditionalByKey('thumbnails');
+            ksort($thumbnails, SORT_NUMERIC);
             foreach ($thumbnails as $size => $filename) {
                 $data['thumbnails'][] = [
                     'url' => $this->thumbnailUrl($size),
