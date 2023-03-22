@@ -117,7 +117,7 @@ class HttpFilter
                     } elseif (is_numeric($value)) {
                         $query->where($property . '.' . $key, $value);
                     } else {
-                        $query->where($property . '.' . $key, 'like', "%$value%");
+                        $query->where($property . '.' . $key, 'ilike', "%$value%");
                     }
                 });
             }
@@ -180,7 +180,7 @@ class HttpFilter
         } elseif (is_numeric($value) && ! $model->hasCast($property, ['string'])) {
             $query->where($property, $value);
         } else {
-            $query->where($property, 'like', "%$value%");
+            $query->where($property, 'ilike', "%$value%");
         }
 
         return $query;
