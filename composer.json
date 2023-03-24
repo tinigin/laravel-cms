@@ -18,10 +18,10 @@
     ],
     "require": {
         "php": "^8.0",
-        "illuminate/support": "^9.0",
+        "illuminate/support": "^10.0",
         "myclabs/php-enum": "^1.8",
         "socialiteproviders/yandex": "^4.1",
-        "laravel/ui": "^3.4"
+        "laravel/ui": "^4.0"
     },
     "require-dev": {
         "ext-exif": "*",
