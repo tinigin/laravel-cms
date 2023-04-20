@@ -797,7 +797,7 @@ function external (element) {
                             let xhr = new XMLHttpRequest();
                             xhr.open(
                                 "GET",
-                                url
+                                url + '?modal_parent_id=' + this.parentId
                             );
                             xhr.onload = () => {
                                 self.hideModal();
