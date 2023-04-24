@@ -545,7 +545,8 @@ let imgCrop = function(element) {
         let size = ((coords.w * this.ratio) / (coords.h * this.ratio)) + ' ~ ' + this.aspectRatio;
         document.querySelector('.jcrop-tracker').textContent = size;
         document.querySelector('.jcrop-tracker').style.color = 'white';
-        document.querySelector('.jcrop-tracker').style.opacity = 0.2;
+        document.querySelector('.jcrop-tracker').style.opacity = 0.3;
+        document.querySelector('.jcrop-tracker').style.textShadow = '1px 1px 1px #000';
     };
 
     this.resize = function(e) {
@@ -796,7 +797,7 @@ function external (element) {
                             let xhr = new XMLHttpRequest();
                             xhr.open(
                                 "GET",
-                                url
+                                url + '?modal_parent_id=' + this.parentId
                             );
                             xhr.onload = () => {
                                 self.hideModal();

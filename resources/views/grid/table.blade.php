@@ -78,19 +78,23 @@
                         </a>
                     @endif
 
-                    <form method="post" enctype="multipart/form-data" id="sort-form">
-                        @csrf
-                        @method('post')
-                        <input type="hidden" name="items" value="" />
-                        <input type="hidden" name="save-sorting" value="true" />
-                    </form>
+                    @if ($grid->sortable())
+                        <form method="post" enctype="multipart/form-data" id="sort-form">
+                            @csrf
+                            @method('post')
+                            <input type="hidden" name="items" value="" />
+                            <input type="hidden" name="save-sorting" value="true" />
+                        </form>
+                    @endif
 
-                    <form method="post" enctype="multipart/form-data" id="delete-form">
-                        @csrf
-                        @method('post')
-                        <input type="hidden" name="items" value="" />
-                        <input type="hidden" name="multiple-delete" value="true" />
-                    </form>
+                    @if ($grid->multipleDelete())
+                        <form method="post" enctype="multipart/form-data" id="delete-form">
+                            @csrf
+                            @method('post')
+                            <input type="hidden" name="items" value="" />
+                            <input type="hidden" name="multiple-delete" value="true" />
+                        </form>
+                    @endif
 
                     @if (($grid->sortable() || $grid->multipleDelete()) && $grid->count() > 0)
                         <div class="btn-group-sm float-right" role="group">
