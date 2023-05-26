@@ -78,7 +78,7 @@ Route::name('cms.')->group(function() {
 
                 $router->get('{controller}/{objectId}', function ($controller, $objectId) use ($resolver) {
                     return $resolver($controller, 'edit', $objectId);
-                })->name('module.edit');
+                })->where('objectId', '[0-9]+')->name('module.edit');
 
                 $router->get('{controller}/view/{objectId}', function ($controller, $objectId) use ($resolver) {
                     return $resolver($controller, 'view', $objectId);
@@ -95,6 +95,10 @@ Route::name('cms.')->group(function() {
                 $router->get('{controller}/images/{objectId}', function ($controller, $objectId) use ($resolver) {
                     return $resolver($controller, 'images', $objectId);
                 })->name('module.images');
+
+                $router->get('{controller}/{action}', function ($controller, $action) use ($resolver) {
+                    return $resolver($controller, $action);
+                })->name('module.custom.action');
 
                 // Ajax
                 $ajaxClass = \LaravelCms\Http\Controllers\AjaxController::class;
