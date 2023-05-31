@@ -122,7 +122,7 @@ class Attachment extends Model
         $disk = Storage::disk($this->getAttribute('disk'));
         $path = $this->physicalPath();
 
-        return $path !== null && $disk->exists($path)
+        return $path !== null && (in_array($disk, ['local', 'public']) && $disk->exists($path))
             ? $disk->url($path)
             : $default;
     }
@@ -141,7 +141,7 @@ class Attachment extends Model
         $disk = Storage::disk($this->getAttribute('disk'));
         $path = $this->physicalThumbnailPath($dimension);
 
-        return $path !== null && $disk->exists($path)
+        return $path !== null && (in_array($disk, ['local', 'public']) && $disk->exists($path))
             ? $disk->url($path)
             : $default;
     }
