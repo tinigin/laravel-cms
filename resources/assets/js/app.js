@@ -29,11 +29,6 @@ $(function () {
         return false;
     }
 
-    function resetFilter() {
-        window.location.replace(window.location.pathname);
-        return false;
-    }
-
     function setItemsForDelete() {
         let items = [];
         $('input[name="items-to-delete[]"]:checked').each(function() {
@@ -44,7 +39,6 @@ $(function () {
 
     $('a[data-toggle-filter]').click(toggleFilter);
     $('button[name=filter-close]').click(toggleFilter);
-    $('button[name=filter-reset]').click(resetFilter);
 
     /*
         Сортировка
@@ -194,7 +188,7 @@ $(function () {
         }
     );
 
-    $('.nav-pills li a').bind(
+    $('.content .nav-pills li a').bind(
         'click',
         function() {
             let tabId = $(this).attr('data-tab-id');

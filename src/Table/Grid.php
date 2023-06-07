@@ -130,6 +130,28 @@ class Grid {
         return isset($this->options[$key]) ? $this->options[$key] : $default;
     }
 
+    protected function getActiveQueryParams()
+    {
+        $query = request()->query();
+        $result = [];
+
+        foreach ($query as $key => $value) {
+            if ($key == 'filter' && $value) {
+                $result['filter'] = [];
+                foreach ($query['filter'] as $k => $v) {
+                    if ($v) {
+                        $result['filter'][$k] = $v;
+                    }
+                }
+            }
+            else if ($value) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
     protected function process()
     {
         $this->setOption(
@@ -137,29 +159,33 @@ class Grid {
             $this->getOption('without-paginator') || request()->has('all')
         );
 
-        $this->query = $this->className::filters();
-
         $url = request()->url();
         $query = request()->query();
+        $activeQueryParams = $this->getActiveQueryParams();
 
         // Clean query string
         if (request()->has('filter-submit')) {
-            $tmp = [];
-            foreach ($query as $key => $value) {
-                if ($key == 'filter' && $value) {
-                    $tmp['filter'] = [];
-                    foreach ($query['filter'] as $k => $v) {
-                        if ($v) {
-                            $tmp['filter'][$key] = $value;
-                        }
-                    }
-                }
-                if ($value) {
-                    $tmp[$key] = $value;
-                }
-            }
+            redirect()->to($url . (empty($activeQueryParams) ?: '?' . http_build_query($activeQueryParams)))->send();
 
-            redirect()->to($url . (empty($tmp) ?: '?' . http_build_query($tmp)))->send();
+        } else if (request()->has('filter-reset')) {
+            redirect()->to($url)->withoutCookie('grid_filter', request()->getPathInfo())->send();
+        }
+
+        $this->query = $this->className::filters();
+
+        if (!$query) {
+            $query = request()->cookie('grid_filter', []);
+            if ($query) {
+                $query = json_decode($query, associative: true);
+                redirect()->to($url . (empty($query) ?: '?' . http_build_query($query)))->send();
+            }
+        } else {
+            cookie()->queue(cookie(
+                'grid_filter',
+                json_encode($activeQueryParams),
+                0,
+                request()->getPathInfo()
+            ));
         }
 
         $model = $this->query->getModel();
