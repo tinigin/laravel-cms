@@ -248,7 +248,7 @@ class Attachment extends Model
     public function delete()
     {
         if ($this->exists) {
-            if (Storage::disk($this->disk)->exists($this->physicalPath())) {
+            if (static::where('hash', $this->hash)->where('disk', $this->disk)->count() <= 1) {
                 // Physical removal of all copies of a file.
                 if ($this->additional && isset($this->additional['thumbnails'])) {
                     foreach ($this->additional['thumbnails'] as $dimension => $filename) {
