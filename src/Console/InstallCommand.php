@@ -53,7 +53,7 @@ class InstallCommand extends Command
                 app_path('Http/Middleware/EncryptCookies.php'),
                 str_replace(
                     "protected \$except = [",
-                    'protected $except = [' . PHP_EOL . '        \'active_tab\'',
+                    'protected $except = [' . PHP_EOL . '        \'active_tab\',' . PHP_EOL . '        \'grid_filter\'',
                     $str
                 )
             );

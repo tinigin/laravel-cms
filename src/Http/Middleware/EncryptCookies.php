@@ -12,6 +12,7 @@ class EncryptCookies extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        'active_tab'
+        'active_tab',
+        'grid_filter'
     ];
 }
