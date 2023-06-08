@@ -23,6 +23,9 @@ class AjaxController extends BaseController
                         $parent->cleanCache();
                     }
                     $attachment->delete();
+                    if ($parent && method_exists($parent, 'dependenciesUpdated')) {
+                        $parent->dependenciesUpdated();
+                    }
                     if ($parent && method_exists($parent, 'updateAttachmentsDependencies')) {
                         $parent->updateAttachmentsDependencies(true);
                     }
@@ -64,6 +67,9 @@ class AjaxController extends BaseController
                         if ($parent && method_exists($parent, 'cleanCache')) {
                             $parent->cleanCache();
                         }
+                        if ($parent && method_exists($parent, 'dependenciesUpdated')) {
+                            $parent->dependenciesUpdated();
+                        }
                         if ($parent && method_exists($parent, 'updateAttachmentsDependencies')) {
                             $parent->updateAttachmentsDependencies(true);
                         }
@@ -101,6 +107,9 @@ class AjaxController extends BaseController
                 $parent = $item->getParentModel();
                 if ($parent && method_exists($parent, 'cleanCache')) {
                     $parent->cleanCache();
+                }
+                if ($parent && method_exists($parent, 'dependenciesUpdated')) {
+                    $parent->dependenciesUpdated();
                 }
                 if ($parent && method_exists($parent, 'updateAttachmentsDependencies')) {
                     $parent->updateAttachmentsDependencies(true);
@@ -159,6 +168,9 @@ class AjaxController extends BaseController
                 $parent = $file->getParentModel();
                 if ($parent && method_exists($parent, 'cleanCache')) {
                     $parent->cleanCache();
+                }
+                if ($parent && method_exists($parent, 'dependenciesUpdated')) {
+                    $parent->dependenciesUpdated();
                 }
                 if ($parent && method_exists($parent, 'updateAttachmentsDependencies')) {
                     $parent->updateAttachmentsDependencies();
