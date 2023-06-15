@@ -139,7 +139,7 @@ class Grid {
             if ($key == 'filter' && $value) {
                 $result['filter'] = [];
                 foreach ($query['filter'] as $k => $v) {
-                    if ($v) {
+                    if ($v !== null && $v !== '') {
                         $result['filter'][$k] = $v;
                     }
                 }
@@ -148,7 +148,7 @@ class Grid {
                 $result[$key] = $value;
             }
         }
-
+        
         return $result;
     }
 
