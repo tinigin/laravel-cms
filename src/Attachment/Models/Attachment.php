@@ -122,7 +122,7 @@ class Attachment extends Model
         $disk = Storage::disk($this->getAttribute('disk'));
         $path = $this->physicalPath();
 
-        return $path !== null && $disk->exists($path)
+        return $path !== null && (in_array($disk, ['local', 'public']) ? $disk->exists($path) : true)
             ? $disk->url($path)
             : $default;
     }
@@ -141,7 +141,7 @@ class Attachment extends Model
         $disk = Storage::disk($this->getAttribute('disk'));
         $path = $this->physicalThumbnailPath($dimension);
 
-        return $path !== null && $disk->exists($path)
+        return $path !== null && (in_array($disk, ['local', 'public']) ? $disk->exists($path) : true)
             ? $disk->url($path)
             : $default;
     }
@@ -248,7 +248,7 @@ class Attachment extends Model
     public function delete()
     {
         if ($this->exists) {
-            if (static::where('hash', $this->hash)->where('disk', $this->disk)->count() <= 1) {
+            if (Storage::disk($this->disk)->exists($this->physicalPath())) {
                 // Physical removal of all copies of a file.
                 if ($this->additional && isset($this->additional['thumbnails'])) {
                     foreach ($this->additional['thumbnails'] as $dimension => $filename) {
