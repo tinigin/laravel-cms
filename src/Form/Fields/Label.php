@@ -10,13 +10,14 @@ use LaravelCms\Form\Field;
  * @method Label name(string $value = null)
  * @method Label popover(string $value = null)
  * @method Label title(string $value = null)
+ * @method Label value(string $value = null)
  */
 class Label extends Field
 {
     /**
      * @var string
      */
-    protected $view = 'platform::fields.label';
+    protected $view = 'cms::form.fields.label';
 
     /**
      * Default attributes value.
