@@ -141,7 +141,11 @@ class ModuleController extends BaseController
 
             if ($this->relations) {
                 foreach ($this->relations as $relation) {
-                    $values[$relation] = $model->$relation()->allRelatedIds()->toArray();
+                    if (method_exists($model, "{$relation}Values")) {
+                        $method = "{$relation}Values";
+                        $values[$relation] = $model->$method();
+                    } else
+                        $values[$relation] = $model->$relation()->allRelatedIds()->toArray();
                 }
             }
 
