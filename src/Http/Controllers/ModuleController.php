@@ -40,6 +40,12 @@ class ModuleController extends BaseController
 
     protected $parentId = null;
 
+    public $title = '';
+
+    public $description = '';
+
+    public $buttons = [];
+
     public function before()
     {
         if (parent::before()) {
@@ -125,6 +131,16 @@ class ModuleController extends BaseController
         return [];
     }
 
+    public function getTitle($default = ''): string
+    {
+        return $this->title ?: $default;
+    }
+
+    public function getDescription($default = ''): string
+    {
+        return $this->description ?: $default;
+    }
+
     /**
      * Return form Builder object
      * @param boolean $create
@@ -194,6 +210,18 @@ class ModuleController extends BaseController
                     ->value('true')
                     ->class('btn btn-primary')
             );
+
+            if ($this->buttons) {
+                foreach ($this->buttons as $btn) {
+                    $form->push(
+                        Link::make($btn['title'])
+                            ->href($btn['link'])
+                            ->class($btn['class'])
+                            ->withoutFormType()
+                    );
+                }
+            }
+
             $form->push(
                 Link::make('Удалить')
                     ->href(route('cms.module.destroy', ['controller' => $this->getSectionController(), 'objectId' => $this->objectId], false))
@@ -225,11 +253,13 @@ class ModuleController extends BaseController
         if ($this->mode == 'simple')
             return view('cms::simple.module')
                 ->with('form', $form)
-                ->with('title', 'Добавление');
+                ->with('title', $this->getTitle('Добавление'))
+                ->with('description', $this->getDescription());
         else
             return view('cms::module')
                 ->with('form', $form)
-                ->with('title', 'Добавление');
+                ->with('title', $this->getTitle('Добавление'))
+                ->with('description', $this->getDescription());
     }
 
     /**
@@ -256,11 +286,13 @@ class ModuleController extends BaseController
         if ($this->mode == 'simple')
             return view('cms::simple.module')
                 ->with('form', $form)
-                ->with('title', 'Редактирование');
+                ->with('title', $this->getTitle('Редактирование'))
+                ->with('description', $this->getDescription());
         else
             return view('cms::module')
                 ->with('form', $form)
-                ->with('title', 'Редактирование');
+                ->with('title', $this->getTitle('Редактирование'))
+                ->with('description', $this->getDescription());
     }
 
     protected function getFieldByKey($key)
