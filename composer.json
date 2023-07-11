@@ -21,7 +21,8 @@
         "illuminate/support": "^10.0",
         "myclabs/php-enum": "^1.8",
         "socialiteproviders/yandex": "^4.1",
-        "laravel/ui": "^4.0"
+        "laravel/ui": "^4.0",
+        "mateusjunges/laravel-acl": "^4.2"
     },
     "require-dev": {
         "ext-exif": "*",
