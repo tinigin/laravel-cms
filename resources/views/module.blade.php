@@ -23,6 +23,12 @@
         </div>
 	@elseif (isset($form))
 		<div class="col-12">
+            @if (isset($description) && $description)
+                <div class="callout callout-warning">
+                    {!! $description !!}
+                </div>
+            @endif
+
 			<div class="card">
                 @include('cms::partials.alert')
 
