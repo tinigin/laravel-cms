@@ -2,6 +2,7 @@
 
 namespace LaravelCms\Models\Cms;
 
+use Junges\ACL\Concerns\HasGroups;
 use LaravelCms\Attachment\Attachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
@@ -13,7 +14,7 @@ use LaravelCms\Filters\Filterable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, Filterable, Attachable;
+    use HasFactory, Notifiable, Filterable, Attachable, HasGroups;
 
     const ACTIVE = 1;
 
