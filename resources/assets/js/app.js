@@ -371,7 +371,11 @@ $(function () {
     $('.date-picker').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: 'ru'
-    })
+    });
+
+    document.querySelectorAll('.ajax-select').forEach(function (element, index) {
+        new ajaxSelect(element);
+    });
 });
 
 let imgCrop = function(element) {
@@ -921,6 +925,79 @@ function external (element) {
     this.removeModal = function() {
         this.modalBackdrop.remove();
         this.modal.remove();
+    };
+
+    this.init();
+}
+
+function ajaxSelect(element) {
+    this.wrapper = element;
+    this.readonly = element.dataset.readonly;
+    this.select = element.querySelector('select');
+    this.input = element.querySelector('input');
+    this.selectedWrapper = element.querySelector('.selected-items');
+
+    this.init = function() {
+        let self = this;
+
+        $(this.input).autoComplete({
+            minLength: 1
+        });
+
+        $(this.input).on('autocomplete.select', function (evt, item) {
+            self.add(item);
+            $(self.input).autoComplete('clear');
+        });
+
+        this.drawSelected();
+    };
+
+    this.add = function(item) {
+        let opt = document.createElement('option');
+        opt.value = item.value;
+        opt.innerHTML = item.text;
+        opt.setAttribute('selected', true);
+        this.select.appendChild(opt);
+
+        this.drawSelected();
+    };
+
+    this.remove = function(value) {
+        for (i = 0; i < this.select.options.length; i++) {
+            if (this.select.options[i].value == value)
+                this.select.remove(i);
+        }
+
+        this.drawSelected();
+    };
+
+    this.drawSelected = function() {
+        let self = this;
+        let html = '';
+
+        if (this.select.querySelectorAll('option').length) {
+            html += "<ul>";
+            this.select.querySelectorAll('option').forEach(element => {
+                html += "<li>";
+                if (!self.readonly) {
+                    html += "<a href=\"\" data-id=\"" + element.value + "\"><span class=\"fa fa-trash text-danger\"></span></a>";
+                }
+                html += "<span>" + element.textContent + "</span></li>";
+                html += "</li>";
+            });
+            html += "</ul>";
+        }
+
+        this.selectedWrapper.innerHTML = html;
+
+        this.selectedWrapper.querySelectorAll('ul li a').forEach(a => {
+            a.addEventListener('click', function (event) {
+                self.remove(a.dataset.id);
+
+                event.preventDefault();
+                return false;
+            });
+        });
     };
 
     this.init();

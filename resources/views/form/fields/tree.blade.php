@@ -4,6 +4,7 @@
         'name' => $attributes['name'],
         'value' => $value,
         'tree' => $tree,
-        'url' => ''
+        'url' => '',
+        'readonly' => $readonly
     ])
 @endcomponent

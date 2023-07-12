@@ -310,6 +310,14 @@ body.loading {
             }
         }
     }
+
+    &[data-readonly] {
+        ul {
+            li {
+                grid-template-columns: 1fr;
+            }
+        }
+    }
 }
 
 // You can compile this with https://www.sassmeister.com

@@ -214,6 +214,7 @@ class Field implements Fieldable, Htmlable
             'oldName'        => $this->getOldName(),
             'typeForm'       => $this->typeForm ?? $this->vertical()->typeForm,
             'settings'       => $this->settings,
+            'readonly'       => $this->get('readonly', false),
         ]))
             ->withErrors($errors);
     }

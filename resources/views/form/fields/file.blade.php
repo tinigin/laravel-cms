@@ -1,20 +1,22 @@
 @component($typeForm, get_defined_vars())
-    <div class="custom-file mb-3">
-        <input {{ $attributes }}>
-        <label
-            class="custom-file-label"
-            for="{{ $attributes['id'] }}"
-        >
-            @if ($attributes['multiple'])
-                {{ __('Choose Files') }}
-            @else
-                {{ __('Choose File') }}
-            @endif
-        </label>
-    </div>
+    @if (!$readonly)
+        <div class="custom-file mb-3">
+            <input {{ $attributes }}>
+            <label
+                class="custom-file-label"
+                for="{{ $attributes['id'] }}"
+            >
+                @if ($attributes['multiple'])
+                    {{ __('Choose Files') }}
+                @else
+                    {{ __('Choose File') }}
+                @endif
+            </label>
+        </div>
+    @endif
 
     @if ($value && $value->count())
-        <div class="files-list{{ isset($settings['sortable']) && $settings['sortable'] ? ' sortable-list' : '' }}">
+        <div class="files-list{{ isset($settings['sortable']) && $settings['sortable'] && !$readonly ? ' sortable-list' : '' }}">
             @foreach ($value as $file)
                 <div class="card border-secondary file-card" data-id="{{ $file->getKey() }}">
                     <div class="card-body file-card-body">
@@ -48,7 +50,7 @@
                                             {{ $data['w'] . 'x' . $data['h'] }}
                                         </a>
                                     @endif
-                                    @if (isset($settings['resize']) && $settings['resize'])
+                                    @if (isset($settings['resize']) && $settings['resize'] && !$readonly)
                                         <a
                                             href=""
                                             class="crop-image text-muted ml-2"
@@ -78,15 +80,17 @@
                                 </a>
                             @endif
 
-                            <a
-                                href="#"
-                                data-remove="{{ $file->getKey() }}"
-                                data-url="/cms/ajax/remove-file"
-                                class="btn btn-sm btn-danger"
-                                title="{{ $file->getFilename() }}"
-                            >
-                                <i class="fas fa-trash"></i>
-                            </a>
+                            @if (!$readonly)
+                                <a
+                                    href="#"
+                                    data-remove="{{ $file->getKey() }}"
+                                    data-url="/cms/ajax/remove-file"
+                                    class="btn btn-sm btn-danger"
+                                    title="{{ $file->getFilename() }}"
+                                >
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            @endif
                         </div>
                     </div>
                     @if (isset($settings['fields']) && $settings['fields'])
@@ -102,6 +106,7 @@
                                                 name="{{ $attributes['id'] }}_{{ $field }}"
                                                 placeholder="{{ $fieldTitle }}"
                                                 value="{{ $file->getAdditionalByKey($field) }}"
+                                                {{ $readonly ? 'readonly' : '' }}
                                             />
                                             @break
 
@@ -112,23 +117,30 @@
                                                 data-name="{{ $field }}"
                                                 name="{{ $attributes['id'] }}_{{ $field }}"
                                                 placeholder="{{ $fieldTitle }}"
+                                                {{ $readonly ? 'readonly' : '' }}
                                             >{{ $file->getAdditionalByKey($field) }}</textarea>
                                             @break
                                     @endswitch
                                 </div>
                             @endforeach
-                            <div class="form-group">
-                                <a
-                                    href="#"
-                                    data-file-action="save"
-                                    data-id="{{ $attributes['id'] }}"
-                                    class="btn btn-default float-right"
-                                >{{ __('Save') }}</a>
-                            </div>
+                            @if (!$readonly)
+                                <div class="form-group">
+                                    <a
+                                        href="#"
+                                        data-file-action="save"
+                                        data-id="{{ $attributes['id'] }}"
+                                        class="btn btn-default float-right"
+                                    >{{ __('Save') }}</a>
+                                </div>
+                            @endif
                         </div>
                     @endif
                 </div>
             @endforeach
+        </div>
+    @elseif ($readonly)
+        <div class="files-list">
+            —
         </div>
     @endif
 @endcomponent
