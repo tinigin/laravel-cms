@@ -258,6 +258,9 @@ body.loading::after {
 .ajax-select ul li:hover {
   background-color: rgba(206, 212, 218, 0.3);
 }
+.ajax-select[data-readonly] ul li {
+  grid-template-columns: 1fr;
+}
 
 .diff-wrapper.diff {
   --tab-size: 4;

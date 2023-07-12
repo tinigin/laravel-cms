@@ -89,6 +89,13 @@ class Builder
     protected $images = [];
 
     /**
+     * Is readonly
+     *
+     * @var bool
+     */
+    protected $readonly = false;
+
+    /**
      * Builder constructor.
      *
      * @param Fieldable[]     $items
@@ -121,6 +128,11 @@ class Builder
         $this->language = $language;
 
         return $this;
+    }
+
+    public function readonly(bool $value = true)
+    {
+        $this->readonly = $value;
     }
 
     /**
@@ -212,6 +224,7 @@ class Builder
                     'action' => $this->action,
                     'method' => $this->method,
                     'images' => $this->images,
+                    'readonly' => $this->readonly
                 ]);
         }
     }
@@ -258,6 +271,9 @@ class Builder
             }elseif (is_subclass_of($item, Groupable::class)) {
                 $f[] = $this->renderGroup($item);
             }elseif (is_subclass_of($item, Fieldable::class)) {
+                if ($this->readonly)
+                    $item->readonly(true);
+                
                 $f[] = $this->renderField($item);
 
                 if ($item->hasError() && $item->get('group')) {

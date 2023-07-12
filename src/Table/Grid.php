@@ -148,7 +148,7 @@ class Grid {
                 $result[$key] = $value;
             }
         }
-        
+
         return $result;
     }
 
@@ -305,7 +305,8 @@ class Grid {
                 }
 
                 $itemData['attributes'] = [
-                    'id' => $item->id
+                    'id' => $item->id,
+                    'is_approved' => $item->is_approved
                 ];
 
                 array_push($data, $itemData);

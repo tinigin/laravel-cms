@@ -20,13 +20,33 @@
 
                     @elseif ($type == 'multiple')
                         @php ($inputId = Str::ulid())
-                        <input type="checkbox" name="{{ $name }}" value="{{ $item['id'] }}" id="{{ $inputId }}" @if (in_array($item['id'], $value)) checked @endif></input>
-                        <label for="{{ $inputId }}">{{ $item['name'] }}</label>
+                        @if (!$readonly)
+                            <input type="checkbox" name="{{ $name }}" value="{{ $item['id'] }}" id="{{ $inputId }}" @if (in_array($item['id'], $value)) checked @endif></input>
+                        @endif
+                        <label for="{{ $inputId }}">
+                            @if (in_array($item['id'], $value) && $readonly)
+                                <strong>
+                            @endif
+                            {{ $item['name'] }}
+                            @if (in_array($item['id'], $value) && $readonly)
+                                </strong>
+                            @endif
+                        </label>
 
                     @elseif ($type == 'single')
                         @php ($inputId = Str::ulid())
-                        <input type="radio" name="{{ $name }}" value="{{ $item['id'] }}" id="{{ $inputId }}" @if (in_array($item['id'], $value) || (!$item['id'] && !$value)) checked @endif></input>
-                        <label for="{{ $inputId }}">{{ $item['name'] }}</label>
+                        @if (!$readonly)
+                            <input type="radio" name="{{ $name }}" value="{{ $item['id'] }}" id="{{ $inputId }}" @if (in_array($item['id'], $value) || (!$item['id'] && !$value)) checked @endif></input>
+                        @endif
+                        <label for="{{ $inputId }}">
+                            @if ((in_array($item['id'], $value) || (!$item['id'] && !$value)) && $readonly)
+                                <strong>
+                            @endif
+                            {{ $item['name'] }}
+                            @if ((in_array($item['id'], $value) || (!$item['id'] && !$value)) && $readonly)
+                                </strong>
+                            @endif
+                        </label>
 
                     @endif
                 </div>

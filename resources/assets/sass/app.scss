@@ -310,6 +310,14 @@ body.loading {
             }
         }
     }
+
+    &[data-readonly] {
+        ul {
+            li {
+                grid-template-columns: 1fr;
+            }
+        }
+    }
 }
 
 // You can compile this with https://www.sassmeister.com
@@ -350,11 +358,11 @@ $img-tab: 'data:image/svg+xml,%3Csvg preserveAspectRatio="xMinYMid meet" viewBox
     --tab-size: 4;
 
     background: repeating-linear-gradient(
-                    -45deg,
-                    $diff-bg-color-none-block,
-                    $diff-bg-color-none-block 0.5em,
-                    $diff-bg-color-none-block-alternative 0.5em,
-                    $diff-bg-color-none-block-alternative 1em
+            -45deg,
+            $diff-bg-color-none-block,
+            $diff-bg-color-none-block 0.5em,
+            $diff-bg-color-none-block-alternative 0.5em,
+            $diff-bg-color-none-block-alternative 1em
     );
     border-collapse: collapse;
     border-spacing: 0;
