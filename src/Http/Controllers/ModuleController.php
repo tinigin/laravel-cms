@@ -194,7 +194,7 @@ class ModuleController extends BaseController
      * @param boolean $create
      * @return Builder
      */
-    protected function getForm(bool $create = true): Builder
+    protected function getForm(bool $create = false): Builder
     {
         $repository = null;
 
@@ -499,12 +499,10 @@ class ModuleController extends BaseController
      */
     public function destroy($objectId)
     {
-        if ($this->canDelete) {
-            $model = $this->className::findOrFail($objectId);
-            $model->delete();
+        $model = $this->className::findOrFail($objectId);
+        $model->delete();
 
-            Toast::success('Запись удалена');
-        }
+        Toast::success('Запись удалена');
 
         return redirect(
             route('cms.module.index', ['controller' => $this->getSectionController()], false)
