@@ -19,5 +19,7 @@
         </div>
     </div>
 @elseif (isset($form))
+    @include('cms::partials.alert')
+
     {!! $form !!}
 @endif
