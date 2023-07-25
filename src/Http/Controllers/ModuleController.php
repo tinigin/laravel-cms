@@ -5,6 +5,7 @@ namespace LaravelCms\Http\Controllers;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use LaravelCms\Facades\Alert;
 use LaravelCms\Facades\Toast;
 use LaravelCms\Form\Actions\Link;
 use LaravelCms\Form\Repository;
@@ -481,6 +482,8 @@ class ModuleController extends BaseController
         }
 
         Toast::success('Данные успешно сохранены');
+        if ($this->mode == 'simple')
+            Alert::success('Данные успешно сохранены', 'Данные успешно сохранены');
 
         return redirect(
             route(

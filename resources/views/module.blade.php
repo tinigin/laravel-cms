@@ -29,9 +29,9 @@
                 </div>
             @endif
 
-			<div class="card">
-                @include('cms::partials.alert')
+            @include('cms::partials.alert')
 
+			<div class="card">
     			{!! $form !!}
     		</div>
 		</div>
