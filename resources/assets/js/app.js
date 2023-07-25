@@ -838,7 +838,7 @@ function external (element) {
     };
 
     this.renderFormElements = function() {
-        $('select', self.modal).selectpicker();
+        $('select', this.modal).selectpicker();
 
         let input = this.modal.querySelector('input[type=hidden]:not([name=_token]):not([name=_method])');
         if (input) {
