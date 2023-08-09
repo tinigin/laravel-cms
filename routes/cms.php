@@ -42,7 +42,8 @@ Route::name('cms.')->group(function() {
             else
                 Route::get('/', [\LaravelCms\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
-            Route::group([], function(\Illuminate\Routing\Router $router) {
+            Route::middleware('cms.logout_if_timelimit:cms')->group(
+            function(\Illuminate\Routing\Router $router) {
                 $resolver = function ($controller, $action, $id = null) {
                     $namespace = config('cms.namespace');
                     $controller = Str::studly($controller);

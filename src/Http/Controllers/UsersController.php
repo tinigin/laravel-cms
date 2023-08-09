@@ -76,6 +76,8 @@ class UsersController extends ModuleController
             'email' => ['required', Rule::unique('cms_users')->ignore($this->objectId), 'max:255', 'email'],
             'password' => 'nullable|required_with:password_confirmation|string|confirmed|min:8',
             'status_id' => 'boolean',
+            'time_from' => 'nullable',
+            'time_till' => 'nullable',
             'sections' => 'nullable',
             'general' => 'nullable'
         ];
@@ -101,6 +103,14 @@ class UsersController extends ModuleController
                 ->title('Доступные модули')
                 ->fromModel(\LaravelCms\Models\Cms\Section::class, 'name')
                 ->multiple()
+                ->horizontal(),
+            Input::make('time_from')
+                ->title('Время работы, начало')
+                ->placeholder('10:00')
+                ->horizontal(),
+            Input::make('time_till')
+                ->title('Время работы, конец')
+                ->placeholder('18:00')
                 ->horizontal(),
             Password::make('password')
                 ->title('Пароль')

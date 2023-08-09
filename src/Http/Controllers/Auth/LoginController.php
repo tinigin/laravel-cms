@@ -40,14 +40,27 @@ class LoginController extends \Illuminate\Routing\Controller
         ]);
 
         // Attempt to log the user in
-        if (Auth::guard('cms')->attempt([
+        if (Auth::guard('cms')->attemptWhen([
             'email' => $request->email,
             'password' => $request->password,
-            'status_id' => User::ACTIVE
-        ], $request->has('remember'))) {
+            'status_id' => User::ACTIVE,
+        ], function (User $user) {
+            return $user->isTimeAllowed();
+        }, $request->has('remember'))) {
+            $request->session()->regenerate();
+
             // if successful, then redirect to their intended location
             return redirect()->intended(route('cms.dashboard', absolute: false));
         }
+
+        $user = User::query()->where('email', $request->email)->first();
+        if ($user && !$user->isTimeAllowed())
+            return redirect()
+                ->back()
+                ->withInput($request->only('email', 'remember'))
+                ->withErrors(['email' => trans('cms::auth.time_limit', [
+                    'from' => $user->time_from ?: '00:00', 'till' => $user->time_till ?: '23:59'
+                ])]);
 
         // if unsuccessful, then redirect back to the login with the form data
         return redirect()
@@ -79,6 +92,14 @@ class LoginController extends \Illuminate\Routing\Controller
                 if ($user->email) {
                     $user = User::where('email', $user->email)->first();
                     if ($user) {
+                        if (!$user->isTimeAllowed())
+                            return redirect()
+                                ->back()
+                                ->withInput($request->only('email', 'remember'))
+                                ->withErrors(['email' => trans('cms::auth.time_limit', [
+                                    'from' => $user->time_from ?: '00:00', 'till' => $user->time_till ?: '23:59'
+                                ])]);
+
                         Auth::guard('cms')->loginUsingId($user->getKey(), true);
                         return redirect()->intended(route('cms.dashboard'));
                     }

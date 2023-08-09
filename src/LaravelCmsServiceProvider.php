@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Config;
 use LaravelCms\Console\ModelCommand;
 use LaravelCms\Console\PublishCommand;
 use LaravelCms\Http\Middleware\Authenticate;
+use LaravelCms\Http\Middleware\LogoutIfTimelimit;
 use LaravelCms\Http\Middleware\RedirectIfAuthenticated;
 use LaravelCms\View\Components\GridTable;
 
@@ -128,6 +129,7 @@ class LaravelCmsServiceProvider extends ServiceProvider
             $router = $this->app->make(Router::class);
             $router->aliasMiddleware('cms.auth', Authenticate::class);
             $router->aliasMiddleware('cms.guest', RedirectIfAuthenticated::class);
+            $router->aliasMiddleware('cms.logout_if_timelimit', LogoutIfTimelimit::class);
         }
     }
 }

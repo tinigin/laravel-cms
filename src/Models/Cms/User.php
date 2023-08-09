@@ -2,6 +2,7 @@
 
 namespace LaravelCms\Models\Cms;
 
+use Carbon\Carbon;
 use Junges\ACL\Concerns\HasGroups;
 use LaravelCms\Attachment\Attachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,7 +27,9 @@ class User extends Authenticatable
         'email',
         'password',
         'status_id',
-        'remember_token'
+        'remember_token',
+        'time_from',
+        'time_till',
     ];
 
     protected $hidden = [
@@ -74,5 +77,39 @@ class User extends Authenticatable
     public function files()
     {
         return $this->morphMany(Attachment::class, 'user');
+    }
+
+    public function isTimeAllowed(): bool
+    {
+        if (is_null($this->time_from) && is_null($this->time_till))
+            return true;
+
+        $current = now();
+
+        if (is_null($this->time_from)) {
+            $till = Carbon::createFromFormat('H:i', $this->time_till);
+
+            if ($current->lte($till))
+                return true;
+
+        } elseif (is_null($this->time_till)) {
+            $from = Carbon::createFromFormat('H:i', $this->time_from);
+
+            if ($current->gte($from))
+                return true;
+
+        } else {
+            $from = Carbon::createFromFormat('H:i', $this->time_from);
+            $till = Carbon::createFromFormat('H:i', $this->time_till);
+
+            if ($from->gt($till)) {
+                $till = $till->addDay();
+            }
+
+            if ($current->gte($from) && $current->lte($till))
+                return true;
+        }
+
+        return false;
     }
 }
