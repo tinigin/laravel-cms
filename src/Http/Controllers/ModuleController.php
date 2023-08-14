@@ -182,7 +182,7 @@ class ModuleController extends BaseController
         return $this->description ?: $default;
     }
 
-    protected function getModel(): Model
+    protected function getModel(): Model | null
     {
         if (is_null($this->model) && $this->objectId)
             $this->model = $this->className::findOrFail($this->objectId);
