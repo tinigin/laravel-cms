@@ -22,7 +22,8 @@
         "myclabs/php-enum": "^1.8",
         "socialiteproviders/yandex": "^4.1",
         "laravel/ui": "^3.4",
-        "mateusjunges/laravel-acl": "^4.2"
+        "mateusjunges/laravel-acl": "^4.2",
+        "doctrine/dbal": "^3.5"
     },
     "require-dev": {
         "ext-exif": "*",
