@@ -280,8 +280,8 @@ class Grid {
                 foreach ($this->columns AS $column => $options) {
                     $itemData[$column] = '';
 
-                    if (method_exists($item, 'text' . Str::studly($column))) {
-                        $method = 'text' . Str::studly($column);
+                    $method = 'text' . Str::studly(Str::replace('.', '', $column));
+                    if (method_exists($item, $method)) {
                         $itemData[$column] = $item->$method();
 
                     } else if (in_array($column, array_keys($item->getAttributes()))) {
