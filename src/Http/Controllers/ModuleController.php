@@ -263,13 +263,14 @@ class ModuleController extends BaseController
                         ->class('btn btn-primary')
                 );
 
-                $form->push(
-                    Link::make('Удалить')
-                        ->href(route('cms.module.destroy', ['controller' => $this->getSectionController(), 'objectId' => $this->objectId], false))
-                        ->class('btn btn-danger float-right')
-                        ->confirm('true')
-                        ->withoutFormType()
-                );
+                if ($this->can('delete'))
+                    $form->push(
+                        Link::make('Удалить')
+                            ->href(route('cms.module.destroy', ['controller' => $this->getSectionController(), 'objectId' => $this->objectId], false))
+                            ->class('btn btn-danger float-right')
+                            ->confirm('true')
+                            ->withoutFormType()
+                    );
 
                 $form->images(route('cms.module.images', ['controller' => $this->getSectionController(), 'objectId' => $this->objectId], false));
             }
