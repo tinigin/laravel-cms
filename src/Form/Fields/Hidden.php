@@ -34,6 +34,7 @@ class Hidden extends Field implements ComplexFieldConcern
     protected $inlineAttributes = [
         'name',
         'required',
-        'type'
+        'type',
+        'value',
     ];
 }
