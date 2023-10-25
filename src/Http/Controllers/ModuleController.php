@@ -31,6 +31,8 @@ class ModuleController extends BaseController
 
     protected $relations = [];
 
+    protected $difficult = [];
+
     protected $grid = [];
 
     protected $mode = 'default';
@@ -212,6 +214,15 @@ class ModuleController extends BaseController
                         $values[$relation] = $model->$method();
                     } else
                         $values[$relation] = $model->$relation()->allRelatedIds()->toArray();
+                }
+            }
+
+            if ($this->difficult) {
+                foreach ($this->difficult as $key) {
+                    $method = 'get' . Str::studly($key) . 'Attribute';
+                    if (method_exists($model, $method)) {
+                        $values[$key] = $model->$method();
+                    }
                 }
             }
 
@@ -434,6 +445,17 @@ class ModuleController extends BaseController
                     $this->model->$key()->detach();
             } else if ($relationValue) {
                 $this->model->$key()->attach($relationValue);
+            }
+        }
+
+        if ($this->difficult) {
+            foreach ($this->difficult as $key) {
+                $method = 'set' . Str::studly($key) . 'Attribute';
+
+                if (method_exists($this->model, $method)) {
+                    $difficultValue = isset($validated[$key]) ? $validated[$key] : null;
+                    $values[$key] = $this->model->$method($difficultValue);
+                }
             }
         }
 
