@@ -70,7 +70,7 @@
     				<h3>Данных не нейдено.</h3>
     			@endif
 			</div>
-            @if ($grid->sortable() || $grid->multipleDelete() || $grid->isAllowedAdd())
+            @if ($grid->sortable() || $grid->multipleDelete() || $grid->isAllowedAdd() || $grid->count() > 0)
                 <div class="card-footer clearfix">
                     @if ($grid->isAllowedAdd())
                         <a href="{{ $grid->urlCreate() }}" class="btn btn-sm btn-success float-left" title="Добавить" data-title="Добавление">
