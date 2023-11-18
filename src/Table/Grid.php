@@ -2,6 +2,7 @@
 
 namespace LaravelCms\Table;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use LaravelCms\Exceptions\BadDataException;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,6 +18,39 @@ class Grid {
         'add' => true,
         'delete' => true,
         'multiple-delete' => false,
+    ];
+
+    protected $availableOptions = [
+        'sortable',
+        'add',
+        'delete',
+        'multiple-delete',
+        'limit',
+        'without-paginator',
+        'edit',
+        'view',
+        'where'
+    ];
+
+    protected $actions = [
+        'view' => [
+            'title' => 'Просмотр',
+            'route' => 'cms.module.view',
+            'class' => 'far fa-eye text-primary',
+            'confirm' => false
+        ],
+        'edit' => [
+            'title' => 'Редактировать',
+            'route' => 'cms.module.edit',
+            'class' => 'fa fa-edit text-primary',
+            'confirm' => false
+        ],
+        'delete' => [
+            'title' => 'Удалить',
+            'route' => 'cms.module.destroy',
+            'class' => 'fa fa-trash text-danger',
+            'confirm' => true
+        ]
     ];
 
     /**
@@ -77,7 +111,7 @@ class Grid {
      * @param array $options
      * @throws BadDataException
      */
-    protected function initOptions(array $options)
+    public function initOptions(array $options)
     {
         if (!isset($options['class'])) {
             throw new BadDataException;
@@ -86,19 +120,12 @@ class Grid {
             $this->className = $options['class'];
         }
 
-        foreach ([
-            'sortable',
-            'add',
-            'delete',
-            'multiple-delete',
-            'limit',
-            'without-paginator',
-            'edit',
-            'view',
-            'where'
-        ] as $key) {
+        foreach ($this->availableOptions as $key) {
             if (isset($options[$key])) {
                 $this->options[$key] = $options[$key];
+
+            } else if (in_array($key, ['add', 'edit', 'delete'])) {
+                $this->options[$key] = true;
             }
         }
 
@@ -114,7 +141,7 @@ class Grid {
      * @param mixed $value
      * @return bool
      */
-    protected function setOption(string $key, mixed $value): void
+    public function setOption(string $key, mixed $value): void
     {
         $this->options[$key] = $value;
     }
@@ -125,7 +152,7 @@ class Grid {
      * @param null $default
      * @return string
      */
-    protected function getOption(string $key, $default = null): mixed
+    public function getOption(string $key, $default = null): mixed
     {
         return isset($this->options[$key]) ? $this->options[$key] : $default;
     }
@@ -275,7 +302,9 @@ class Grid {
         $data = [];
         if ($this->items) {
             foreach ($this->items AS $item) {
-                $itemData = [];
+                $itemData = [
+                    'model' => $item
+                ];
 
                 foreach ($this->columns AS $column => $options) {
                     $itemData[$column] = '';
@@ -454,5 +483,39 @@ class Grid {
         }
 
         return $url . (empty($query) ? '' : '?' . http_build_query($query));
+    }
+
+    public function getItemActions(array $item)
+    {
+        $actions = [];
+
+        $model = $item['model'];
+
+        foreach ($this->actions as $key => $action) {
+            if ($model->is_approved && $key != 'view')
+                continue;
+
+            if ($this->getOption($key)) {
+                $actions[] = [
+                    'key' => $key,
+                    'title' => $action['title'],
+                    'class' => $action['class'],
+                    'confirm' => $action['confirm'],
+                    'url' => route(
+                        $action['route'],
+                        array_merge(
+                            [
+                                'controller' => $this->section->folder,
+                                'objectId' => $model->getKey()
+                            ],
+                            isset($action['route-params']) ? $action['route-params'] : []
+                        ),
+                        false
+                    )
+                ];
+            }
+        }
+
+        return $actions;
     }
 }
