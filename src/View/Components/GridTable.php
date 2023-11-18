@@ -3,13 +3,11 @@
 namespace LaravelCms\View\Components;
 
 use Illuminate\View\Component;
-use LaravelCms\Table\Grid;
 
 class GridTable extends Component
 {
     /**
      * Grid instance
-     * @var Grid
      */
     public $grid;
 
@@ -18,7 +16,7 @@ class GridTable extends Component
      *
      * @return void
      */
-    public function __construct(Grid $grid)
+    public function __construct($grid)
     {
         $this->grid = $grid;
     }

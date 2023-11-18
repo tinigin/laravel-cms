@@ -109,7 +109,7 @@ class LaravelCmsServiceProvider extends ServiceProvider
         // Will use the EloquentUserProvider driver with the Admin model
         Config::set('auth.providers.cms', [
             'driver' => 'eloquent',
-            'model' => \LaravelCms\Models\Cms\User::class
+            'model' => class_exists(\App\Models\Cms\User::class) ? \App\Models\Cms\User::class : \LaravelCms\Models\Cms\User::class
         ]);
 
         Config::set('auth.passwords.cms', [

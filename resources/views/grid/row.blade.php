@@ -1,6 +1,12 @@
 <tr>
 	@foreach ($grid->columns() as $key => $options)
 		<td class="{{ $key == 'id' ? 'text-gray-dark text-bold' : '' }}">
+            @if ($loop->first)
+                @if ($grid->sortable())
+                    <input type="hidden" name="sort-order[]" value="{{ $row['attributes']['id'] }}" />
+                @endif
+            @endif
+
 			@if ($options['type'] == 'boolean')
 				@if ($row[$key])
 					<span class="badge bg-success">Да</span>
@@ -12,31 +18,22 @@
 			@endif
 		</td>
 	@endforeach
-    @if ($grid->sortable() || $grid->isAllowedEdit() || $grid->isAllowedView() || $grid->isAllowedDelete())
+
+    @php ($buttons = $grid->getItemActions($row))
+
+    @if ($buttons)
         <td class="text-nowrap">
-            @if ($row['attributes']['is_approved'])
-                <a href="{{ $grid->urlView($row['attributes']['id']) }}"><span class="far fa-eye text-primary"></span></a>
-            @else
-                @if ($grid->sortable())
-                    <input type="hidden" name="sort-order[]" value="{{ $row['attributes']['id'] }}" />
-                @endif
-
-                @if ($grid->isAllowedEdit())
-                    <a href="{{ $grid->urlEdit($row['attributes']['id']) }}" title="Редактировать" data-title="Редактирование"><span class="fa fa-edit text-primary"></span></a>
-                @endif
-
-                @if ($grid->isAllowedView())
-                    <a href="{{ $grid->urlView($row['attributes']['id']) }}"><span class="far fa-eye text-primary"></span></a>
-                @endif
-
-                @if ($grid->isAllowedDelete())
-                    <a href="{{ $grid->urlDelete($row['attributes']['id']) }}" confirm="true">
-                        <button type="button" class="border-0 p-0 bg-transparent">
-                            <span class="ml-3 fa fa-trash text-danger"></span>
-                        </button>
-                    </a>
-                @endif
-            @endif
+            @foreach ($buttons as $button)
+                <a
+                    href="{{ $button['url'] }}"
+                    title="{{ $button['title'] }}"
+                    data-title="{{ $button['title'] }}"
+                    @if (isset($button['confirm']) && $button['confirm']) confirm="true" @endif
+                    class="mr-3"
+                >
+                    <span class="{{ $button['class'] }}"></span>
+                </a>
+            @endforeach
         </td>
     @endif
 	@if ($grid->multipleDelete())
