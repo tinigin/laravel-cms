@@ -10,6 +10,7 @@
 <script src="{{ asset('assets/cms/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- daterangepicker -->
 <script src="{{ asset('assets/cms/plugins/moment/moment.min.js') }}"></script>
+<script src="{{ asset('assets/cms/plugins/moment/locale/ru.js') }}"></script>
 <script src="{{ asset('assets/cms/plugins/daterangepicker/daterangepicker.js') }}"></script>
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="{{ asset('assets/cms/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
