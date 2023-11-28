@@ -2,32 +2,47 @@
 
 namespace LaravelCms\Http\Controllers;
 
-use LaravelCms\Facades\Toast;
-use LaravelCms\Form\Actions\Button;
-use LaravelCms\Form\Builder;
 use LaravelCms\Form\Fields\Input;
-use LaravelCms\Form\Repository;
-use LaravelCms\Http\Controllers\BaseController;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use LaravelCms\Form\Fields\TextArea;
+use LaravelCms\Http\Controllers\ModuleController;
+use Illuminate\Validation\Rule;
+use LaravelCms\Models\Cms\Setting;
 
-class SettingsController extends BaseController
+class SettingsController extends ModuleController
 {
-    public function before()
-    {
-        if (parent::before()) {
-            if (
-                $this->getSection()->is_published != true ||
-                !$this->getSection()->users()->where('id', Auth::id())->count()
-            ) {
-                throw new NotFoundHttpException;
-            }
+    protected $className = Setting::class;
 
-            return true;
-        }
-    }
+    protected $relations = [];
+
+    protected $grid = [
+        'class' => Setting::class,
+        'sortable' => false,
+        'add' => true,
+        'delete' => true,
+        'multiple-delete' => false,
+        'limit' => 25,
+        'columns' => [
+            'id' => [
+                'label' => '№',
+                'is-sortable' => true,
+                'type' => 'number',
+                'filter' => false,
+            ],
+            'title' => [
+                'label' => 'Название',
+                'is-sortable' => true,
+                'type' => 'string',
+                'filter' => true,
+            ],
+            'key' => [
+                'label' => 'Ключ',
+                'is-sortable' => true,
+                'type' => 'string',
+                'filter' => true,
+            ],
+        ]
+    ];
+
     /**
      * Array of validation rules
      * @return array
@@ -35,7 +50,9 @@ class SettingsController extends BaseController
     public function rules(): array
     {
         return [
-            'email' => 'required|max:255|email',
+            'title' => 'required|max:128',
+            'key' => ['required', Rule::unique('settings')->ignore($this->objectId), 'max:64'],
+            'value' => 'nullable|max:256',
         ];
     }
 
@@ -43,67 +60,21 @@ class SettingsController extends BaseController
      * Return array of form fields
      * @return array
      */
-    protected function getFormFields(): array
+    protected function formFields(): array
     {
         return [
-            Input::make('email')
-                ->title('Адрес эл. почты')
-                ->type('email')
+            Input::make('title')
+                ->title('Название')
                 ->required()
                 ->horizontal(),
+            Input::make('key')
+                ->title('Ключ')
+                ->required()
+                ->horizontal(),
+            TextArea::make('value')
+                ->title('Значение')
+                ->rows(5)
+                ->horizontal(),
         ];
-    }
-
-    public function index()
-    {
-        $formFields = $this->getFormFields();
-        $values = config('settings', []);
-        $repository = new Repository($values);
-
-        $form = new Builder($formFields, $repository);
-
-        $form->push(
-            Button::make('save')
-                ->label('Сохранить')
-                ->value('true')
-                ->class('btn btn-primary')
-        );
-        $form->setAction(route('cms.module.store', ['controller' => $this->getSectionController()], false));
-
-        $form->view('card');
-
-        return view('cms::module')
-            ->with('form', $form)
-            ->with('title', 'Настройки');
-    }
-
-    public function store()
-    {
-        $validated = $this->validate(
-            request(),
-            $this->rules()
-        );
-
-        // default value for boolean fields
-        foreach ($this->rules() as $key => $validators) {
-            if (
-                (is_string($validators) && strpos($validators, 'boolean') !== false) ||
-                (is_array($validators) && in_array('boolean', $validators))
-            ) {
-                if (!isset($validated[$key])) {
-                    $validated[$key] = false;
-                }
-            }
-        }
-
-        File::put(config_path('settings.php'), "<?php\nreturn " . var_export($validated, true) . ";");
-
-        Toast::success('Данные успешно сохранены');
-
-        redirect()->to(route(
-            'cms.module.index',
-            ['controller' => $this->getSectionController()],
-            false
-        ))->send();
     }
 }
