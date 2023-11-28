@@ -360,6 +360,10 @@ $(function () {
         new external(element);
     });
 
+    document.querySelectorAll('.properties').forEach(function (element, index) {
+        new properties(element);
+    });
+
     $('.datetime-picker').datetimepicker({
         format: 'YYYY-MM-DD HH:mm',
         locale: 'ru',
@@ -998,6 +1002,254 @@ function ajaxSelect(element) {
                 return false;
             });
         });
+    };
+
+    this.init();
+}
+
+function properties(element) {
+    this.wrapper = element;
+    this.name = this.wrapper.dataset.name;
+    this.url = this.wrapper.dataset.url;
+    this.rowsContainer = this.wrapper.querySelector('#properties-container');
+    this.addButton = this.wrapper.querySelector('#add-property');
+    this.template = this.wrapper.querySelector('.template select');
+
+    this.init = function() {
+        let self = this;
+
+        if (this.template) {
+            this.addButton.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                self.addProperty();
+            });
+
+        } else {
+            this.addButton.remove();
+        }
+
+        this.bindButtons();
+    };
+
+    this.bindButtons = function() {
+        let self = this;
+
+        this.wrapper.querySelectorAll('[data-row]').forEach((row) => {
+            row.querySelectorAll('[data-remove-property]').forEach((removeBtn) => {
+                if (!("binded" in removeBtn.dataset)) {
+                    removeBtn.addEventListener('dblclick', (event) => {
+                        event.preventDefault();
+
+                        row.remove();
+                    });
+                    removeBtn.dataset.binded = 'true';
+                }
+            });
+
+            row.querySelectorAll('[data-add-input]').forEach((addBtn) => {
+                if (!("binded" in addBtn.dataset)) {
+                    addBtn.addEventListener('click', (event) => {
+                        self.addInputToRow(row);
+                    });
+                    addBtn.dataset.binded = 'true';
+                }
+            });
+
+            row.querySelectorAll('.d-flex').forEach((inputRow) => {
+                inputRow.querySelectorAll('[data-remove-input]').forEach((rmBtn) => {
+                    if (!("binded" in rmBtn.dataset)) {
+                        rmBtn.addEventListener('click', function (event) {
+                            let inputRow = rmBtn.parentNode.parentNode;
+
+                            if (!rmBtn.classList.contains('disabled')) {
+                                inputRow.remove();
+
+                                self.updateButtonsInRow(row);
+                            }
+                        });
+
+                        rmBtn.dataset.binded = 'true';
+                    }
+                });
+            });
+        });
+    };
+
+    this.addInputToRow = function(row) {
+        let id = row.dataset.id;
+
+        let inputHtml =
+            "<div class=\"d-flex align-items-center mt-2\">" +
+            "<div class=\"\" style=\"flex-grow: 1\">" +
+            "<input " +
+            "class=\"form-control\" " +
+            "required " +
+            "type=\"text\" " +
+            "name=\"" + this.name + "[" + id + "][]\" " +
+            "value=\"\"" +
+            "/>" +
+            "</div>" +
+            "<div class=\"pl-2 text-nowrap text-right\">" +
+            "<span class=\"mr-2 fa fa-minus text-danger disabled\" data-remove-input=\"true\" style=\"cursor: pointer\"></span>" +
+            "</div>" +
+            "</div>";
+
+        row.querySelector('span[data-add-input]').insertAdjacentHTML('beforebegin', inputHtml);
+
+        this.updateButtonsInRow(row);
+        this.bindButtons();
+    };
+
+    this.updateButtonsInRow = function(row) {
+        let self = this;
+        let count = row.querySelectorAll('.d-flex').length;
+
+        row.querySelectorAll('.d-flex').forEach((item, index) => {
+            let btn = item.querySelector('[data-remove-input]');
+
+            if (index == 0) {
+                item.classList.remove('mt-2');
+            }
+
+            if (count <= 1) {
+                btn.classList.add('disabled');
+
+            } else {
+                btn.classList.remove('disabled');
+            }
+        });
+    };
+
+    this.addProperty = function() {
+        this.addEmptyRow();
+    };
+
+    this.addEmptyRow = function() {
+        this.rowsContainer.insertAdjacentHTML(
+            'beforeend',
+            "<div class=\"row align-items-start mb-3 w-100\" data-row=\"true\" style=\"align-content: stretch;\">" +
+            "<div class=\"col-2 pt-2 property-label\"></div>" +
+            "<div class=\"col property-values\" style=\"flex-grow: 1\"></div>" +
+            "<div class=\"pl-2 text-right pt-2 property-actions\"><span class=\"fa fa-trash text-danger\" title=\"Двойное нажатие\" data-remove-property=\"true\" style=\"cursor: pointer\"></span></div>" +
+            "</div>",
+        );
+
+        let rows = this.rowsContainer.querySelectorAll('[data-row]');
+        let last = rows[rows.length- 1];
+
+        last.querySelectorAll('[data-remove-property]').forEach((removeBtn) => {
+            removeBtn.addEventListener('dblclick', (event) =>  {
+                event.preventDefault();
+
+                last.remove();
+            });
+        });
+
+        let selectHtml = this.template.outerHTML;
+        last.querySelector('.property-label').insertAdjacentHTML('beforeend', selectHtml);
+        $('select', last).selectpicker();
+
+        this.bindEmptyRow(last);
+    };
+
+    this.bindEmptyRow = function(row) {
+        let self = this;
+        row.querySelector('select').addEventListener('change', function(event) {
+            let propertyId = event.target.value;
+
+            self.getPropertyData(propertyId);
+        });
+    };
+
+    this.getPropertyData = function(propertyId) {
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "GET",
+            this.url + '?mode=info&id=' + propertyId
+        );
+        xhr.onload = () => {
+            let json = JSON.parse(xhr.response);
+
+            this.convertEmptyRow(json);
+        }
+        xhr.send();
+    };
+
+    this.convertEmptyRow = function(data) {
+        let rows = this.rowsContainer.querySelectorAll('[data-row]');
+        let last = rows[rows.length- 1];
+
+        last.querySelector('.property-label').innerHTML = data.name;
+        last.dataset.type = data.type;
+        last.dataset.name = data.name;
+        last.dataset.id = data.id;
+
+        if  (data.type == 'boolean') {
+            last.querySelector('.property-values').insertAdjacentHTML('beforeend',
+                "<select " +
+                "class=\"form-control\" " +
+                "required " +
+                "data-live-search=\"true\" " +
+                "data-width=\"100%\" " +
+                "size=\"10\" " +
+                "data-actions-box=\"true\" " +
+                "name=\"" + this.name + "[" + data.id + "]\" " +
+                ">" +
+                "<option value=\"false\">Нет</option>" +
+                "<option value=\"true\">Да</option>" +
+                "</select>"
+            );
+
+            $('select', last).selectpicker();
+
+        } else if (data.type == 'string') {
+            if (typeof data.options !== 'undefined') {
+                let inputHtml = "<select " +
+                    "class=\"form-control\" " +
+                    "required " +
+                    "data-live-search=\"true\" " +
+                    "data-width=\"100%\" " +
+                    "size=\"10\" " +
+                    "multiple " +
+                    "data-actions-box=\"true\" " +
+                    "name=\"" + this.name + "[" + data.id + "][]\" " +
+                    ">";
+                data.options.forEach((item) => {
+                    inputHtml += "<option value=\"" + item + "\">" + item + "</option>";
+                });
+                inputHtml += "</select>";
+
+                last.querySelector('.property-values').insertAdjacentHTML('beforeend', inputHtml);
+                $('select', last).selectpicker();
+
+            } else {
+                let inputHtml =
+                    "<div class=\"d-flex align-items-center\">" +
+                    "<div class=\"\" style=\"flex-grow: 1\">" +
+                    "<input " +
+                    "class=\"form-control\" " +
+                    "required " +
+                    "type=\"text\" " +
+                    "name=\"" + this.name + "[" + data.id + "][]\" " +
+                    "value=\"\"" +
+                    "/>" +
+                    "</div>" +
+                    "<div class=\"pl-2 text-nowrap text-right\">" +
+                    "<span class=\"mr-2 fa fa-minus text-danger disabled\" data-remove-input=\"true\" style=\"cursor: pointer\"></span>" +
+                    "</div>" +
+                    "</div>" +
+                    "<span class=\"fa fa-plus text-success mt-3\" data-add-input=\"true\" style=\"cursor: pointer\"></span>"
+                ;
+
+                last.querySelector('.property-values').insertAdjacentHTML('beforeend', inputHtml);
+            }
+
+        } else {
+            last.querySelector('.property-values').insertAdjacentHTML('beforeend', "<input class=\"form-control\" type=\"text\" name=\"" + this.name + "[" + data.id + "]\" value=\"\" />");
+        }
+
+        this.bindButtons();
     };
 
     this.init();
