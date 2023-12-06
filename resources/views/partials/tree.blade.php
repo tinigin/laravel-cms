@@ -16,7 +16,9 @@
                     <span class="tree-icon @if ($level > 2 && isset($item['children'])) icon-plus toggle-collapse @elseif ($level <= 2 && isset($item['children'])) icon-minus toggle-collapse @else icon-empty @endif"></span>
 
                     @if ($type == 'sortable')
-                        <a href="{{ route('cms.module.edit', ['objectId' => $item['id'], 'controller' => $controller], false) }}">{{ $item['name'] }}</a>
+                        <a href="{{ route('cms.module.edit', ['objectId' => $item['id'], 'controller' => $controller], false) }}">
+                            {{ isset($item['name']) ? $item['name'] : $item['title'] }}
+                        </a>
 
                     @elseif ($type == 'multiple')
                         @php ($inputId = Str::ulid())
@@ -27,7 +29,7 @@
                             @if (in_array($item['id'], $value) && $readonly)
                                 <strong>
                             @endif
-                            {{ $item['name'] }}
+                            {{ isset($item['name']) ? $item['name'] : $item['title'] }}
                             @if (in_array($item['id'], $value) && $readonly)
                                 </strong>
                             @endif
@@ -42,7 +44,7 @@
                             @if ((in_array($item['id'], $value) || (!$item['id'] && !$value)) && $readonly)
                                 <strong>
                             @endif
-                            {{ $item['name'] }}
+                            {{ isset($item['name']) ? $item['name'] : $item['title'] }}
                             @if ((in_array($item['id'], $value) || (!$item['id'] && !$value)) && $readonly)
                                 </strong>
                             @endif
