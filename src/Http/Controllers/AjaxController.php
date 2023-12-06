@@ -173,7 +173,7 @@ class AjaxController extends BaseController
                     $parent->dependenciesUpdated();
                 }
                 if ($parent && method_exists($parent, 'updateAttachmentsDependencies')) {
-                    $parent->updateAttachmentsDependencies();
+                    $parent->updateAttachmentsDependencies(true);
                 }
 
                 $message = 'Изображение обновлено';
