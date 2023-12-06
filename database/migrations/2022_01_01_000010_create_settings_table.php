@@ -13,12 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('settings', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('title', 128)->nullable();
-            $table->string('key', 64)->index();
-            $table->string('value', 256)->nullable();
-        });
+        if (!Schema::hasTable('settings')) {
+            Schema::create('settings', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('title', 128)->nullable();
+                $table->string('key', 64)->index();
+                $table->string('value', 256)->nullable();
+            });
+        }
     }
 
     /**
