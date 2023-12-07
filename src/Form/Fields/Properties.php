@@ -24,4 +24,20 @@ class Properties extends Field
     {
         return $this->set('url', $url);
     }
+
+    public function render()
+    {
+        $id = $this->getId();
+        $this->set('id', $id);
+        return view($this->view, array_merge($this->getAttributes(), [
+            'attributes'     => $this->getAllowAttributes(),
+            'dataAttributes' => $this->getAllowDataAttributes(),
+            'id'             => $id,
+            'slug'           => $this->getSlug(),
+            'oldName'        => $this->getOldName(),
+            'typeForm'       => $this->typeForm ?? $this->vertical()->typeForm,
+            'settings'       => $this->settings,
+            'readonly'       => $this->get('readonly', false),
+        ]));
+    }
 }
