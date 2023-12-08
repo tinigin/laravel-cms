@@ -75,7 +75,6 @@
                                     data-width="100%"
                                     size="10"
                                     data-actions-box="true"
-                                    multiple
                                     name="{{ $name }}[{{ $item['id'] }}]"
                                     {{ $readonly ? 'disabled="true"' : '' }}
                                 >
