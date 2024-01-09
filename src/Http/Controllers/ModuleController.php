@@ -329,6 +329,10 @@ class ModuleController extends BaseController
     public function edit($objectId)
     {
         $this->objectId = $objectId;
+
+        if (method_exists($this, 'beforeEdit'))
+            $this->beforeEdit();
+
         if ($this->getModel()->is_approved)
             return redirect(
                 route(
@@ -398,6 +402,9 @@ class ModuleController extends BaseController
     public function update($objectId = null)
     {
         $this->objectId = $objectId;
+
+        if (method_exists($this, 'beforeUpdate'))
+            $this->beforeUpdate();
 
         $validated = $this->validate(
             request(),
@@ -507,6 +514,9 @@ class ModuleController extends BaseController
         Toast::success('Данные успешно сохранены');
         if ($this->mode == 'simple')
             Alert::success('Данные успешно сохранены', 'Данные успешно сохранены');
+
+        if (method_exists($this, 'afterUpdate'))
+            $this->afterUpdate();
 
         return redirect(
             route(
