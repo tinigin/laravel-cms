@@ -5,7 +5,6 @@ namespace LaravelCms\Http\Controllers\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use LaravelCms\Models\Cms\User;
 use Laravel\Socialite\Facades\Socialite;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -16,6 +15,8 @@ class LoginController extends \Illuminate\Routing\Controller
 {
     use AuthenticatesUsers, AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    protected $class;
+
     /**
      * Create a new controller instance.
      *
@@ -24,6 +25,11 @@ class LoginController extends \Illuminate\Routing\Controller
     public function __construct()
     {
         $this->middleware('cms.guest:cms')->except('logout');
+
+        if (class_exists('\App\Models\Cms\User'))
+            $this->class = \App\Models\Cms\User::class;
+        else
+            $this->class = \LaravelCms\Models\Cms\User::class;
     }
 
     public function showLoginForm()
@@ -43,9 +49,10 @@ class LoginController extends \Illuminate\Routing\Controller
         if (Auth::guard('cms')->attemptWhen([
             'email' => $request->email,
             'password' => $request->password,
-            'status_id' => User::ACTIVE,
-        ], function (User $user) {
+            'status_id' => $this->class::ACTIVE,
+        ], function ($user) {
             return $user->isTimeAllowed();
+
         }, $request->has('remember'))) {
             $request->session()->regenerate();
 
@@ -53,7 +60,7 @@ class LoginController extends \Illuminate\Routing\Controller
             return redirect()->intended(route('cms.dashboard', absolute: false));
         }
 
-        $user = User::query()->where('email', $request->email)->first();
+        $user = $this->class::query()->where('email', $request->email)->first();
         if ($user && !$user->isTimeAllowed())
             return redirect()
                 ->back()
@@ -90,7 +97,7 @@ class LoginController extends \Illuminate\Routing\Controller
             if (array_key_exists('access_token', $answer) && $answer['access_token']) {
                 $user = Socialite::driver('yandex')->userFromToken($answer['access_token']);
                 if ($user->email) {
-                    $user = User::where('email', $user->email)->first();
+                    $user = $this->class::where('email', $user->email)->first();
                     if ($user) {
                         if (!$user->isTimeAllowed())
                             return redirect()
