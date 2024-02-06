@@ -380,7 +380,7 @@ class Grid {
      */
     public function columns(): array
     {
-        return $this->columns;
+        return array_filter($this->columns, function($item) { return isset($item['column']) && $item['column'] === false ? false : true;});
     }
 
     /**

@@ -9,7 +9,7 @@
                         @elseif ($key == $value) selected
                         @endif
                     @endisset
-                >{{$option}}</option>
+                >{!! $option !!}</option>
             @endforeach
         </select>
     </div>
