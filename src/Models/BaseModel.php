@@ -2,6 +2,10 @@
 
 namespace LaravelCms\Models;
 
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\File as FileFacade;
+use Illuminate\Support\Facades\Http;
 use LaravelCms\Attachment\Attachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -70,6 +74,55 @@ class BaseModel extends Model
         }
 
         return $path;
+    }
+
+    public function uploadFile(string $file, string $group, array $thumbnails = null)
+    {
+        $uploadedFile = null;
+        $isDownloaded = false;
+
+        $extension = FileFacade::extension($file);
+        $filename = FileFacade::name($file) . '.' . $extension;
+
+        if (filter_var($file, FILTER_VALIDATE_URL)) {
+            $isDownloaded = true;
+            $tmpPath = storage_path('tmp');
+            if (!is_dir($tmpPath))
+                mkdir($tmpPath);
+
+            $filepath = "{$tmpPath}/{$filename}";
+            $response = Http::withHeaders(['Accept-Encoding' => 'gzip, deflate'])->get($file);
+            if ($response->successful()) {
+                $body = $response->body();
+                if (file_put_contents($filepath, $body)) {
+                    $uploadedFile = new UploadedFile($filepath, $filename);
+                }
+            }
+
+        } else if (File::exists($file)) {
+            $uploadedFile = new UploadedFile($file, $filename);
+        }
+
+        if ($uploadedFile) {
+            $f = new \LaravelCms\Attachment\File(
+                $uploadedFile,
+                group: $group,
+                rename: 'hash',
+                thumbnails: $thumbnails ? $thumbnails : null
+            );
+            $attachment = $f->path($this->getUploadPath())->allowDuplicates()->load();
+
+            $this->attachment()->syncWithoutDetaching(
+                $attachment->id
+            );
+
+            if ($isDownloaded)
+                unlink($uploadedFile->getPathname());
+
+            return $attachment;
+        }
+
+        return false;
     }
 
     public function data(
