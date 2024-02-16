@@ -496,7 +496,7 @@ class ModuleController extends BaseController
                             group: $key,
                             rename: $field->get('rename'),
                             thumbnails: isset($settings['thumbnails']) ? $settings['thumbnails'] : [],
-                            trim: isset($settings['trim']) ? (bool) $settings['trim'] : false
+                            trim: isset($settings['trim']) ? $settings['trim'] : false
                         );
                         $attachments[] = $f->path($this->model->getUploadPath())->allowDuplicates()->load();
                     }

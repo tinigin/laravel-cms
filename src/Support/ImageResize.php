@@ -52,6 +52,8 @@ class ImageResize
 
     protected $filters = [];
 
+    protected $trimmed = false;
+
     /**
      * Create instance from a strng
      *
@@ -350,6 +352,14 @@ class ImageResize
             if ($this->getSourceHeight() > $this->getDestHeight()) {
                 $this->dest_x = ($exact_size[0] - $this->getDestWidth()) / 2;
             }
+
+            if ($exact_size[0] > $this->getDestWidth()) {
+                $this->dest_x = ($exact_size[0] - $this->getDestWidth()) / 2;
+            }
+
+            if ($exact_size[1] > $this->getDestHeight()) {
+                $this->dest_y = ($exact_size[1] - $this->getDestHeight()) / 2;
+            }
         }
 
         imagecopyresampled(
@@ -368,7 +378,6 @@ class ImageResize
         if ($this->gamma_correct) {
             imagegammacorrect($dest_image, 1.0, 2.2);
         }
-
 
         $this->applyFilter($dest_image);
 
@@ -619,16 +628,149 @@ class ImageResize
         return $this;
     }
 
-    public function trim()
+    public function trimCentered()
     {
-        $width = imagesx($this->source_image);
-        $height = imagesy($this->source_image);
+        $originalWidth = imagesx($this->source_image);
+        $originalHeight = imagesy($this->source_image);
 
         $corners = [
-            [0,0],
-            [$width-1,0],
-            [0,$height-1],
-            [$width-1,$height-1],
+            [0, 0],
+            [$originalWidth - 1, 0],
+            [0, $originalHeight - 1],
+            [$originalWidth - 1, $originalHeight - 1],
+        ];
+
+        $red = 0;
+        $green = 0;
+        $blue = 0;
+
+        foreach($corners as $corner) {
+            $color = imagecolorat($this->source_image, $corner[0], $corner[1]);
+            $rgb = imagecolorsforindex($this->source_image, $color);
+            $red += round(round(($rgb['red'] / 0x33)) * 0x33);
+            $green += round(round(($rgb['green'] / 0x33)) * 0x33);
+            $blue += round(round(($rgb['blue'] / 0x33)) * 0x33);
+        }
+
+        $red /= 4;
+        $green /= 4;
+        $blue /= 4;
+
+        $colorToCrop = imagecolorallocate($this->source_image, $red, $green, $blue);
+
+        // centered
+        $cutRows = 0;
+        $cutCols = 0;
+        $threshold = 0.12;
+
+        $step = 2;
+
+        // rows
+        $rows = $originalHeight;
+        $iterations = floor($rows / 2);
+        for ($i = 0; $i < $iterations; $i++) {
+            $break = false;
+
+            for ($x = 0; $x < $originalWidth; $x += $step) {
+                $color = imagecolorat($this->source_image, $x, $i);
+                $color2 = imagecolorat($this->source_image, $x, $rows - $i - 1);
+
+                if (
+                    (
+                        $color < ($colorToCrop - $colorToCrop * $threshold) ||
+                        $color > ($colorToCrop + $colorToCrop * $threshold)
+                    ) ||
+                    (
+                        $color2 < ($colorToCrop - $colorToCrop * $threshold) ||
+                        $color2 > ($colorToCrop + $colorToCrop * $threshold)
+                    )
+                ) {
+                    $break = true;
+                    break;
+                }
+            }
+
+            if ($break)
+                break;
+
+            $cutRows += 1;
+        }
+
+        $cols = $originalWidth;
+        $iterations = floor($cols / 2);
+        for ($i = 0; $i < $iterations; $i++) {
+            $break = false;
+
+            for ($y = 0; $y < $originalHeight; $y += $step) {
+                $color = imagecolorat($this->source_image, $i, $y);
+                $color2 = imagecolorat($this->source_image, $cols - $i - 1, $y);
+
+                if (
+                    (
+                        $color < ($colorToCrop - $colorToCrop * $threshold) ||
+                        $color > ($colorToCrop + $colorToCrop * $threshold)
+                    ) ||
+                    (
+                        $color2 < ($colorToCrop - $colorToCrop * $threshold) ||
+                        $color2 > ($colorToCrop + $colorToCrop * $threshold)
+                    )
+                ) {
+                    $break = true;
+                    break;
+                }
+            }
+
+            if ($break)
+                break;
+
+            $cutCols += 1;
+        }
+
+        $cutRows = $cutRows - 50 > 0 ? $cutRows - 50 : 0;
+        $cutCols = $cutCols - 50 > 0 ? $cutCols - 50 : 0;
+
+        $cropped = imagecrop(
+            $this->source_image,
+            [
+                'x' => $cutCols,
+                'y' => $cutRows,
+                'width' => $originalWidth - $cutCols * 2 > 1 ? $originalWidth - $cutCols * 2 : 1,
+                'height' => $originalHeight - $cutRows * 2 > 1 ? $originalHeight - $cutRows * 2 : 1
+            ]
+        );
+
+        if ($cropped !== false) {
+            imagedestroy($this->source_image);
+
+            $this->source_image = $cropped;
+            unset($cropped);
+
+            $this->original_w = imagesx($this->source_image);
+            $this->original_h = imagesy($this->source_image);
+
+            $this->source_x = 0;
+            $this->source_y = 0;
+
+            $this->source_w = $this->getSourceWidth();
+            $this->source_h = $this->getSourceHeight();
+
+            $this->dest_w = $this->original_w;
+            $this->dest_h = $this->original_h;
+        }
+
+        return $this;
+    }
+
+    public function trim()
+    {
+        $originalWidth = imagesx($this->source_image);
+        $originalHeight = imagesy($this->source_image);
+
+        $corners = [
+            [0, 0],
+            [$originalWidth - 1, 0],
+            [0, $originalHeight - 1],
+            [$originalWidth - 1, $originalHeight - 1],
         ];
 
         $red = 0;
@@ -649,15 +791,23 @@ class ImageResize
 
         $colorToCrop = imagecolorallocate($this->source_image, $red, $green, $blue);
         $cropped = imagecropauto($this->source_image, IMG_CROP_THRESHOLD, 0.2, $colorToCrop);
-        if ($cropped !== false) {                   // в случае возврата нового объекта изображения
-            imagedestroy($this->source_image);      // мы уничтожаем исходное изображение
-            $this->source_image = $cropped;         // и назначаем обрезанное изображение в $im
+        if ($cropped !== false) {
+            imagedestroy($this->source_image);
+
+            $this->source_image = $cropped;
             unset($cropped);
 
             $this->original_w = imagesx($this->source_image);
             $this->original_h = imagesy($this->source_image);
 
-            return $this->resize($this->getSourceWidth(), $this->getSourceHeight());
+            $this->source_x = 0;
+            $this->source_y = 0;
+
+            $this->source_w = $this->getSourceWidth();
+            $this->source_h = $this->getSourceHeight();
+
+            $this->dest_w = $this->original_w;
+            $this->dest_h = $this->original_h;
         }
 
         return $this;
@@ -785,6 +935,11 @@ class ImageResize
     public function getDestHeight()
     {
         return $this->dest_h;
+    }
+
+    public function isTrimmed()
+    {
+        return $this->trimmed;
     }
 
     /**

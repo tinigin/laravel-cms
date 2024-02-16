@@ -73,7 +73,7 @@ class File
         string $group = null,
         string $rename = 'orig',
         array $thumbnails = [],
-        bool $trim = false
+        bool|string $trim = false
     ) {
         abort_if($file->getSize() === false, 415, 'File failed to load.');
 
@@ -153,7 +153,17 @@ class File
     {
         if ($this->trim) {
             $trimer = new ImageResize(is_string($this->file) ? $this->file : $this->file->getRealPath());
-            $trimer->trim()->save(is_string($this->file) ? $this->file : $this->file->getRealPath());
+
+            if ($this->trim === 'center') {
+                $trimer->trimCentered();
+            } else {
+                $trimer->trim();
+            }
+
+            $trimer->save(
+                is_string($this->file) ? $this->file : $this->file->getRealPath(),
+                quality: 100
+            );
         }
 
         $this->storage->putFileAs($this->engine->path(), $this->file, $this->engine->fullName(), [
