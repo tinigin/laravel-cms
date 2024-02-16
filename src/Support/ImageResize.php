@@ -621,7 +621,34 @@ class ImageResize
 
     public function trim()
     {
-        $cropped = imagecropauto($this->source_image, IMG_CROP_SIDES);
+        $width = imagesx($this->source_image);
+        $height = imagesy($this->source_image);
+
+        $corners = [
+            [0,0],
+            [$width-1,0],
+            [0,$height-1],
+            [$width-1,$height-1],
+        ];
+
+        $red = 0;
+        $green = 0;
+        $blue = 0;
+
+        foreach($corners as $corner) {
+            $color = imagecolorat($this->source_image, $corner[0], $corner[1]);
+            $rgb = imagecolorsforindex($this->source_image, $color);
+            $red += round(round(($rgb['red'] / 0x33)) * 0x33);
+            $green += round(round(($rgb['green'] / 0x33)) * 0x33);
+            $blue += round(round(($rgb['blue'] / 0x33)) * 0x33);
+        }
+
+        $red /= 4;
+        $green /= 4;
+        $blue /= 4;
+
+        $colorToCrop = imagecolorallocate($this->source_image, $red, $green, $blue);
+        $cropped = imagecropauto($this->source_image, IMG_CROP_THRESHOLD, 0.2, $colorToCrop);
         if ($cropped !== false) {                   // в случае возврата нового объекта изображения
             imagedestroy($this->source_image);      // мы уничтожаем исходное изображение
             $this->source_image = $cropped;         // и назначаем обрезанное изображение в $im
