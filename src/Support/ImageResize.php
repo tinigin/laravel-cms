@@ -619,6 +619,23 @@ class ImageResize
         return $this;
     }
 
+    public function trim()
+    {
+        $cropped = imagecropauto($this->source_image, IMG_CROP_SIDES);
+        if ($cropped !== false) {                   // в случае возврата нового объекта изображения
+            imagedestroy($this->source_image);      // мы уничтожаем исходное изображение
+            $this->source_image = $cropped;         // и назначаем обрезанное изображение в $im
+            unset($cropped);
+
+            $this->original_w = imagesx($this->source_image);
+            $this->original_h = imagesy($this->source_image);
+
+            return $this->resize($this->getSourceWidth(), $this->getSourceHeight());
+        }
+
+        return $this;
+    }
+
     /**
      * Crops image according to the given width, height and crop position
      *

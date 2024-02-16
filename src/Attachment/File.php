@@ -58,6 +58,8 @@ class File
 
     protected $thumbnails = [];
 
+    protected $trim = false;
+
     /**
      * File constructor.
      *
@@ -65,8 +67,14 @@ class File
      * @param string|null  $disk
      * @param string|null  $group
      */
-    public function __construct(UploadedFile $file, string $disk = null, string $group = null, string $rename = 'orig', array $thumbnails = [])
-    {
+    public function __construct(
+        UploadedFile $file,
+        string $disk = null,
+        string $group = null,
+        string $rename = 'orig',
+        array $thumbnails = [],
+        bool $trim = false
+    ) {
         abort_if($file->getSize() === false, 415, 'File failed to load.');
 
         $this->file = $file;
@@ -81,6 +89,7 @@ class File
         $this->group = $group;
         $this->rename = $rename;
         $this->thumbnails = $thumbnails;
+        $this->trim = $trim;
     }
 
     /**
@@ -142,6 +151,11 @@ class File
      */
     private function save(): Model
     {
+        if ($this->trim) {
+            $trimer = new ImageResize(is_string($this->file) ? $this->file : $this->file->getRealPath());
+            $trimer->trim()->save(is_string($this->file) ? $this->file : $this->file->getRealPath());
+        }
+
         $this->storage->putFileAs($this->engine->path(), $this->file, $this->engine->fullName(), [
             'mime_type' => $this->engine->mime(),
         ]);
