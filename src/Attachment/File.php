@@ -73,7 +73,7 @@ class File
         string $group = null,
         string $rename = 'orig',
         array $thumbnails = [],
-        bool|string $trim = false
+        bool|int $trim = false
     ) {
         abort_if($file->getSize() === false, 415, 'File failed to load.');
 
@@ -154,9 +154,9 @@ class File
         if ($this->trim) {
             $trimer = new ImageResize(is_string($this->file) ? $this->file : $this->file->getRealPath());
 
-            if ($this->trim !== true) {
+            if (!is_bool($this->trim)) {
                 $trimer->trimWithBorder(
-                    border: (int) $this->trim
+                    border: $this->trim
                 );
             } else {
                 $trimer->trim();
