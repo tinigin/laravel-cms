@@ -628,11 +628,12 @@ class ImageResize
         return $this;
     }
 
-    public function trimCentered()
+    public function trimWithBorder(int $border = 50, int $step = 5)
     {
         $originalWidth = imagesx($this->source_image);
         $originalHeight = imagesy($this->source_image);
 
+        // detect color
         $corners = [
             [0, 0],
             [$originalWidth - 1, 0],
@@ -659,31 +660,25 @@ class ImageResize
         $colorToCrop = imagecolorallocate($this->source_image, $red, $green, $blue);
 
         // centered
-        $cutRows = 0;
-        $cutCols = 0;
+        $cut = [
+            't' => 0,
+            'r' => 0,
+            'b' => 0,
+            'l' => 0,
+        ];
         $threshold = 0.12;
 
-        $step = 2;
-
-        // rows
+        // top
         $rows = $originalHeight;
-        $iterations = floor($rows / 2);
-        for ($i = 0; $i < $iterations; $i++) {
+        for ($i = 0; $i < $originalHeight; $i++) {
             $break = false;
 
             for ($x = 0; $x < $originalWidth; $x += $step) {
                 $color = imagecolorat($this->source_image, $x, $i);
-                $color2 = imagecolorat($this->source_image, $x, $rows - $i - 1);
 
                 if (
-                    (
-                        $color < ($colorToCrop - $colorToCrop * $threshold) ||
-                        $color > ($colorToCrop + $colorToCrop * $threshold)
-                    ) ||
-                    (
-                        $color2 < ($colorToCrop - $colorToCrop * $threshold) ||
-                        $color2 > ($colorToCrop + $colorToCrop * $threshold)
-                    )
+                    $color < ($colorToCrop - $colorToCrop * $threshold) ||
+                    $color > ($colorToCrop + $colorToCrop * $threshold)
                 ) {
                     $break = true;
                     break;
@@ -693,27 +688,41 @@ class ImageResize
             if ($break)
                 break;
 
-            $cutRows += 1;
+            $cut['t'] += 1;
         }
 
-        $cols = $originalWidth;
-        $iterations = floor($cols / 2);
-        for ($i = 0; $i < $iterations; $i++) {
+        // bottom
+        for ($i = 0; $i < $originalHeight; $i++) {
+            $break = false;
+
+            for ($x = 0; $x < $originalWidth; $x += $step) {
+                $color = imagecolorat($this->source_image, $x, ($originalHeight - $i - 1));
+
+                if (
+                    $color < ($colorToCrop - $colorToCrop * $threshold) ||
+                    $color > ($colorToCrop + $colorToCrop * $threshold)
+                ) {
+                    $break = true;
+                    break;
+                }
+            }
+
+            if ($break)
+                break;
+
+            $cut['b'] += 1;
+        }
+
+        // left
+        for ($i = 0; $i < $originalWidth; $i++) {
             $break = false;
 
             for ($y = 0; $y < $originalHeight; $y += $step) {
                 $color = imagecolorat($this->source_image, $i, $y);
-                $color2 = imagecolorat($this->source_image, $cols - $i - 1, $y);
 
                 if (
-                    (
-                        $color < ($colorToCrop - $colorToCrop * $threshold) ||
-                        $color > ($colorToCrop + $colorToCrop * $threshold)
-                    ) ||
-                    (
-                        $color2 < ($colorToCrop - $colorToCrop * $threshold) ||
-                        $color2 > ($colorToCrop + $colorToCrop * $threshold)
-                    )
+                    $color < ($colorToCrop - $colorToCrop * $threshold) ||
+                    $color > ($colorToCrop + $colorToCrop * $threshold)
                 ) {
                     $break = true;
                     break;
@@ -723,19 +732,71 @@ class ImageResize
             if ($break)
                 break;
 
-            $cutCols += 1;
+            $cut['l'] += 1;
         }
 
-        $cutRows = $cutRows - 50 > 0 ? $cutRows - 50 : 0;
-        $cutCols = $cutCols - 50 > 0 ? $cutCols - 50 : 0;
+        // right
+        for ($i = 0; $i < $originalWidth; $i++) {
+            $break = false;
+
+            for ($y = 0; $y < $originalHeight; $y += $step) {
+                $color = imagecolorat($this->source_image, ($originalWidth - $i - 1), $y);
+
+                if (
+                    $color < ($colorToCrop - $colorToCrop * $threshold) ||
+                    $color > ($colorToCrop + $colorToCrop * $threshold)
+                ) {
+                    $break = true;
+                    break;
+                }
+            }
+
+            if ($break)
+                break;
+
+            $cut['r'] += 1;
+        }
+
+        $x = $cut['l'];
+        $y = $cut['t'];
+        $width = $originalWidth - $cut['l'] - $cut['r'];
+        if ($width < 1) {
+            $width = 1;
+        }
+        $height = $originalHeight - $cut['t'] - $cut['b'];
+        if ($height < 1) {
+            $height = 1;
+        }
+
+        if ($border && ($cut['t'] && $cut['r'] && $cut['b'] && $cut['l'])) {
+            if ($x > $border && (($originalWidth - ($x + $width)) > $border)) {
+                $x -= $border;
+                $width += $border * 2;
+
+            } else {
+                $xBorder = min($x, ($originalWidth - ($x + $width)));
+                $x -= $xBorder;
+                $width += $xBorder * 2;
+            }
+
+            if ($y > $border && (($originalHeight - ($y + $height)) > $border)) {
+                $y -= $border;
+                $height += $border * 2;
+
+            } else {
+                $yBorder = min($x, ($originalHeight - ($y + $height)));
+                $y -= $yBorder;
+                $height += $yBorder * 2;
+            }
+        }
 
         $cropped = imagecrop(
             $this->source_image,
             [
-                'x' => $cutCols,
-                'y' => $cutRows,
-                'width' => $originalWidth - $cutCols * 2 > 1 ? $originalWidth - $cutCols * 2 : 1,
-                'height' => $originalHeight - $cutRows * 2 > 1 ? $originalHeight - $cutRows * 2 : 1
+                'x' => $x,
+                'y' => $y,
+                'width' => $width,
+                'height' => $height
             ]
         );
 

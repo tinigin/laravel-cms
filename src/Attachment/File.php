@@ -154,8 +154,10 @@ class File
         if ($this->trim) {
             $trimer = new ImageResize(is_string($this->file) ? $this->file : $this->file->getRealPath());
 
-            if ($this->trim === 'center') {
-                $trimer->trimCentered();
+            if ($this->trim !== true) {
+                $trimer->trimWithBorder(
+                    border: (int) $this->trim
+                );
             } else {
                 $trimer->trim();
             }
