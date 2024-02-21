@@ -784,7 +784,7 @@ class ImageResize
                 $height += $border * 2;
 
             } else {
-                $yBorder = min($x, ($originalHeight - ($y + $height)));
+                $yBorder = min($y, ($originalHeight - ($y + $height)));
                 $y -= $yBorder;
                 $height += $yBorder * 2;
             }
