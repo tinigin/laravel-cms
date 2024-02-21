@@ -44,7 +44,7 @@ class Attachment extends Model
         'hash',
         'disk',
         'group',
-        'additional'
+        'additional',
     ];
 
     /**
@@ -72,6 +72,7 @@ class Attachment extends Model
         'mime',
         'extension',
         'disk',
+        'hash',
     ];
 
     /**
@@ -313,6 +314,7 @@ class Attachment extends Model
             'name' => $this->getFilename(),
             'original_name' => $this->original_name,
             'mime' => $this->mime,
+            'hash' => $this->hash,
             'sort' => $this->sort,
             'group' => $this->group
         ];
