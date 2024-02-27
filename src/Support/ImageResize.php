@@ -644,18 +644,22 @@ class ImageResize
         $red = 0;
         $green = 0;
         $blue = 0;
+        $alpha = 0;
 
-        foreach($corners as $corner) {
+        foreach ($corners as $corner) {
             $color = imagecolorat($this->source_image, $corner[0], $corner[1]);
             $rgb = imagecolorsforindex($this->source_image, $color);
+
             $red += round(round(($rgb['red'] / 0x33)) * 0x33);
             $green += round(round(($rgb['green'] / 0x33)) * 0x33);
             $blue += round(round(($rgb['blue'] / 0x33)) * 0x33);
+            $alpha+= round(round(($rgb['alpha'] / 0x33)) * 0x33);
         }
 
         $red /= 4;
         $green /= 4;
         $blue /= 4;
+        $alpha /= 4;
 
         $colorToCrop = imagecolorallocate($this->source_image, $red, $green, $blue);
 
@@ -666,7 +670,8 @@ class ImageResize
             'b' => 0,
             'l' => 0,
         ];
-        $threshold = 0.12;
+
+        $threshold = 50;
 
         // top
         $rows = $originalHeight;
@@ -675,10 +680,11 @@ class ImageResize
 
             for ($x = 0; $x < $originalWidth; $x += $step) {
                 $color = imagecolorat($this->source_image, $x, $i);
+                $rgb = imagecolorsforindex($this->source_image, $color);
 
+                $distance = sqrt(pow($rgb['red'] - $red, 2) + pow($rgb['blue'] - $blue, 2) + pow($rgb['green'] - $green, 2) + pow($rgb['alpha'] - $alpha, 2));
                 if (
-                    $color < ($colorToCrop - $colorToCrop * $threshold) ||
-                    $color > ($colorToCrop + $colorToCrop * $threshold)
+                    $distance > $threshold
                 ) {
                     $break = true;
                     break;
@@ -697,10 +703,11 @@ class ImageResize
 
             for ($x = 0; $x < $originalWidth; $x += $step) {
                 $color = imagecolorat($this->source_image, $x, ($originalHeight - $i - 1));
+                $rgb = imagecolorsforindex($this->source_image, $color);
 
+                $distance = sqrt(pow($rgb['red'] - $red, 2) + pow($rgb['blue'] - $blue, 2) + pow($rgb['green'] - $green, 2) + pow($rgb['alpha'] - $alpha, 2));
                 if (
-                    $color < ($colorToCrop - $colorToCrop * $threshold) ||
-                    $color > ($colorToCrop + $colorToCrop * $threshold)
+                    $distance > $threshold
                 ) {
                     $break = true;
                     break;
@@ -719,10 +726,11 @@ class ImageResize
 
             for ($y = 0; $y < $originalHeight; $y += $step) {
                 $color = imagecolorat($this->source_image, $i, $y);
+                $rgb = imagecolorsforindex($this->source_image, $color);
 
+                $distance = sqrt(pow($rgb['red'] - $red, 2) + pow($rgb['blue'] - $blue, 2) + pow($rgb['green'] - $green, 2) + pow($rgb['alpha'] - $alpha, 2));
                 if (
-                    $color < ($colorToCrop - $colorToCrop * $threshold) ||
-                    $color > ($colorToCrop + $colorToCrop * $threshold)
+                    $distance > $threshold
                 ) {
                     $break = true;
                     break;
@@ -741,10 +749,11 @@ class ImageResize
 
             for ($y = 0; $y < $originalHeight; $y += $step) {
                 $color = imagecolorat($this->source_image, ($originalWidth - $i - 1), $y);
+                $rgb = imagecolorsforindex($this->source_image, $color);
 
+                $distance = sqrt(pow($rgb['red'] - $red, 2) + pow($rgb['blue'] - $blue, 2) + pow($rgb['green'] - $green, 2) + pow($rgb['alpha'] - $alpha, 2));
                 if (
-                    $color < ($colorToCrop - $colorToCrop * $threshold) ||
-                    $color > ($colorToCrop + $colorToCrop * $threshold)
+                    $distance > $threshold
                 ) {
                     $break = true;
                     break;
@@ -837,20 +846,24 @@ class ImageResize
         $red = 0;
         $green = 0;
         $blue = 0;
+        $alpha = 0;
 
-        foreach($corners as $corner) {
+        foreach ($corners as $corner) {
             $color = imagecolorat($this->source_image, $corner[0], $corner[1]);
             $rgb = imagecolorsforindex($this->source_image, $color);
+
             $red += round(round(($rgb['red'] / 0x33)) * 0x33);
             $green += round(round(($rgb['green'] / 0x33)) * 0x33);
             $blue += round(round(($rgb['blue'] / 0x33)) * 0x33);
+            $alpha+= round(round(($rgb['alpha'] / 0x33)) * 0x33);
         }
 
         $red /= 4;
         $green /= 4;
         $blue /= 4;
+        $alpha /= 4;
 
-        $colorToCrop = imagecolorallocate($this->source_image, $red, $green, $blue);
+        $colorToCrop = imagecolorallocatealpha($this->source_image, $red, $green, $blue, $alpha);
         $cropped = imagecropauto($this->source_image, IMG_CROP_THRESHOLD, 0.2, $colorToCrop);
         if ($cropped !== false) {
             imagedestroy($this->source_image);
