@@ -887,6 +887,47 @@ class ImageResize
         return $this;
     }
 
+    public function smartCrop($width, $height)
+    {
+        $originalWidth = imagesx($this->source_image);
+        $originalHeight = imagesy($this->source_image);
+
+        // detect color
+        $corners = [
+            [0, 0],
+            [$originalWidth - 1, 0],
+            [0, $originalHeight - 1],
+            [$originalWidth - 1, $originalHeight - 1],
+        ];
+
+        $red = 0;
+        $green = 0;
+        $blue = 0;
+        $alpha = 0;
+
+        foreach ($corners as $corner) {
+            $color = imagecolorat($this->source_image, $corner[0], $corner[1]);
+            $rgb = imagecolorsforindex($this->source_image, $color);
+
+            $red += round(round(($rgb['red'] / 0x33)) * 0x33);
+            $green += round(round(($rgb['green'] / 0x33)) * 0x33);
+            $blue += round(round(($rgb['blue'] / 0x33)) * 0x33);
+            $alpha+= round(round(($rgb['alpha'] / 0x33)) * 0x33);
+        }
+
+        $red /= 4;
+        $green /= 4;
+        $blue /= 4;
+        $alpha /= 4;
+
+        if ($red == 255 && $green == 255 && $blue == 255) {
+            $this->resizeToBestFit($width, $height, true);
+
+        } else {
+            $this->crop($width, $height);
+        }
+    }
+
     /**
      * Crops image according to the given width, height and crop position
      *
