@@ -200,6 +200,10 @@ class File
                         $resizer->resize($thumbnailData['w'], $thumbnailData['h'], true);
                         break;
 
+                    case 'smart':
+                        $resizer->smartCrop($thumbnailData['w'], $thumbnailData['h']);
+                        break;
+
                     case 'crop':
                         $resizer->crop(
                             $thumbnailData['w'],
