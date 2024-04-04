@@ -213,7 +213,7 @@ class File
                         );
                         break;
                 }
-                if (in_array($thumbnailData['mode'], ['free']))
+                if (in_array($thumbnailData['mode'], ['free', 'smart']))
                     $resizer->save($tmpFile, exact_size: [$thumbnailData['w'], $thumbnailData['h']]);
                 else
                     $resizer->save($tmpFile);

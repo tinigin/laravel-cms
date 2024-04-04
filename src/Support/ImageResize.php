@@ -671,7 +671,7 @@ class ImageResize
             'l' => 0,
         ];
 
-        $threshold = 20;
+        $threshold = 30;
 
         // top
         $rows = $originalHeight;
