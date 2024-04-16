@@ -105,16 +105,23 @@ class HttpFilter
         $allowedRelations = $this->options->get('allowedRelationsFilters')->toArray();
         $this->filters->each(function ($value, $property) use ($builder, $allowedRelations) {
             if (in_array($property, $allowedRelations, true) && $value) {
+                if (strpos($property, '->') !== false) {
+                    list($relation, $property) = explode('->', $property);
+                }
+
                 if (strpos($property, '.') !== false) {
                     list($property, $key) = explode('.', $property);
                 } else {
                     $key = 'id';
                 }
 
-                $builder->whereHas($property, function($query) use($key, $value, $property) {
+                if (!isset($relation))
+                    $relation = $property;
+
+                $builder->whereHas($relation, function($query) use($key, $value, $property) {
                     if (is_array($value)) {
-                        $query->whereIn($property . '.' . $key, $value);
-                    } elseif (is_numeric($value)) {
+                        $query->whereIn($key, $value);
+                    } else if (is_numeric($value)) {
                         $query->where($property . '.' . $key, $value);
                     } else {
                         $query->where($property . '.' . $key, 'ilike', "%$value%");
