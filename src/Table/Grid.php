@@ -309,7 +309,7 @@ class Grid {
                 foreach ($this->columns AS $column => $options) {
                     $itemData[$column] = '';
 
-                    $method = 'text' . Str::studly(Str::replace('.', '', $column));
+                    $method = 'text' . Str::studly(Str::replace(['.', '>'], '', $column));
                     if (method_exists($item, $method)) {
                         $itemData[$column] = $item->$method();
 
