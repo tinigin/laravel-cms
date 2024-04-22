@@ -777,25 +777,27 @@ class ImageResize
             $height = 1;
         }
 
-        if ($border && ($cut['t'] && $cut['r'] && $cut['b'] && $cut['l'])) {
-            if ($x > $border && (($originalWidth - ($x + $width)) > $border)) {
-                $x -= $border;
-                $width += $border * 2;
-
-            } else {
-                $xBorder = min($x, ($originalWidth - ($x + $width)));
-                $x -= $xBorder;
-                $width += $xBorder * 2;
+        if ($border) {
+            if ($cut['l']) {
+                $l = $cut['l'] > $border ? $border : $cut['l'];
+                $x -= $l;
+                $width += $l;
             }
 
-            if ($y > $border && (($originalHeight - ($y + $height)) > $border)) {
-                $y -= $border;
-                $height += $border * 2;
+            if ($cut['r']) {
+                $l = $cut['r'] > $border ? $border : $cut['r'];
+                $width += $l;
+            }
 
-            } else {
-                $yBorder = min($y, ($originalHeight - ($y + $height)));
-                $y -= $yBorder;
-                $height += $yBorder * 2;
+            if ($cut['t']) {
+                $l = $cut['t'] > $border ? $border : $cut['t'];
+                $y -= $l;
+                $height += $l;
+            }
+
+            if ($cut['b']) {
+                $l = $cut['b'] > $border ? $border : $cut['b'];
+                $height += $l;
             }
         }
 
