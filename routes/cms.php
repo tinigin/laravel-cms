@@ -87,7 +87,7 @@ Route::name('cms.')->group(function() {
 
                 $router->match(['put', 'patch'],'{controller}/{objectId}', function ($controller, $objectId) use ($resolver) {
                     return $resolver($controller, 'update', $objectId);
-                })->name('module.update');
+                })->where('objectId', '[0-9]+')->name('module.update');
 
                 $router->get('{controller}/destroy/{objectId}', function ($controller, $objectId) use ($resolver) {
                     return $resolver($controller, 'destroy', $objectId);
@@ -97,10 +97,6 @@ Route::name('cms.')->group(function() {
                     return $resolver($controller, 'images', $objectId);
                 })->name('module.images');
 
-                $router->get('{controller}/{action}', function ($controller, $action) use ($resolver) {
-                    return $resolver($controller, $action);
-                })->name('module.custom.action');
-
                 // Ajax
                 $ajaxClass = \LaravelCms\Http\Controllers\AjaxController::class;
                 if (class_exists('\App\Http\Controllers\Cms\AjaxController'))
@@ -109,6 +105,10 @@ Route::name('cms.')->group(function() {
                 $router->post('ajax/resize-image', [$ajaxClass, 'resizeImage'])->name('ajax.resize.image');
                 $router->post('ajax/sort-files', [$ajaxClass, 'sortFiles'])->name('ajax.sort.files');
                 $router->post('ajax/data-files', [$ajaxClass, 'dataFiles'])->name('ajax.data.files');
+
+                $router->any('{controller}/{action}', function ($controller, $action) use ($resolver) {
+                    return $resolver($controller, $action);
+                })->name('module.custom.action');
             });
 
             Route::fallback(function () {
