@@ -104,7 +104,7 @@ class HttpFilter
     {
         $allowedRelations = $this->options->get('allowedRelationsFilters')->toArray();
         $this->filters->each(function ($value, $property) use ($builder, $allowedRelations) {
-            if (in_array($property, $allowedRelations, true) && $value) {
+            if (in_array($property, $allowedRelations, true) && !is_null($value)) {
                 if (strpos($property, '->') !== false) {
                     list($relation, $property) = explode('->', $property);
                 }
