@@ -15,7 +15,7 @@ trait Attachable
      *
      * @return MorphToMany
      */
-    public function attachment(string $group = null): MorphToMany
+    public function attachment(string|array $group = null): MorphToMany
     {
         $query = $this->morphToMany(
             Attachment::class,
@@ -26,7 +26,10 @@ trait Attachable
         );
 
         if ($group !== null) {
-            $query->where('group', $group);
+            if (!is_array($group))
+                $group = [$group];
+
+            $query->whereIn('group', $group);
         }
 
         return $query
@@ -38,7 +41,7 @@ trait Attachable
      *
      * @return MorphToMany
      */
-    public function images(string $group = null): MorphToMany
+    public function images(string|array $group = null): MorphToMany
     {
         $query = $this->attachment($group);
 
@@ -62,7 +65,7 @@ trait Attachable
      *
      * @return MorphToMany
      */
-    public function files(string $group = null): MorphToMany
+    public function files(string|array $group = null): MorphToMany
     {
         $query = $this->attachment($group);
 
