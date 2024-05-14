@@ -60,6 +60,7 @@
                                             data-width="{{ $data['w'] }}"
                                             data-height="{{ $data['h'] }}"
                                             data-mode="{{ $data['mode'] }}"
+                                            {{ isset($data['watermark']) ? 'data-watermark=' . ($data['watermark'] === true ? 'true' : $data['watermark']) . '' : '' }}
                                             data-id="{{ $file->getKey() }}"
                                         >
                                             <i class="fas fa-crop"></i>

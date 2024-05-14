@@ -2,6 +2,9 @@
 
 namespace LaravelCms\Http\Controllers;
 
+use Intervention\Image\Drivers\Imagick\Driver;
+use Intervention\Image\ImageManager;
+use LaravelCms\Support\ImageHelper;
 use LaravelCms\Support\ImageResize;
 use Illuminate\Support\Facades\Storage;
 use LaravelCms\Http\Controllers\BaseController;
@@ -127,7 +130,7 @@ class AjaxController extends BaseController
         $status = 'fail';
         $message = 'Произошла ошибка, обратитесь к разработчику сайта';
 
-        if (request()->has(['id', 'coords', 'width', 'height', 'ratio', 'mode', 'thumbnail'])) {
+        if (request()->has(['id', 'coords', 'width', 'height', 'ratio', 'mode', 'thumbnail', 'watermark'])) {
             $file = Attachment::find((int) request()->get('id'));
             $mode = request()->get('mode');
             if ($file) {
@@ -144,18 +147,17 @@ class AjaxController extends BaseController
                 $selectedWidth = (float) $width * $ratio;
                 $selectedHeight = (float) $height * $ratio;
 
-                $resizer = new ImageResize($tmpFile);
-                $resizer->freecrop($selectedWidth, $selectedHeight, $x, $y);
-                $resizer->save($tmpFile);
+                $image = new ImageHelper($tmpFile);
+                $image->crop($selectedWidth, $selectedHeight, $x, $y);
+                $image->save($tmpFile, quality: 100);
 
-                $resizer = new ImageResize($tmpFile);
-                if ($mode == 'free') {
-                    $resizer->resizeToBestFit($finalWidth, $finalHeight, true);
-                    $resizer->save($tmpFile, exact_size: [$finalWidth, $finalHeight]);
-                } else {
-                    $resizer->resize($finalWidth, $finalHeight, true);
-                    $resizer->save($tmpFile);
+                $image = new ImageHelper($tmpFile);
+                $image->contain($finalWidth, $finalHeight, position: 'center');
+                $watermark = request()->get('watermark');
+                if ($watermark) {
+                    $image->watermark($watermark);
                 }
+                $image->save($tmpFile, quality: 100);
 
                 $thumbnail = request()->get('thumbnail');
                 $thumbnailPath = $file->getThumbnailFilename($thumbnail);
