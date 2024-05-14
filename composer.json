@@ -23,7 +23,8 @@
         "socialiteproviders/yandex": "^4.1",
         "laravel/ui": "^3.4",
         "mateusjunges/laravel-acl": "^4.2",
-        "doctrine/dbal": "^3.5"
+        "doctrine/dbal": "^3.5",
+        "intervention/image": "^3.6"
     },
     "require-dev": {
         "ext-exif": "*",
