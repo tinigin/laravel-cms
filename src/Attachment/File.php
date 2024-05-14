@@ -207,6 +207,10 @@ class File
                         $imageHelper->contain($thumbnailData['w'], $thumbnailData['h'], position: 'center');
                         break;
 
+                    case 'scale':
+                        $imageHelper->scale($thumbnailData['w'], $thumbnailData['h']);
+                        break;
+
                     case 'crop':
                         $imageHelper->crop(
                             $thumbnailData['w'],

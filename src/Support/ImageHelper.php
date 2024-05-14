@@ -31,6 +31,11 @@ class ImageHelper {
         $this->image->cover(width: $width, height: $height);
     }
 
+    public function scale($width, $height)
+    {
+        $this->image->scale(width: $width, height: $height);
+    }
+
     public function crop(int $width, int $height, int $offset_x = 0, int $offset_y = 0, string $position = 'top-left')
     {
         $this->image->crop(
