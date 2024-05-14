@@ -8,11 +8,14 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Drivers\Imagick\Driver;
+use Intervention\Image\ImageManager;
 use LaravelCms\Attachment\Contracts\Engine;
 use LaravelCms\Attachment\Engines\Generator;
 use LaravelCms\Attachment\Models\Attachment;
 use LaravelCms\Events\ReplicateFileEvent;
 use LaravelCms\Events\UploadFileEvent;
+use LaravelCms\Support\ImageHelper;
 use LaravelCms\Support\ImageResize;
 
 /**
@@ -181,42 +184,43 @@ class File
                 $filename = $thumbnailData['w'] . 'x' . $thumbnailData['h'] . '_' . $this->engine->fullName();
                 $tmpFile = tempnam(sys_get_temp_dir(), $filename);
 
-                $resizer = new ImageResize(is_string($this->file) ? $this->file : $this->file->getRealPath());
+                $imageHelper = new ImageHelper(is_string($this->file) ? $this->file : $this->file->getRealPath());
                 switch ($thumbnailData['mode']) {
                     case 'width':
-                        $resizer->resizeToWidth($thumbnailData['w']);
+                        $imageHelper->resizeToWidth($thumbnailData['w']);
                         break;
 
                     case 'fit':
                     case 'free':
-                        $resizer->resizeToBestFit($thumbnailData['w'], $thumbnailData['h'], true);
+                        $imageHelper->resizeToBestFit($thumbnailData['w'], $thumbnailData['h']);
                         break;
 
                     case 'height':
-                        $resizer->resizeToHeight($thumbnailData['h']);
+                        $imageHelper->resizeToHeight($thumbnailData['h']);
                         break;
 
                     case 'force':
-                        $resizer->resize($thumbnailData['w'], $thumbnailData['h'], true);
+                        $imageHelper->resizeToBestFit($thumbnailData['w'], $thumbnailData['h']);
                         break;
 
                     case 'smart':
-                        $resizer->smartCrop($thumbnailData['w'], $thumbnailData['h']);
+                        $imageHelper->contain($thumbnailData['w'], $thumbnailData['h'], position: 'center');
                         break;
 
                     case 'crop':
-                        $resizer->crop(
+                        $imageHelper->crop(
                             $thumbnailData['w'],
                             $thumbnailData['h'],
-                            true,
-                            ImageResize::CROPCENTER
+                            position: 'center'
                         );
                         break;
                 }
-                if (in_array($thumbnailData['mode'], ['free', 'smart']))
-                    $resizer->save($tmpFile, exact_size: [$thumbnailData['w'], $thumbnailData['h']]);
-                else
-                    $resizer->save($tmpFile);
+
+                if (isset($thumbnailData['watermark'])) {
+                    $imageHelper->watermark($thumbnailData['watermark']);
+                }
+
+                $imageHelper->save($tmpFile);
 
                 $additional['thumbnails'][$thumbnailData['w'] . 'x' . $thumbnailData['h']] = $filename;
 

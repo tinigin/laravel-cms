@@ -395,6 +395,7 @@ let imgCrop = function(element) {
         this.width = parseInt(this.element.attr('data-width'), 10);
         this.height = parseInt(this.element.attr('data-height'), 10);
         this.thumbnail = this.element.attr('data-thumbnail');
+        this.watermark = this.element.attr('data-watermark');
         this.mode = this.element.attr('data-mode');
         this.url = this.element.attr('data-url');
         this.id = parseInt(this.element.attr('data-id'), 10);
@@ -420,20 +421,20 @@ let imgCrop = function(element) {
 
         $('.content-wrapper .content').append(
             '<div class="modal fade show" id="' + this.modalId + '" tabindex="-1" role="dialog" aria-labelledby="Crop modal" aria-hidden="true">' +
-                '<div class="modal-dialog modal-lg">' +
-                    '<div class="modal-content">' +
-                        '<div class="modal-header">' +
-                            '<h4 class="modal-title" id="myModalLabel">Выберите область на изображении</h4>' +
-                            '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>' +
-                        '</div>' +
-                        '<div class="modal-body image-crop-container">' +
-                        '</div>' +
-                        '<div class="modal-footer">' +
-                            '<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>' +
-                            '<button type="button" class="btn btn-primary" data-submit="modal">Сохранить</button>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>' +
+            '<div class="modal-dialog modal-lg">' +
+            '<div class="modal-content">' +
+            '<div class="modal-header">' +
+            '<h4 class="modal-title" id="myModalLabel">Выберите область на изображении</h4>' +
+            '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>' +
+            '</div>' +
+            '<div class="modal-body image-crop-container">' +
+            '</div>' +
+            '<div class="modal-footer">' +
+            '<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>' +
+            '<button type="button" class="btn btn-primary" data-submit="modal">Сохранить</button>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
             '</div>' +
             '<div class="modal-backdrop fade show"></div>'
         );
@@ -572,7 +573,7 @@ let imgCrop = function(element) {
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 type: "POST",
                 url: '/cms/ajax/resize-image/',
-                data: 'id=' + this.id + '&coords=' + this.coords + '&ratio=' + this.ratio + '&width=' + this.width + '&height=' + this.height + '&mode=' + this.mode + '&thumbnail=' + this.thumbnail,
+                data: 'id=' + this.id + '&coords=' + this.coords + '&ratio=' + this.ratio + '&width=' + this.width + '&height=' + this.height + '&mode=' + this.mode + '&thumbnail=' + this.thumbnail + '&watermark=' + this.watermark,
                 response: 'JSON',
                 success: function (response) {
                     if (response.status == 'success') {

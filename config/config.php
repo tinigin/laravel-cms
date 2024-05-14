@@ -8,6 +8,7 @@ return [
     'images_default_background_g' => env('CMS_IMAGES_BG_G', 255),
     'images_default_background_b' => env('CMS_IMAGES_BG_B', 255),
     'images_default_background_a' => env('CMS_IMAGES_BG_A', 0),
+    'watermark' => false,
 
     /*
     |--------------------------------------------------------------------------
