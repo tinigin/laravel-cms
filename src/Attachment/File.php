@@ -203,12 +203,20 @@ class File
                         $imageHelper->resizeToBestFit($thumbnailData['w'], $thumbnailData['h']);
                         break;
 
-                    case 'smart':
+                    case 'contain':
                         $imageHelper->contain($thumbnailData['w'], $thumbnailData['h'], position: 'center');
                         break;
 
                     case 'scale':
                         $imageHelper->scale($thumbnailData['w'], $thumbnailData['h']);
+                        break;
+
+                    case 'cover':
+                        $imageHelper->cover($thumbnailData['w'], $thumbnailData['h']);
+                        break;
+
+                    case 'smart':
+                        $imageHelper->smart($thumbnailData['w'], $thumbnailData['h']);
                         break;
 
                     case 'crop':
