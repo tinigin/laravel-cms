@@ -130,7 +130,7 @@ class AjaxController extends BaseController
         $status = 'fail';
         $message = 'Произошла ошибка, обратитесь к разработчику сайта';
 
-        if (request()->has(['id', 'coords', 'width', 'height', 'ratio', 'mode', 'thumbnail', 'watermark'])) {
+        if (request()->has(['id', 'coords', 'width', 'height', 'ratio', 'mode', 'thumbnail'])) {
             $file = Attachment::find((int) request()->get('id'));
             $mode = request()->get('mode');
             if ($file) {
