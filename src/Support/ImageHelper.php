@@ -325,7 +325,7 @@ class ImageHelper {
         $blue /= 4;
         $alpha /= 4;
 
-        if ($red == 255 && $green == 255 && $blue == 255) {
+        if ($red == $green && $red == $blue && $red >= 250) {
             $this->trimWithBorder(50);
             $this->contain($width, $height);
 
