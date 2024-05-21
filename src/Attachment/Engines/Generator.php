@@ -130,7 +130,10 @@ class Generator implements Engine
     public function extension(): string
     {
         $extension = $this->file->getClientOriginalExtension();
-
+        if (!$extension) {
+            $extension = $this->file->extension();
+        }
+        
         return empty($extension)
             ? $this->mimes->getExtension($this->file->getClientMimeType(), 'unknown')
             : $extension;

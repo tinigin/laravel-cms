@@ -125,6 +125,50 @@ class BaseModel extends Model
         return false;
     }
 
+    public function uploadImageFile(string $group, string $url = '', string $path = '', bool|int $trim = false, array $thumbnails = [])
+    {
+        $extension = FileFacade::extension($url);
+        $filename = FileFacade::name($url) . '.' . $extension;
+
+        $tmpPath = storage_path('tmp');
+        if (!is_dir($tmpPath))
+            mkdir($tmpPath);
+
+        $filepath = "{$tmpPath}/{$filename}";
+        $response = Http::withHeaders(['Accept-Encoding' => 'gzip, deflate'])->get($url);
+        if ($response->successful()) {
+            $body = $response->body();
+            if (file_put_contents($filepath, $body)) {
+                $attachments = [];
+                $uploadedFile = new UploadedFile($filepath, $filename);
+
+                try {
+                    $f = new \LaravelCms\Attachment\File(
+                        $uploadedFile,
+                        group: $group,
+                        rename: 'hash',
+                        thumbnails: $thumbnails[$group],
+                        trim: $trim
+                    );
+                    $attachments[] = $f->path($this->getUploadPath())->allowDuplicates()->load();
+
+                } catch (\Exception $e) {
+
+                }
+
+                $attachmentIds = array_map(function ($item) {
+                    return $item->id;
+                }, $attachments);
+
+                $this->attachment()->syncWithoutDetaching(
+                    $attachmentIds
+                );
+
+                unlink($filepath);
+            }
+        }
+    }
+
     public function data(
         array $attributes = [],
         array $additionalData = [],
