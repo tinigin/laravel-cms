@@ -62,7 +62,7 @@ class Generator implements Engine
                 return Str::limit(sha1($this->uniqueId . $this->file->getClientOriginalName()), 10, '');
 
             case 'orig':
-                return pathinfo($this->file->getClientOriginalName(), PATHINFO_FILENAME);
+                return Str::slug(pathinfo($this->file->getClientOriginalName(), PATHINFO_FILENAME));
 
             default:
                 return $this->rename;
@@ -133,7 +133,7 @@ class Generator implements Engine
         if (!$extension) {
             $extension = $this->file->extension();
         }
-        
+
         return empty($extension)
             ? $this->mimes->getExtension($this->file->getClientMimeType(), 'unknown')
             : $extension;
