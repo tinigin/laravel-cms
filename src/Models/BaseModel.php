@@ -76,7 +76,7 @@ class BaseModel extends Model
         return $path;
     }
 
-    public function uploadFile(string $file, string $group, array $thumbnails = [])
+    public function uploadFile(string $file, string $group, array $thumbnails = [], string $rename = 'hash')
     {
         $uploadedFile = null;
         $isDownloaded = false;
@@ -91,7 +91,7 @@ class BaseModel extends Model
                 mkdir($tmpPath);
 
             $filepath = "{$tmpPath}/{$filename}";
-            $response = Http::withHeaders(['Accept-Encoding' => 'gzip, deflate'])->get($file);
+            $response = Http::withHeaders(['Accept-Encoding' => 'gzip, deflate'])->timeout(30)->get($file);
             if ($response->successful()) {
                 $body = $response->body();
                 if (file_put_contents($filepath, $body)) {
@@ -107,7 +107,7 @@ class BaseModel extends Model
             $f = new \LaravelCms\Attachment\File(
                 $uploadedFile,
                 group: $group,
-                rename: 'hash',
+                rename: $rename,
                 thumbnails: $thumbnails ? $thumbnails : []
             );
             $attachment = $f->path($this->getUploadPath())->allowDuplicates()->load();
@@ -125,7 +125,7 @@ class BaseModel extends Model
         return false;
     }
 
-    public function uploadImageFile(string $group, string $url = '', string $path = '', bool|int $trim = false, array $thumbnails = [])
+    public function uploadImageFile(string $group, string $url = '', string $path = '', bool|int $trim = false, array $thumbnails = [], string $rename = 'hash')
     {
         $extension = FileFacade::extension($url);
         $filename = FileFacade::name($url) . '.' . $extension;
@@ -135,7 +135,7 @@ class BaseModel extends Model
             mkdir($tmpPath);
 
         $filepath = "{$tmpPath}/{$filename}";
-        $response = Http::withHeaders(['Accept-Encoding' => 'gzip, deflate'])->get($url);
+        $response = Http::withHeaders(['Accept-Encoding' => 'gzip, deflate'])->timeout(30)->get($url);
         if ($response->successful()) {
             $body = $response->body();
             if (file_put_contents($filepath, $body)) {
@@ -146,7 +146,7 @@ class BaseModel extends Model
                     $f = new \LaravelCms\Attachment\File(
                         $uploadedFile,
                         group: $group,
-                        rename: 'hash',
+                        rename: $rename,
                         thumbnails: $thumbnails[$group],
                         trim: $trim
                     );
