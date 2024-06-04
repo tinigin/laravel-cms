@@ -290,7 +290,7 @@ class ImageHelper {
 
         $manager = new ImageManager(new Driver());
         $watermarkSource = $manager->read($path)->scale($this->image->width() / 4, $this->image->height() / 4);
-        $this->image->place($watermarkSource, position: 'bottom-right');
+        $this->image->place($watermarkSource, position: 'bottom-right', offset_x: 50, offset_y: 50);
     }
 
     public function smart(int $width, int $height)
