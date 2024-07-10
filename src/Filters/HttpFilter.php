@@ -164,7 +164,9 @@ class HttpFilter
         $property = self::sanitize($property);
         $model = $query->getModel();
 
-        if ($this->isDate($model, $property)) {
+        if (is_array($value) && count($value) == 1 && current($value) == 'null') {
+            $query->whereNull($property);
+        } else if ($this->isDate($model, $property)) {
             $query->when($value['start'] ?? null, function (Builder $query) use ($property, $value) {
                 return $query->whereDate($property, '>=', $value['start']);
             });
