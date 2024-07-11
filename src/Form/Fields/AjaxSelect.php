@@ -51,4 +51,10 @@ class AjaxSelect extends Field implements ComplexFieldConcern
     {
         return $this->set('url', $url);
     }
+
+    public function getOldValue()
+    {
+        return $this->get('value');
+    }
+
 }
