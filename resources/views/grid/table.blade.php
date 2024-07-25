@@ -67,7 +67,7 @@
     					</tbody>
     				</table>
     			@else
-    				<h3>Данных не нейдено.</h3>
+    				<h3>Данных не найдено.</h3>
     			@endif
 			</div>
             @if ($grid->sortable() || $grid->multipleDelete() || $grid->isAllowedAdd() || $grid->count() > 0)
