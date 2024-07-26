@@ -92,33 +92,40 @@
 {{--                <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>--}}
 {{--            </div>--}}
 {{--        </li>--}}
-{{--        <!-- Notifications Dropdown Menu -->--}}
-{{--        <li class="nav-item dropdown">--}}
-{{--            <a class="nav-link" data-toggle="dropdown" href="#">--}}
-{{--                <i class="far fa-bell"></i>--}}
-{{--                <span class="badge badge-warning navbar-badge">15</span>--}}
-{{--            </a>--}}
-{{--            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">--}}
-{{--                <span class="dropdown-item dropdown-header">15 Notifications</span>--}}
-{{--                <div class="dropdown-divider"></div>--}}
-{{--                <a href="#" class="dropdown-item">--}}
-{{--                    <i class="fas fa-envelope mr-2"></i> 4 new messages--}}
-{{--                    <span class="float-right text-muted text-sm">3 mins</span>--}}
-{{--                </a>--}}
-{{--                <div class="dropdown-divider"></div>--}}
-{{--                <a href="#" class="dropdown-item">--}}
-{{--                    <i class="fas fa-users mr-2"></i> 8 friend requests--}}
-{{--                    <span class="float-right text-muted text-sm">12 hours</span>--}}
-{{--                </a>--}}
-{{--                <div class="dropdown-divider"></div>--}}
-{{--                <a href="#" class="dropdown-item">--}}
-{{--                    <i class="fas fa-file mr-2"></i> 3 new reports--}}
-{{--                    <span class="float-right text-muted text-sm">2 days</span>--}}
-{{--                </a>--}}
-{{--                <div class="dropdown-divider"></div>--}}
-{{--                <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>--}}
-{{--            </div>--}}
-{{--        </li>--}}
+        <!-- Notifications Dropdown Menu -->
+        @if (isset($notifications) && $notifications->count())
+            <li class="nav-item dropdown" id="notifications">
+                <a class="nav-link" data-toggle="dropdown" href="#">
+                    <i class="far fa-bell"></i>
+                    <span class="badge badge-warning navbar-badge" id="notifications-badge">{{ $notifications->count() }}</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                    @foreach ($notifications as $notification)
+                        <div data-notification-id="{{ $notification->getKey() }}" class="dropdown-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                            @if ($notification->from_user_id)
+                                @php($fromUser = $notification->fromUser)
+                                <span class="from">{{ $fromUser->name }}</span>
+                            @else
+                                <span class="from">Система</span>
+                            @endif
+                                <span class="fa fa-trash text-muted trash"></span>
+                            </div>
+                            @php ($message = $notification->notification)
+                            @if ($message->subject)
+                                <span class="subject">{!! $message->subject !!}</span>
+                            @endif
+                            <span class="message">{!! $message->message !!}</span>
+                            <span class="date">{{ $notification->date }}</span>
+                        </div>
+
+                        @if (!$loop->last)
+                            <div class="dropdown-divider"></div>
+                        @endif
+                    @endforeach
+                </div>
+            </li>
+        @endif
         <li class="nav-item">
             <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                 <i class="fas fa-expand-arrows-alt"></i>

@@ -385,4 +385,34 @@ body.loading::after {
   background: #f09494;
 }
 
+.ui-draggable-handle {
+  cursor: move;
+}
+
+.fa-minus.disabled {
+  opacity: 0.5;
+}
+
+.dropdown-item {
+  white-space: normal;
+  display: flex;
+  flex-direction: column;
+  row-gap: 2px;
+}
+.dropdown-item .trash {
+  cursor: pointer;
+}
+.dropdown-item .from {
+  font-size: 13px;
+  opacity: 0.4;
+}
+.dropdown-item .subject {
+  font-weight: bold;
+}
+.dropdown-item .date {
+  font-size: 12px;
+  text-align: right;
+  opacity: 0.4;
+}
+
 /*# sourceMappingURL=app.css.map */
