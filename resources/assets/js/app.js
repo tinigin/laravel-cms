@@ -380,7 +380,88 @@ $(function () {
     document.querySelectorAll('.ajax-select').forEach(function (element, index) {
         new ajaxSelect(element);
     });
+
+    document.querySelectorAll('.multi-values').forEach(function (element, index) {
+        new multiValues(element);
+    });
+
+    document.querySelectorAll('.groups-values').forEach(function (element, index) {
+        new groupsValues(element);
+    });
+
+    document.querySelectorAll('.sticky-header').forEach(function(element) {
+        new stickyHeader(element);
+    });
+
+    if (document.querySelectorAll('[data-notification-id]').length) {
+        document.querySelectorAll('[data-notification-id]').forEach((notification) => {
+            let close = notification.querySelector('.trash');
+            let notificationId = notification.dataset.notificationId;
+
+            close.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                const xhr = new XMLHttpRequest();
+                xhr.open(
+                    "GET",
+                    "/cms/ajax/notifications?action=read&id=" + notificationId,
+                    true
+                );
+                xhr.onload = () => {
+                    if (xhr.status == 200) {
+                        let json = JSON.parse(xhr.response);
+
+                        notification.remove();
+
+                        if ('count' in json) {
+                            if (json['count'] > 0) {
+                                document.querySelector('#notifications-badge').innerText = json['count'];
+                            } else {
+                                document.querySelector('#notifications').remove();
+                            }
+                        }
+                    }
+                };
+                xhr.send();
+
+                return false;
+            });
+        });
+    }
 });
+
+let stickyHeader = function(element) {
+    this.table = element;
+    this.offset = 0;
+    this.thead = this.table.querySelector('thead');
+
+    this.init = function() {
+        let self = this;
+
+        let bodyRect = document.body.getBoundingClientRect(),
+            elemRect = this.table.getBoundingClientRect();
+        this.offset = elemRect.top - bodyRect.top;
+
+        window.addEventListener('resize', function(event) {
+            self.offset = self.table.offsetTop;
+            self.updateOffset();
+        });
+
+        window.addEventListener("scroll", function(event) {
+            self.updateOffset();
+        });
+    };
+
+    this.updateOffset = function() {
+        if (window.scrollY >= this.offset) {
+            this.thead.style.transform = 'translateY(' + (window.scrollY - this.offset) + 'px)';
+        } else {
+            this.thead.style.transform = 'translateY(0px)'
+        }
+    };
+
+    this.init();
+};
 
 let imgCrop = function(element) {
     this.element = $(element);
@@ -1251,6 +1332,280 @@ function properties(element) {
         }
 
         this.bindButtons();
+    };
+
+    this.init();
+}
+
+function multiValues(element) {
+    this.wrapper = element;
+    this.name = this.wrapper.dataset.name;
+    this.rowsContainer = this.wrapper.querySelector('.values-container');
+    this.addButton = this.wrapper.querySelector('.add-value');
+
+    this.init = function() {
+        let self = this;
+
+        this.addButton.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            self.addValue();
+        });
+
+        this.bindButtons();
+        this.checkAmount();
+    };
+
+    this.addValue = function() {
+        let inputHtml =
+            "<div class=\"d-flex align-items-center mt-2\">" +
+            "<div class=\"\" style=\"flex-grow: 1\">" +
+            "<input " +
+            "class=\"form-control\" " +
+            "required " +
+            "type=\"text\" " +
+            "name=\"" + this.name + "[]\" " +
+            "value=\"\"" +
+            "placeholder='Артикул'" +
+            "/>" +
+            "</div>" +
+            "<div class=\"pl-2 text-nowrap text-right\">" +
+            "<span class=\"mr-2 fa fa-minus text-danger\" data-remove-input=\"true\" style=\"cursor: pointer\"></span>" +
+            "</div>" +
+            "</div>";
+
+        this.rowsContainer.insertAdjacentHTML('beforeend', inputHtml);
+
+        this.bindButtons();
+        this.checkAmount();
+    };
+
+    this.bindButtons = function() {
+        let self = this;
+
+        this.rowsContainer.querySelectorAll('.d-flex').forEach((inputRow) => {
+            inputRow.querySelectorAll('[data-remove-input]').forEach((rmBtn) => {
+                if (!("binded" in rmBtn.dataset)) {
+                    rmBtn.addEventListener('click', function (event) {
+                        let inputRow = rmBtn.closest('.d-flex');
+
+                        if (!rmBtn.classList.contains('disabled')) {
+                            inputRow.remove();
+                        }
+
+                        self.checkAmount();
+                    });
+
+                    rmBtn.dataset.binded = 'true';
+                }
+            });
+        });
+    };
+
+    this.checkAmount = function() {
+        if (this.rowsContainer.querySelectorAll('.d-flex').length == 1) {
+            this.rowsContainer.querySelector('.d-flex [data-remove-input]').classList.add('disabled');
+        } else {
+            this.rowsContainer.querySelectorAll('.d-flex .disabled').forEach(function(item) {
+                item.classList.remove('disabled');
+            })
+        }
+    };
+
+    this.init();
+}
+
+function groupsValues(element) {
+    this.wrapper = element;
+    this.name = this.wrapper.dataset.name;
+    this.groupsContainer = this.wrapper.querySelector('.values-container');
+    this.addButton = this.wrapper.querySelector('.add-group');
+    this.checkButton = this.wrapper.querySelector('.validate');
+    this.url = this.wrapper.dataset.url;
+
+    this.init = function() {
+        let self = this;
+
+        this.addButton.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            self.addGroup();
+        });
+
+        this.checkButton.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            self.validate();
+        });
+
+        this.wrapper.querySelectorAll('[data-group-id]').forEach(function(g) {
+            let id = g.dataset.groupId;
+
+            self.bindGroup(id);
+        });
+
+        this.bindButtons();
+        this.checkAmount();
+    };
+
+    this.validate = function() {
+        let self = this;
+        let form = this.wrapper.closest('form');
+        let formData = new FormData(form);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "POST",
+            this.url
+        );
+        xhr.onload = () => {
+            let json = JSON.parse(xhr.response);
+
+            let form = self.wrapper.closest('form');
+
+            form.closest('form').querySelectorAll('input').forEach(function(input) {
+                input.classList.remove('is-invalid');
+                input.classList.remove('is-valid');
+            });
+
+            form.querySelectorAll('input[placeholder=Артикул]').forEach(function(input) {
+                let value = input.value;
+                // input.parentNode.classList.add('was-validated');
+
+                if (Object.values(json).includes(value)) {
+                    input.classList.add('is-valid');
+                } else {
+                    input.classList.add('is-invalid');
+                }
+            });
+        }
+        xhr.send(formData);
+    };
+
+    this.addGroup = function() {
+        let id = this.groupsContainer.querySelectorAll('.card').length;
+
+        let inputHtml =
+            '<div class="card" data-group-id="' + id + '">' +
+            '<div class="card-header">' +
+            '<div class="d-flex" style="column-gap: 10px">' +
+            '<div style="flex-grow: 1">' +
+            '<input type="text" name="' + this.name + '[' + id + '][name]" class="form-control" required value="" placeholder="Название" />' +
+            '</div>' +
+            '<div style="flex-shrink: 0; width: 20px; text-align: center;">' +
+            '<input class="form-control" type="checkbox" name="' + this.name + '[' + id + '][primary]" value="1" />' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="card-body">' +
+            '<div class="d-flex align-items-center">' +
+            '<div class="" style="flex-grow: 1">' +
+            '<input ' +
+            'class="form-control" ' +
+            'required ' +
+            'type="text" ' +
+            'name="' + this.name + '[' + id + '][items][]" ' +
+            'value="" ' +
+            'placeholder="Артикул" ' +
+            '/>' +
+            '</div>' +
+            '<div class="pl-2 text-nowrap text-right">' +
+            '<span class="mr-2 fa fa-minus text-danger" data-remove-input="true" style="cursor: pointer"></span>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="card-footer">' +
+            '<div class="d-flex" style="justify-content: space-between">' +
+            '<span class="fa fa-plus text-success add-value" style="cursor: pointer; height: 1em"></span>' +
+            '<span class="fa fa-minus text-danger remove-group" style="cursor: pointer; align-self: end"></span>' +
+            '</div>' +
+            '</div>' +
+            '</div>'
+        ;
+
+        this.groupsContainer.insertAdjacentHTML('beforeend', inputHtml);
+
+        this.bindGroup(id);
+        this.bindButtons();
+        this.checkAmount();
+    };
+
+    this.bindGroup = function(id) {
+        let self = this;
+        let group = this.groupsContainer.querySelector('[data-group-id="' + id + '"]');
+
+        group.querySelector('.add-value').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            let container = event.target.closest('.card');
+            self.addValue(container);
+        });
+
+        group.querySelector('.remove-group').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            let container = event.target.closest('.card');
+            container.remove();
+        });
+    };
+
+    this.addValue = function(container) {
+        let groupId = container.closest('.card').dataset.groupId;
+        let inputHtml =
+            "<div class=\"d-flex align-items-center mt-2\">" +
+            "<div class=\"\" style=\"flex-grow: 1\">" +
+            "<input " +
+            "class=\"form-control\" " +
+            "required " +
+            "type=\"text\" " +
+            "name=\"" + this.name + "[" + groupId + "][items][]\" " +
+            "value=\"\"" +
+            "placeholder='Артикул'" +
+            "/>" +
+            "</div>" +
+            "<div class=\"pl-2 text-nowrap text-right\">" +
+            "<span class=\"mr-2 fa fa-minus text-danger\" data-remove-input=\"true\" style=\"cursor: pointer\"></span>" +
+            "</div>" +
+            "</div>";
+
+        container.querySelector('.card-body').insertAdjacentHTML('beforeend', inputHtml);
+        this.bindButtons();
+        this.checkAmount();
+    };
+
+    this.bindButtons = function() {
+        let self = this;
+
+        this.groupsContainer.querySelectorAll('.card').forEach((inputRow) => {
+            inputRow.querySelectorAll('[data-remove-input]').forEach((rmBtn) => {
+                if (!("binded" in rmBtn.dataset)) {
+                    rmBtn.addEventListener('click', function (event) {
+                        let inputRow = rmBtn.closest('.d-flex');
+
+                        if (!rmBtn.classList.contains('disabled')) {
+                            inputRow.remove();
+                        }
+
+                        self.checkAmount();
+                    });
+
+                    rmBtn.dataset.binded = 'true';
+                }
+            });
+        });
+    };
+
+    this.checkAmount = function() {
+        this.groupsContainer.querySelectorAll('.card').forEach((card) => {
+            let cardBody = card.querySelector('.card-body');
+            if (cardBody.querySelectorAll('.d-flex').length == 1) {
+                cardBody.querySelector('.d-flex [data-remove-input]').classList.add('disabled');
+            } else {
+                cardBody.querySelectorAll('.d-flex .disabled').forEach(function(item) {
+                    item.classList.remove('disabled');
+                })
+            }
+        });
     };
 
     this.init();

@@ -105,6 +105,7 @@ Route::name('cms.')->group(function() {
                 $router->post('ajax/resize-image', [$ajaxClass, 'resizeImage'])->name('ajax.resize.image');
                 $router->post('ajax/sort-files', [$ajaxClass, 'sortFiles'])->name('ajax.sort.files');
                 $router->post('ajax/data-files', [$ajaxClass, 'dataFiles'])->name('ajax.data.files');
+                $router->get('ajax/notifications', [$ajaxClass, 'notifications'])->name('ajax.notifications');
 
                 $router->any('{controller}/{action}', function ($controller, $action) use ($resolver) {
                     return $resolver($controller, $action);

@@ -10,6 +10,8 @@ return [
     'images_default_background_a' => env('CMS_IMAGES_BG_A', 0),
     'watermark' => false,
 
+    'notifications' => false,
+
     /*
     |--------------------------------------------------------------------------
     | Default configuration for attachments.
@@ -19,7 +21,7 @@ return [
     |
     */
     'attachment' => [
-        'disk' => 'public',
+        'disk' => env('CMS_FILESYSTEM_DISK', 'public'),
         'parent_folder' => env('CMS_FILESYSTEM_PARENT_FOLDER', ''),
         'generator' => \LaravelCms\Attachment\Engines\Generator::class,
     ],

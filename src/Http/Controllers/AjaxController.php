@@ -2,8 +2,10 @@
 
 namespace LaravelCms\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Drivers\Imagick\Driver;
 use Intervention\Image\ImageManager;
+use LaravelCms\Models\Cms\UserNotification;
 use LaravelCms\Support\ImageHelper;
 use LaravelCms\Support\ImageResize;
 use Illuminate\Support\Facades\Storage;
@@ -193,5 +195,38 @@ class AjaxController extends BaseController
             'status' => $status,
             'title' => $message
         ], 200);
+    }
+
+    public function notifications()
+    {
+        $action = request()->get('action');
+        $id = request()->get('id');
+        $user = Auth::user();
+
+        if (!$user) {
+            return 123;
+            abort(404);
+        }
+
+        if ($action == 'read') {
+            $notification = UserNotification::find($id);
+
+            if ($notification && $user->getKey() == $notification->cms_user_id) {
+                $notification->readed_at = now();
+                $notification->save();
+
+                $notifications = UserNotification::query()
+                    ->where('cms_user_id', $user->getKey())
+                    ->whereNull('readed_at')
+                    ->orderBy('cms_user_notifications.created_at', 'desc')
+                    ->get();
+
+                return response()->json([
+                    'count' => $notifications->count(),
+                ], 200);
+            }
+        }
+
+        abort(404);
     }
 }

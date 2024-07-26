@@ -2,7 +2,11 @@
 
 namespace LaravelCms\Http\Controllers;
 
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Support\Facades\DB;
+use LaravelCms\Models\Cms\Notification;
 use LaravelCms\Models\Cms\Section;
 use LaravelCms\Models\Cms\SectionGroup;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +17,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as LaravelController;
 
 use LaravelCms\Contracts\BeforeAndAfter;
+use LaravelCms\Models\Cms\UserNotification;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BaseController extends LaravelController implements BeforeAndAfter
@@ -62,6 +67,26 @@ class BaseController extends LaravelController implements BeforeAndAfter
         }
 
         View::share('navigation', $this->navigation());
+
+        if (config('cms.notifications')) {
+            $user = Auth::user();
+            if ($user) {
+                $notifications = UserNotification::query()
+                    ->where('cms_user_id', $user->getKey())
+                    ->whereNull('readed_at')
+                    ->orderBy('cms_user_notifications.created_at', 'desc')
+                    ->get();
+
+                if ($notifications->count()) {
+                    foreach ($notifications as $item) {
+                        $item->date = Carbon::parse($item->created_at)->diffForHumans(['syntax' => CarbonInterface::DIFF_ABSOLUTE, 'short' => true]);
+                    }
+
+                    $notifications = $notifications->reverse();
+                    View::share('notifications', $notifications);
+                }
+            }
+        }
     }
 
     protected function navigation(): array
