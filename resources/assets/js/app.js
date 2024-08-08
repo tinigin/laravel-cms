@@ -217,7 +217,7 @@ $(function () {
     });
 
     $('[data-remove]').click(function() {
-        let element = $(this).parents('.file-card');
+        let button = $(this);
         let filename = $(this).attr('title');
         let id = this.getAttribute('data-remove');
         let url = this.getAttribute('data-url')
@@ -245,13 +245,27 @@ $(function () {
                         response: 'JSON',
                         success: function (response) {
                             if (response.status == 'success') {
+                                let title = 'Файл удален';
+                                if (id.split(',').length > 1) {
+                                    title = 'Файлы удалены';
+                                }
+
                                 toast.fire({
                                     icon: 'success',
                                     title: filename,
-                                    html: 'Файл удален'
+                                    html: title
                                 });
 
-                                element.remove();
+                                if (button.attr('type') == 'button') {
+                                    button.attr('disabled', 'disabled');
+                                } else {
+                                    button.addClass('disabled');
+                                }
+
+                                let ids = id.split(',');
+                                ids.forEach((id) => {
+                                    $('.file-card[data-id=' + id + ']').remove();
+                                });
 
                             } else {
                                 toast.fire({
@@ -428,7 +442,30 @@ $(function () {
             });
         });
     }
+
+    $('input[name*=files-to-select]').bind(
+        'change',
+        function() {
+            let n = $("input[name*=files-to-select]:checked").length;
+
+            if (n) {
+                $('#delete-multiple-files').removeClass('disabled');
+            } else {
+                $('#delete-multiple-files').addClass('disabled');
+            }
+
+            setFilesForDelete();
+        }
+    );
 });
+
+function setFilesForDelete() {
+    let items = [];
+    $('input[name*=files-to-select]:checked').each(function() {
+        items.push($(this).attr('value'));
+    });
+    $('#delete-multiple-files').attr('data-remove', items.join(','));
+}
 
 let stickyHeader = function(element) {
     this.table = element;

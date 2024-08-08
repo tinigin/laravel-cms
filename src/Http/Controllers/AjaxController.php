@@ -21,21 +21,26 @@ class AjaxController extends BaseController
 
         if (request()->has('id')) {
             try {
-                $attachment = Attachment::findOrFail(request()->get('id'));
-                if ($attachment) {
-                    $parent = $attachment->getParentModel();
-                    if ($parent && method_exists($parent, 'cleanCache')) {
-                        $parent->cleanCache();
+                $ids = explode(',', request()->get('id'));
+                foreach ($ids as $id) {
+                    $attachment = Attachment::findOrFail($id);
+                    if ($attachment) {
+                        $parent = $attachment->getParentModel();
+                        if ($parent && method_exists($parent, 'cleanCache')) {
+                            $parent->cleanCache();
+                        }
+                        $attachment->delete();
+                        if ($parent && method_exists($parent, 'dependenciesUpdated')) {
+                            $parent->dependenciesUpdated();
+                        }
+                        if ($parent && method_exists($parent, 'updateAttachmentsDependencies')) {
+                            $parent->updateAttachmentsDependencies(true);
+                        }
                     }
-                    $attachment->delete();
-                    if ($parent && method_exists($parent, 'dependenciesUpdated')) {
-                        $parent->dependenciesUpdated();
-                    }
-                    if ($parent && method_exists($parent, 'updateAttachmentsDependencies')) {
-                        $parent->updateAttachmentsDependencies(true);
-                    }
-                    $status = 'success';
                 }
+
+                $status = 'success';
+
             } catch (\Exception $e) {
 
             }
