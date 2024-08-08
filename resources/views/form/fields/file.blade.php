@@ -99,6 +99,17 @@
                             @endif
                         </div>
 
+                        @if (!$readonly && isset($attributes['copy']) && isset($attributes['controller']) && isset($attributes['objectId']))
+                            <a
+                                href="{{ route('cms.module.custom.action', ['controller' => $attributes['controller'], 'action' => 'copyImage', 'id' => $file->getKey(), 'to' => $attributes['copy'], 'object_id' => $attributes['objectId']], false) }}"
+                                class="btn btn-sm btn-primary"
+                                title="{{ $file->getFilename() }}"
+                                confirm="true"
+                            >
+                                <i class="fa fa-clone"></i>
+                            </a>
+                        @endif
+
                         @if (!$readonly && $attributes['multiple'])
                             <div class="multiple-select">
                                 <div class="custom-control custom-checkbox">
