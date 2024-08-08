@@ -278,7 +278,7 @@ class ModuleController extends BaseController
                     $form->push(
                         Link::make('Удалить')
                             ->href(route('cms.module.destroy', ['controller' => $this->getSectionController(), 'objectId' => $this->objectId], false))
-                            ->class('btn btn-danger float-right')
+                            ->class('btn btn-danger')
                             ->confirm('true')
                             ->withoutFormType()
                     );

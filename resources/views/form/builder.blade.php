@@ -44,7 +44,7 @@
 			@endif
 		</div>
 		@if ($buttons)
-    		<div class="card-footer">
+    		<div class="card-footer d-flex justify-content-start align-items-center flex-wrap" style="gap: 10px;">
                 @foreach ($buttons as $button)
                     {!! $button !!}
                 @endforeach

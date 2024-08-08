@@ -18,56 +18,61 @@
     @if ($value && $value->count())
         <div class="files-list{{ isset($settings['sortable']) && $settings['sortable'] && !$readonly ? ' sortable-list' : '' }}">
             @foreach ($value as $file)
+                @php ($isImage = $file->isImage())
                 <div class="card border-secondary file-card" data-id="{{ $file->getKey() }}">
                     <div class="card-body file-card-body">
-                        <span class="w-33 d-inline-block overflow-hidden">
+                        <span class="file-preview"{{ $isImage ? ' style=line-height:0' : '' }}>
                             <a
                                 href="{{ $file->url() }}?{{ \Illuminate\Support\Str::random() }}"
                                 @if ($file->isImage())
                                     data-lightbox="{{$attributes['id'] }}"
-                                    data-image-tippy="true"
-                                    data-tippy-content="<img src='{{ $file->url() }}?{{ \Illuminate\Support\Str::random() }}' style='max-width: 200px; max-height: 200px;' />"
                                 @endif
                                 title="{{ $file->getFilename() }}"
                                 target="_blank"
                             >
-                                {{ $file->getFilename() }}
+                                @if ($file->isImage())
+                                    <img src="{{ $file->url() }}?{{ \Illuminate\Support\Str::random() }}" class="img-thumbnail" alt="" />
+                                @else
+                                    {{ $file->getFilename() }}
+                                @endif
                             </a>
                         </span>
 
                         @if (isset($settings['thumbnails']))
-                            @foreach ($settings['thumbnails'] as $data)
-                                <span class="w-33 d-inline-block overflow-hidden">
-                                    @if ($file->hasThumbnail($data['w'] . 'x' . $data['h']))
-                                        <a
-                                            href="{{ $file->thumbnailUrl($data['w'] . 'x' . $data['h']) }}?{{ \Illuminate\Support\Str::random() }}"
-                                            data-lightbox="{{$attributes['id'] }}"
-                                            title="{{ $file->getThumbnailFilename($data['w'] . 'x' . $data['h']) }}"
-                                            data-lightbox="{{$attributes['id'] }}"
-                                            data-image-tippy="true"
-                                            data-tippy-content="<img src='{{ $file->thumbnailUrl($data['w'] . 'x' . $data['h']) }}?{{ \Illuminate\Support\Str::random() }}' style='max-width: 200px; max-height: 200px;' />"
-                                        >
-                                            {{ $data['w'] . 'x' . $data['h'] }}
-                                        </a>
-                                    @endif
-                                    @if (isset($settings['resize']) && $settings['resize'] && !$readonly)
-                                        <a
-                                            href=""
-                                            class="crop-image text-muted ml-2"
-                                            data-crop="true"
-                                            data-url="{{ $file->url() }}?{{ \Illuminate\Support\Str::random() }}"
-                                            data-thumbnail="{{ $data['w'] . 'x' . $data['h'] }}"
-                                            data-width="{{ $data['w'] }}"
-                                            data-height="{{ $data['h'] }}"
-                                            data-mode="{{ $data['mode'] }}"
-                                            {{ isset($data['watermark']) ? 'data-watermark=' . ($data['watermark'] === true ? 'true' : $data['watermark']) . '' : '' }}
-                                            data-id="{{ $file->getKey() }}"
-                                        >
-                                            <i class="fas fa-crop"></i>
-                                        </a>
-                                    @endif
-                                </span>
-                            @endforeach
+                            <div class="thumbnails">
+                                @foreach ($settings['thumbnails'] as $data)
+                                    <span>
+                                        @if ($file->hasThumbnail($data['w'] . 'x' . $data['h']))
+                                            <a
+                                                href="{{ $file->thumbnailUrl($data['w'] . 'x' . $data['h']) }}?{{ \Illuminate\Support\Str::random() }}"
+                                                data-lightbox="{{$attributes['id'] }}"
+                                                title="{{ $file->getThumbnailFilename($data['w'] . 'x' . $data['h']) }}"
+                                                data-lightbox="{{$attributes['id'] }}"
+                                                data-image-tippy="true"
+                                                data-tippy-content="<img src='{{ $file->thumbnailUrl($data['w'] . 'x' . $data['h']) }}?{{ \Illuminate\Support\Str::random() }}' style='max-width: 200px; max-height: 200px;' />"
+                                            >
+                                                {{ $data['w'] . 'x' . $data['h'] }}
+                                            </a>
+                                        @endif
+                                        @if (isset($settings['resize']) && $settings['resize'] && !$readonly)
+                                            <a
+                                                href=""
+                                                class="crop-image text-muted ml-2"
+                                                data-crop="true"
+                                                data-url="{{ $file->url() }}?{{ \Illuminate\Support\Str::random() }}"
+                                                data-thumbnail="{{ $data['w'] . 'x' . $data['h'] }}"
+                                                data-width="{{ $data['w'] }}"
+                                                data-height="{{ $data['h'] }}"
+                                                data-mode="{{ $data['mode'] }}"
+                                                {{ isset($data['watermark']) ? 'data-watermark=' . ($data['watermark'] === true ? 'true' : $data['watermark']) . '' : '' }}
+                                                data-id="{{ $file->getKey() }}"
+                                            >
+                                                <i class="fas fa-crop"></i>
+                                            </a>
+                                        @endif
+                                    </span>
+                                @endforeach
+                            </div>
                         @endif
 
                         <div class="file-card-buttons btn-group">
@@ -93,6 +98,21 @@
                                 </a>
                             @endif
                         </div>
+
+                        @if (!$readonly && $attributes['multiple'])
+                            <div class="multiple-select">
+                                <div class="custom-control custom-checkbox">
+                                    <input
+                                        id="file-to-select-{{ $file->getKey() }}"
+                                        class="custom-control-input multiple-select"
+                                        type="checkbox"
+                                        name="files-to-select[]"
+                                        value="{{ $file->getKey() }}"
+                                    >
+                                        <label for="file-to-select-{{ $file->getKey() }}" class="custom-control-label"></label>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     @if (isset($settings['fields']) && $settings['fields'])
                         <div class="card-footer file-card-footer hidden">
@@ -138,6 +158,18 @@
                     @endif
                 </div>
             @endforeach
+
+            @if (!$readonly && $attributes['multiple'])
+                <p class="m-0 text-right">
+                    <a
+                        href="#"
+                        data-url="/cms/ajax/remove-file"
+                        class="btn btn-danger disabled"
+                        data-remove=""
+                        id="delete-multiple-files"
+                    >Удалить выбранные</a>
+                </p>
+            @endif
         </div>
     @elseif ($readonly)
         <div class="files-list">
