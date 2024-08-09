@@ -43,9 +43,19 @@ class UserNotification extends BaseModel
         return $this->belongsTo(User::class, 'cms_user_id');
     }
 
+    public function getUser()
+    {
+        return User::getBy($this->cms_user_id, 'id');
+    }
+
     public function fromUser()
     {
         return $this->belongsTo(User::class, 'from_user_id');
+    }
+
+    public function getFromUser()
+    {
+        return User::getBy($this->from_user_id, 'id');
     }
 
     public function notification()

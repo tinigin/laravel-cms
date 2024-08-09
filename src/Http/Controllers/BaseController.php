@@ -71,19 +71,20 @@ class BaseController extends LaravelController implements BeforeAndAfter
         if (config('cms.notifications')) {
             $user = Auth::user();
             if ($user) {
-                $notifications = UserNotification::query()
+                $query = UserNotification::query()
                     ->where('cms_user_id', $user->getKey())
                     ->whereNull('readed_at')
-                    ->orderBy('cms_user_notifications.created_at', 'desc')
-                    ->get();
+                    ->orderBy('cms_user_notifications.created_at', 'desc');
+                $total = $query->count();
 
+                $notifications = $query->limit(20)->get();
                 if ($notifications->count()) {
                     foreach ($notifications as $item) {
                         $item->date = Carbon::parse($item->created_at)->diffForHumans(['syntax' => CarbonInterface::DIFF_ABSOLUTE, 'short' => true]);
                     }
 
                     $notifications = $notifications->reverse();
-                    View::share('notifications', $notifications);
+                    View::share('notifications', ['list' => $notifications, 'count' => $total]);
                 }
             }
         }

@@ -44,7 +44,8 @@ class Link extends Action
         'target',
         'title',
         'download',
-        'confirm'
+        'confirm',
+        'prompt',
     ];
 
     /**

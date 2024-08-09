@@ -93,18 +93,18 @@
 {{--            </div>--}}
 {{--        </li>--}}
         <!-- Notifications Dropdown Menu -->
-        @if (isset($notifications) && $notifications->count())
+        @if (isset($notifications) && $notifications && isset($notifications['count']) && isset($notifications['list']))
             <li class="nav-item dropdown" id="notifications">
                 <a class="nav-link" data-toggle="dropdown" href="#">
                     <i class="far fa-bell"></i>
-                    <span class="badge badge-warning navbar-badge" id="notifications-badge">{{ $notifications->count() }}</span>
+                    <span class="badge badge-warning navbar-badge" id="notifications-badge">{{ $notifications['count'] }}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                    @foreach ($notifications as $notification)
+                    @foreach ($notifications['list'] as $notification)
                         <div data-notification-id="{{ $notification->getKey() }}" class="dropdown-item">
                             <div class="d-flex justify-content-between align-items-center">
                             @if ($notification->from_user_id)
-                                @php($fromUser = $notification->fromUser)
+                                @php($fromUser = $notification->getFromUser())
                                 <span class="from">{{ $fromUser->name }}</span>
                             @else
                                 <span class="from">Система</span>
