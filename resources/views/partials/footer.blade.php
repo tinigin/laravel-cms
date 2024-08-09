@@ -59,4 +59,4 @@
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/cms/js/adminlte.js') }}"></script>
 <!-- App -->
-<script src="{{ asset('assets/cms/js/app.js') }}"></script>
+<script src="{{ asset('assets/cms/js/app.js') }}?{{ config('app.revision') }}"></script>

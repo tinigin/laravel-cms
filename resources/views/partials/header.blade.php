@@ -38,5 +38,5 @@
     <link rel="stylesheet" href="{{ asset('assets/cms/css/adminlte.min.css') }}">
 
     <!-- Styles -->
-    <link href="{{ asset('assets/cms/css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/cms/css/app.css') }}?{{ config('app.revision') }}" rel="stylesheet">
 </head>

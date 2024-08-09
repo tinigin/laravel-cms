@@ -3,6 +3,8 @@
 namespace LaravelCms\Models\Cms;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 use Junges\ACL\Concerns\HasGroups;
 use LaravelCms\Attachment\Attachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,6 +20,8 @@ class User extends Authenticatable
     use HasFactory, Notifiable, Filterable, Attachable, HasGroups;
 
     const ACTIVE = 1;
+
+    protected static Collection|null $all = null;
 
     protected string $guard = 'cms';
     protected $table = 'cms_users';
@@ -111,5 +115,72 @@ class User extends Authenticatable
         }
 
         return false;
+    }
+
+    public static function getAll()
+    {
+        if (is_null(self::$all)) {
+            self::$all = self::query()->orderBy('name', 'asc')->get();
+        }
+
+        return self::$all;
+    }
+
+    public static function pluck(string $column, string $key = null): array
+    {
+        $data = [];
+
+        foreach (self::getAll() as $item) {
+            if ($key)
+                $data[$key == 'id' ? $item->getKey() : $item->$key] = $item->$column;
+            else
+                $data[] = $item->$column;
+        }
+
+        return $data;
+    }
+
+    public static function getWhere(array $options)
+    {
+        $data = [];
+
+        $ids = null;
+        if (isset($options['id']) && $options['id']) {
+            $ids = is_array($options['id']) ? $options['id'] : [$options['id']];
+            unset($options['id']);
+        }
+
+        foreach (self::getAll() as $item) {
+            if ($ids && !in_array($item->getKey(), $ids))
+                continue;
+
+            if ($options) {
+                if (array_intersect_assoc($item->attributesToArray(), $options) == $options) {
+                    $data[] = $item;
+                }
+
+            } else if ($ids && !$options) {
+                $data[] = $item;
+            }
+        }
+
+        return collect($data);
+    }
+
+    public static function getBy($value, string $column = 'id')
+    {
+        foreach (self::getAll() as $item) {
+            if ($column == 'id' && $value == $item->getKey()) {
+                return $item;
+
+            } else if ($column == 'slug' && $value == Str::slug($item->title, '_')) {
+                return $item;
+
+            } else if ($item->$column == $value) {
+                return $item;
+            }
+        }
+
+        return null;
     }
 }
