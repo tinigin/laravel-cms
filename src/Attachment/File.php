@@ -219,7 +219,8 @@ class File
                         $imageHelper->smart(
                             $thumbnailData['w'],
                             $thumbnailData['h'],
-                            increase: isset($thumbnailData['increase']) && $thumbnailData['increase'] === false ? false : true
+                            increase: isset($thumbnailData['increase']) && $thumbnailData['increase'] === false ? false : true,
+                            exact: isset($thumbnailData['exact']) && $thumbnailData['exact'] === false ? false : true
                         );
                         break;
 
