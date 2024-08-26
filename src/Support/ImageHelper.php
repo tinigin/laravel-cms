@@ -298,7 +298,7 @@ class ImageHelper {
         $this->image->place($watermarkSource, position: 'bottom-right', offset_x: 50, offset_y: 50);
     }
 
-    public function smart(int $width, int $height)
+    public function smart(int $width, int $height, bool $increase = true)
     {
         $originalWidth = $this->image->width();
         $originalHeight = $this->image->height();
@@ -332,10 +332,17 @@ class ImageHelper {
 
         if ($red >= 250 && $blue >= 250 && $green >= 250) {
             $this->trimWithBorder(50);
-            $this->contain($width, $height);
+
+            if ($increase)
+                $this->contain($width, $height);
+            else
+                $this->image->resizeDown($width, $height);
 
         } else {
-            $this->coverDown($width, $height);
+            if ($increase)
+                $this->cover($width, $height);
+            else
+                $this->coverDown($width, $height);
         }
     }
 }

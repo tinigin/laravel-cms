@@ -216,7 +216,11 @@ class File
                         break;
 
                     case 'smart':
-                        $imageHelper->smart($thumbnailData['w'], $thumbnailData['h']);
+                        $imageHelper->smart(
+                            $thumbnailData['w'],
+                            $thumbnailData['h'],
+                            increase: isset($thumbnailData['increase']) && $thumbnailData['increase'] === false ? false : true
+                        );
                         break;
 
                     case 'crop':

@@ -133,7 +133,7 @@ class Generator implements Engine
         if (!$extension) {
             $extension = $this->file->extension();
         }
-        
+
         return empty($extension)
             ? $this->mimes->getExtension($this->file->getClientMimeType(), 'unknown')
             : $extension;
