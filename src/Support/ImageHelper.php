@@ -41,6 +41,11 @@ class ImageHelper {
         $this->image->cover(width: $width, height: $height, position: $position);
     }
 
+    public function coverDown($width, $height, string $position = 'center')
+    {
+        $this->image->coverDown(width: $width, height: $height, position: $position);
+    }
+
     public function crop(int $width, int $height, int $offset_x = 0, int $offset_y = 0, string $position = 'top-left')
     {
         $this->image->crop(
@@ -330,7 +335,7 @@ class ImageHelper {
             $this->contain($width, $height);
 
         } else {
-            $this->cover($width, $height);
+            $this->coverDown($width, $height);
         }
     }
 }
