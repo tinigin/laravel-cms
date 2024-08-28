@@ -154,7 +154,9 @@ class File
      */
     private function save(): Model
     {
-        if ($this->trim) {
+        $isVideo = $this->engine->isVideo();
+
+        if ($this->trim && !$isVideo) {
             $trimer = new ImageResize(is_string($this->file) ? $this->file : $this->file->getRealPath());
 
             if (!is_bool($this->trim)) {
@@ -177,7 +179,7 @@ class File
 
         $additional = [];
 
-        if ($this->thumbnails) {
+        if ($this->thumbnails && !$isVideo) {
             $additional['thumbnails'] = [];
 
             foreach ($this->thumbnails as $thumbnailData) {
