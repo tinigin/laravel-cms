@@ -4,6 +4,7 @@ namespace LaravelCms\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use LaravelCms\Facades\Alert;
 use LaravelCms\Facades\Toast;
@@ -510,6 +511,11 @@ class ModuleController extends BaseController
                     $attachmentIds
                 );
             }
+        }
+
+        if ($this->objectId) {
+            $this->model->updated_at = now();
+            $this->model->save();
         }
 
         Toast::success('Данные успешно сохранены');
