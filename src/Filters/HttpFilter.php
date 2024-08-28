@@ -121,10 +121,15 @@ class HttpFilter
                 $builder->whereHas($relation, function($query) use($key, $value, $property) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);
-                    } else if (is_numeric($value)) {
-                        $query->where($property . '.' . $key, $value);
                     } else {
-                        $query->where($property . '.' . $key, 'ilike', "%$value%");
+                        if (
+                            in_array($key, ['name', 'title', 'vendor_code', 'internal_id']) ||
+                            !is_numeric($value)
+                        ) {
+                            $query->where($property . '.' . $key, 'ilike', "%$value%");
+                        } else {
+                            $query->where($property . '.' . $key, $value);
+                        }
                     }
                 });
             }
