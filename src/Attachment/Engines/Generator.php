@@ -150,4 +150,11 @@ class Generator implements Engine
             ?? $this->mimes->getMimeType($this->file->getClientMimeType())
             ?? 'unknown';
     }
+
+    public function isVideo(): bool
+    {
+        $mime = $this->mime();
+
+        return Str::startsWith($mime, 'video');
+    }
 }

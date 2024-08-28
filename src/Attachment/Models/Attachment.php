@@ -295,6 +295,11 @@ class Attachment extends Model
         return Str::startsWith($this->getMimeType(), 'image');
     }
 
+    public function isVideo(): bool
+    {
+        return Str::startsWith($this->getMimeType(), 'video');
+    }
+
     public static function boot()
     {
         parent::boot();
