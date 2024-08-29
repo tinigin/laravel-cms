@@ -54,7 +54,8 @@ trait Attachable
             'image/tiff',
             'image/vnd.microsoft.icon',
             'image/vnd.wap.wbmp',
-            'image/webp'
+            'image/webp',
+            'video/mp4',
         ]);
 
         return $query;
@@ -78,7 +79,8 @@ trait Attachable
             'image/tiff',
             'image/vnd.microsoft.icon',
             'image/vnd.wap.wbmp',
-            'image/webp'
+            'image/webp',
+            'video/mp4',
         ]);
 
         return $query;
