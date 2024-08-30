@@ -204,7 +204,16 @@ class Grid {
             $query = request()->cookie('grid_filter', []);
             if ($query) {
                 $query = json_decode($query, associative: true);
-                redirect()->to($url . (empty($query) ?: '?' . http_build_query($query)))->send();
+                if ($query) {
+                    redirect()->to($url . (empty($query) ?: '?' . http_build_query($query)))->send();
+                } else {
+                    cookie()->queue(cookie(
+                        'grid_filter',
+                        null,
+                        0,
+                        request()->getPathInfo()
+                    ));
+                }
             }
         } else {
             cookie()->queue(cookie(
