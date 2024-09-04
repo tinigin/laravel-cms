@@ -443,28 +443,49 @@ $(function () {
         });
     }
 
-    $('input[name*=files-to-select]').bind(
-        'change',
-        function() {
-            let n = $("input[name*=files-to-select]:checked").length;
-
-            if (n) {
-                $('#delete-multiple-files').removeClass('disabled');
-            } else {
-                $('#delete-multiple-files').addClass('disabled');
-            }
-
-            setFilesForDelete();
-        }
-    );
+    document.querySelectorAll('[multiple-delete]').forEach(function(item) {
+        new multipleDelete(item);
+    });
 });
 
-function setFilesForDelete() {
-    let items = [];
-    $('input[name*=files-to-select]:checked').each(function() {
-        items.push($(this).attr('value'));
-    });
-    $('#delete-multiple-files').attr('data-remove', items.join(','));
+function multipleDelete(element) {
+    this.wrapper = element;
+    this.button = this.wrapper.querySelector('[data-button-multiple-delete]');
+
+    this.init = function() {
+        let self = this;
+
+        this.wrapper.querySelectorAll('input[type=checkbox].multiple-select').forEach(function(input) {
+            input.addEventListener('change', function(event) {
+                let n = self.wrapper.querySelectorAll('input[type=checkbox].multiple-select:checked').length;
+
+                if (n) {
+                    self.button.classList.remove('disabled');
+                } else {
+                    self.button.classList.add('disabled');
+                }
+
+                self.setFilesForDelete();
+            });
+        });
+
+        this.button.addEventListener('click', function() {
+
+        });
+    };
+
+    this.setFilesForDelete = function() {
+        let self = this;
+
+        let items = [];
+        self.wrapper.querySelectorAll('input[type=checkbox].multiple-select:checked').forEach(function(item) {
+            items.push(item.getAttribute('value'));
+        });
+
+        self.button.setAttribute('data-remove', items.join(','));
+    };
+
+    this.init();
 }
 
 let stickyHeader = function(element) {

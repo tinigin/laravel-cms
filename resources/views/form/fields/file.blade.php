@@ -16,7 +16,7 @@
     @endif
 
     @if ($value && $value->count())
-        <div class="files-list{{ isset($settings['sortable']) && $settings['sortable'] && !$readonly ? ' sortable-list' : '' }}">
+        <div class="files-list{{ isset($settings['sortable']) && $settings['sortable'] && !$readonly ? ' sortable-list' : '' }}" {{ !$readonly && $attributes['multiple'] ? 'multiple-delete=""' : '' }}>
             @foreach ($value as $file)
                 @php ($isImage = $file->isImage())
                 @php ($isVideo = $file->isVideo())
@@ -200,7 +200,7 @@
                         data-url="/cms/ajax/remove-file"
                         class="btn btn-danger disabled"
                         data-remove=""
-                        id="delete-multiple-files"
+                        data-button-multiple-delete=""
                     >Удалить выбранные</a>
                 </p>
             @endif
