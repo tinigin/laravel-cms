@@ -513,7 +513,7 @@ class ModuleController extends BaseController
             }
         }
 
-        if ($this->objectId) {
+        if ($this->objectId && $this->model->timestamps) {
             $this->model->updated_at = now();
             $this->model->save();
         }
