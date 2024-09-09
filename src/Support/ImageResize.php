@@ -766,6 +766,12 @@ class ImageResize
             $cut['r'] += 1;
         }
 
+        if ($cut['l'] == $cut['r'] && $cut['l'] == $originalWidth)
+            return;
+
+        if ($cut['t'] == $cut['b'] && $cut['t'] == $originalHeight)
+            return;
+
         $x = $cut['l'];
         $y = $cut['t'];
         $width = $originalWidth - $cut['l'] - $cut['r'];
