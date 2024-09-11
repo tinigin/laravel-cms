@@ -36,6 +36,11 @@ class ImageHelper {
         $this->image->scale(width: $width, height: $height);
     }
 
+    public function scaleDown($width, $height)
+    {
+        $this->image->scaleDown(width: $width, height: $height);
+    }
+
     public function cover($width, $height, string $position = 'center')
     {
         $this->image->cover(width: $width, height: $height, position: $position);
@@ -336,7 +341,7 @@ class ImageHelper {
             if ($increase) {
                 $this->contain($width, $height);
             } else {
-                $this->image->resizeDown($width, $height);
+                $this->image->scaleDown($width, $height);
             }
 
         } else {
@@ -346,7 +351,7 @@ class ImageHelper {
                 if ($exact) {
                     $this->coverDown($width, $height);
                 } else {
-                    $this->resizeDown($width, $height);
+                    $this->scaleDown($width, $height);
                 }
             }
         }

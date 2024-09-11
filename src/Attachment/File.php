@@ -213,6 +213,10 @@ class File
                         $imageHelper->scale($thumbnailData['w'], $thumbnailData['h']);
                         break;
 
+                    case 'scaleDown':
+                        $imageHelper->scaleDown($thumbnailData['w'], $thumbnailData['h']);
+                        break;
+
                     case 'cover':
                         $imageHelper->cover($thumbnailData['w'], $thumbnailData['h']);
                         break;
