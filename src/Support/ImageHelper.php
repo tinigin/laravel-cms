@@ -346,9 +346,14 @@ class ImageHelper {
                 if ($exact) {
                     $this->coverDown($width, $height);
                 } else {
-                    $this->image->resizeDown($width, $height);
+                    $this->resizeDown($width, $height);
                 }
             }
         }
+    }
+
+    public function resizeDown(?int $width = null, ?int $height = null)
+    {
+        $this->image->resizeDown($width, $height);
     }
 }
