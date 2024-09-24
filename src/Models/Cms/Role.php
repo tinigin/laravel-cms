@@ -2,10 +2,10 @@
 
 namespace LaravelCms\Models\Cms;
 
-use Junges\ACL\Models\Group as BaseGroup;
+use Spatie\Permission\Models\Role as BaseRole;
 use LaravelCms\Filters\Filterable;
 
-class Group extends BaseGroup
+class Role extends BaseRole
 {
     use Filterable;
 
