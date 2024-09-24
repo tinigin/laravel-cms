@@ -33,13 +33,7 @@ class UsersPermissionsController extends ModuleController
                 'is-sortable' => true,
                 'type' => 'string',
                 'filter' => true,
-            ],
-            'description' => [
-                'label' => 'Описание',
-                'is-sortable' => true,
-                'type' => 'string',
-                'filter' => true,
-            ],
+            ]
         ]
     ];
 
@@ -51,7 +45,6 @@ class UsersPermissionsController extends ModuleController
     {
         return [
             'name' => 'required|max:255',
-            'description' => 'required|max:255',
         ];
     }
 
@@ -64,10 +57,6 @@ class UsersPermissionsController extends ModuleController
         return [
             Input::make('name')
                 ->title('Название')
-                ->required()
-                ->horizontal(),
-            Input::make('description')
-                ->title('Описание')
                 ->required()
                 ->horizontal(),
         ];

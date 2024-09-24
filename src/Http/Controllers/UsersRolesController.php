@@ -4,19 +4,19 @@ namespace LaravelCms\Http\Controllers;
 
 use LaravelCms\Models\Cms\Permission;
 use Illuminate\Validation\Rule;
-use LaravelCms\Models\Cms\Group;
+use LaravelCms\Models\Cms\Role;
 use LaravelCms\Form\Fields\Input;
 use LaravelCms\Form\Fields\Select;
 use LaravelCms\Http\Controllers\ModuleController;
 
-class UsersGroupsController extends ModuleController
+class UsersRolesController extends ModuleController
 {
-    protected $className = Group::class;
+    protected $className = Role::class;
 
     protected $relations = ['permissions'];
 
     protected $grid = [
-        'class' => Group::class,
+        'class' => Role::class,
         'sortable' => false,
         'add' => true,
         'delete' => true,
@@ -63,7 +63,7 @@ class UsersGroupsController extends ModuleController
                 ->horizontal(),
             Select::make('permissions')
                 ->title('Разрешения')
-                ->fromModel(Permission::query()->orderBy('description'), 'description')
+                ->fromModel(Permission::query()->orderBy('name'), 'name')
                 ->multiple()
                 ->horizontal()
         ];

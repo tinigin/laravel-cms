@@ -18,20 +18,20 @@
     ],
     "require": {
         "php": "^8.0",
-        "illuminate/support": "^9.0",
+        "illuminate/support": "^10.0|^11.0",
         "myclabs/php-enum": "^1.8",
         "socialiteproviders/yandex": "^4.1",
-        "laravel/ui": "^3.4",
-        "mateusjunges/laravel-acl": "^4.2",
-        "doctrine/dbal": "^3.5",
+        "laravel/ui": "^4.0",
+        "spatie/laravel-permission": "^6.0",
+        "doctrine/dbal": "^3.5|^4.0",
         "intervention/image": "^3.6"
     },
     "require-dev": {
         "ext-exif": "*",
         "ext-gd": "*",
-        "orchestra/testbench": "^7.15",
+        "orchestra/testbench": "^8.0",
         "php-coveralls/php-coveralls": "^2.1",
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^10.0"
     },
     "autoload": {
         "psr-4": {

@@ -2,7 +2,7 @@
 
 namespace LaravelCms\Models\Cms;
 
-use Junges\ACL\Models\Permission as BasePermission;
+use Spatie\Permission\Models\Permission as BasePermission;
 use LaravelCms\Filters\Filterable;
 
 class Permission extends BasePermission
