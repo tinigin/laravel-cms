@@ -247,6 +247,6 @@ class AttachmentTest extends TestUnitCase
         $this->assertStringContainsString('order by "sort" asc', $sql);
 
         $sql = $model->attachment('documents')->toSql();
-        $this->assertStringContainsString(' "group" = ?', $sql);
+        $this->assertStringContainsString(' "group" in (?)', $sql);
     }
 }

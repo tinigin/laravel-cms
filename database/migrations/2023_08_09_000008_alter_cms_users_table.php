@@ -28,6 +28,9 @@ return new class extends Migration
     {
         Schema::table('cms_users', function (Blueprint $table) {
             $table->dropColumn('time_from');
+        });
+
+        Schema::table('cms_users', function (Blueprint $table) {
             $table->dropColumn('time_till');
         });
     }
