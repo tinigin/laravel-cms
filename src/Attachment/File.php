@@ -157,13 +157,13 @@ class File
         $isVideo = $this->engine->isVideo();
 
         if ($this->trim && !$isVideo) {
-            $trimer = new ImageResize(is_string($this->file) ? $this->file : $this->file->getRealPath());
+            $trimer = new ImageHelper(is_string($this->file) ? $this->file : $this->file->getRealPath());
 
             if (!is_bool($this->trim)) {
                 $trimer->trimWithBorder(
                     border: $this->trim
                 );
-            } else {
+            } else if ($this->trim) {
                 $trimer->trim();
             }
 

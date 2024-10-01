@@ -72,7 +72,7 @@ class ImageHelper {
         $this->image->trim($tolerance);
     }
 
-    public function trimWithBorder(int $border = 50, int $tolerance = 30, int $step = 5) {
+    public function trimWithBorder(int $border = 50, int $tolerance = 15, int $step = 5) {
         $originalWidth = $this->image->width();
         $originalHeight = $this->image->height();
 
