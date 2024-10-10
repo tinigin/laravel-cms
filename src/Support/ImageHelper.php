@@ -303,7 +303,7 @@ class ImageHelper {
         $this->image->place($watermarkSource, position: 'bottom-right', offset_x: 50, offset_y: 50);
     }
 
-    public function smart(int $width, int $height, bool $increase = true, bool $exact = true)
+    public function smart(int $width, int $height, bool $increase = true, bool $exact = true, $bgColor = 'ffffff')
     {
         $originalWidth = $this->image->width();
         $originalHeight = $this->image->height();
@@ -335,7 +335,9 @@ class ImageHelper {
         $blue /= 4;
         $alpha /= 4;
 
-        if ($red >= 250 && $blue >= 250 && $green >= 250) {
+        $this->image->blendTransparency($bgColor);
+
+        if (($red >= 250 && $blue >= 250 && $green >= 250) || $alpha == 0) {
             $this->trimWithBorder(50);
 
             if ($increase) {
