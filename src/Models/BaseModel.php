@@ -76,7 +76,7 @@ class BaseModel extends Model
         return $path;
     }
 
-    public function uploadFile(string $file, string $group, array $thumbnails = [], string $rename = 'hash')
+    public function uploadFile(string $file, string $group, array $thumbnails = [], string $rename = 'hash', array $additional = [])
     {
         $uploadedFile = null;
         $isDownloaded = false;
@@ -108,7 +108,8 @@ class BaseModel extends Model
                 $uploadedFile,
                 group: $group,
                 rename: $rename,
-                thumbnails: $thumbnails ? $thumbnails : []
+                thumbnails: $thumbnails ? $thumbnails : [],
+                additional: $additional
             );
             $attachment = $f->path($this->getUploadPath())->allowDuplicates()->load();
 
