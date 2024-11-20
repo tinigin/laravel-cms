@@ -63,6 +63,8 @@ class File
 
     protected $trim = false;
 
+    protected $additional = [];
+
     /**
      * File constructor.
      *
@@ -76,7 +78,8 @@ class File
         string $group = null,
         string $rename = 'orig',
         array $thumbnails = [],
-        bool|int $trim = false
+        bool|int $trim = false,
+        array $additional = []
     ) {
         abort_if($file->getSize() === false, 415, 'File failed to load.');
 
@@ -92,6 +95,7 @@ class File
         $this->group = $group;
         $this->rename = $rename;
         $this->thumbnails = $thumbnails;
+        $this->additional = $additional;
         $this->trim = $trim;
     }
 
@@ -177,7 +181,7 @@ class File
             'mime_type' => $this->engine->mime(),
         ]);
 
-        $additional = [];
+        $additional = $this->additional;
 
         if ($this->thumbnails && !$isVideo) {
             $additional['thumbnails'] = [];
