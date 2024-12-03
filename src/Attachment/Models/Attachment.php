@@ -316,11 +316,15 @@ class Attachment extends Model
     {
         $data = [
             'url' => $this->url(),
-            'name' => $this->getFilename(),
+            'name' => $this->name,
+            'extension' => $this->extension,
+            'filename' => $this->getFilename(),
             'original_name' => $this->original_name,
             'mime' => $this->mime,
+            'size' => $this->size,
+            'description' => $this->description,
+            'alt' => $this->alt,
             'hash' => $this->hash,
-            'sort' => $this->sort,
             'group' => $this->group
         ];
 
