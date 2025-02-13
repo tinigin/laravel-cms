@@ -2,6 +2,7 @@
 
 namespace LaravelCms\Support;
 
+use Intervention\Image\Colors\Rgb\Colorspace;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Imagick\Driver;
 
@@ -90,7 +91,7 @@ class ImageHelper {
         $alpha = 0;
 
         foreach ($corners as $corner) {
-            $color = $this->image->pickColor($corner[0], $corner[1]);
+            $color = $this->image->pickColor($corner[0], $corner[1])->convertTo(Colorspace::class);
 
             $red += $color->red()->toInt();
             $green += $color->green()->toInt();
@@ -117,7 +118,7 @@ class ImageHelper {
             $break = false;
 
             for ($x = 0; $x < $originalWidth; $x += $step) {
-                $c = $this->image->pickColor($x, $i);
+                $c = $this->image->pickColor($x, $i)->convertTo(Colorspace::class);
 
                 $r = $c->red()->toInt();
                 $g = $c->green()->toInt();
@@ -150,7 +151,7 @@ class ImageHelper {
             $break = false;
 
             for ($x = 0; $x < $originalWidth; $x += $step) {
-                $c = $this->image->pickColor($x, ($originalHeight - $i - 1));
+                $c = $this->image->pickColor($x, ($originalHeight - $i - 1))->convertTo(Colorspace::class);
 
                 $r = $c->red()->toInt();
                 $g = $c->green()->toInt();
@@ -184,7 +185,7 @@ class ImageHelper {
             $break = false;
 
             for ($y = 0; $y < $originalHeight; $y += $step) {
-                $c = $this->image->pickColor($i, $y);
+                $c = $this->image->pickColor($i, $y)->convertTo(Colorspace::class);
 
                 $r = $c->red()->toInt();
                 $g = $c->green()->toInt();
@@ -217,7 +218,7 @@ class ImageHelper {
             $break = false;
 
             for ($y = 0; $y < $originalHeight; $y += $step) {
-                $c = $this->image->pickColor(($originalWidth - $i - 1), $y);
+                $c = $this->image->pickColor(($originalWidth - $i - 1), $y)->convertTo(Colorspace::class);
 
                 $r = $c->red()->toInt();
                 $g = $c->green()->toInt();
@@ -322,7 +323,7 @@ class ImageHelper {
         $alpha = 0;
 
         foreach ($corners as $corner) {
-            $color = $this->image->pickColor($corner[0], $corner[1]);
+            $color = $this->image->pickColor($corner[0], $corner[1])->convertTo(Colorspace::class);
 
             $red += $color->red()->toInt();
             $green += $color->green()->toInt();
