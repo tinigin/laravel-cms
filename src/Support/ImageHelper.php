@@ -14,6 +14,10 @@ class ImageHelper {
     public function __construct($filename)
     {
         $this->manager = new ImageManager(new Driver());
+        $colorspace = shell_exec("identify -format '%[colorspace]' {$filename}");
+        if ($colorspace == 'CMYK') {
+            shell_exec("convert {$filename} -colorspace sRGB -type truecolor {$filename}");
+        }
         $this->image = $this->manager->read($filename);
     }
 
