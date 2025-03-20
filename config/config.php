@@ -27,6 +27,7 @@ return [
         'max' => [
             'width' => env('CMS_FILESYSTEM_MAX_IMAGE_WIDTH', 2500),
             'height' => env('CMS_FILESYSTEM_MAX_IMAGE_HEIGHT', 2500),
+            'driver' => env('CMS_FILESYSTEM_MAX_IMAGE_DRIVER', 'gd'),
         ]
     ],
 ];
