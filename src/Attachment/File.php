@@ -159,22 +159,45 @@ class File
     private function save(): Model
     {
         $isVideo = $this->engine->isVideo();
+        $isImage = $this->engine->isImage();
 
-        if ($this->trim && !$isVideo) {
-            $trimer = new ImageHelper(is_string($this->file) ? $this->file : $this->file->getRealPath());
+        if ($isImage) {
+            if ($this->trim) {
+                $trimer = new ImageHelper(is_string($this->file) ? $this->file : $this->file->getRealPath());
 
-            if (!is_bool($this->trim)) {
-                $trimer->trimWithBorder(
-                    border: $this->trim
+                if (!is_bool($this->trim)) {
+                    $trimer->trimWithBorder(
+                        border: $this->trim
+                    );
+                } else if ($this->trim) {
+                    $trimer->trim();
+                }
+
+                $trimer->save(
+                    is_string($this->file) ? $this->file : $this->file->getRealPath(),
+                    quality: 100
                 );
-            } else if ($this->trim) {
-                $trimer->trim();
             }
 
-            $trimer->save(
-                is_string($this->file) ? $this->file : $this->file->getRealPath(),
-                quality: 100
-            );
+            if (
+                config('cms.attachment.max.width', null) ||
+                config('cms.attachment.max.height', null)
+            ) {
+                $helper = new ImageHelper(is_string($this->file) ? $this->file : $this->file->getRealPath());
+                if (
+                    (config('cms.attachment.max.width') && $helper->image()->width() > config('cms.attachment.max.width')) ||
+                    (config('cms.attachment.max.height') && $helper->image()->height() > config('cms.attachment.max.height'))
+                ) {
+                    $helper->scaleDown(
+                        config('cms.attachment.max.width', null),
+                        config('cms.attachment.max.height', null)
+                    );
+                    $helper->save(
+                        is_string($this->file) ? $this->file : $this->file->getRealPath(),
+                        quality: 100
+                    );
+                }
+            }
         }
 
         $this->storage->putFileAs($this->engine->path(), $this->file, $this->engine->fullName(), [
