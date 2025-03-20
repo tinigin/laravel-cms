@@ -24,5 +24,9 @@ return [
         'disk' => env('CMS_FILESYSTEM_DISK', 'public'),
         'parent_folder' => env('CMS_FILESYSTEM_PARENT_FOLDER', ''),
         'generator' => \LaravelCms\Attachment\Engines\Generator::class,
+        'max' => [
+            'width' => env('CMS_FILESYSTEM_MAX_IMAGE_WIDTH', 2500),
+            'height' => env('CMS_FILESYSTEM_MAX_IMAGE_HEIGHT', 2500),
+        ]
     ],
 ];

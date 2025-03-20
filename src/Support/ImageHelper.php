@@ -21,6 +21,16 @@ class ImageHelper {
         $this->image = $this->manager->read($filename);
     }
 
+    public function manager()
+    {
+        return $this->manager;
+    }
+
+    public function image()
+    {
+        return $this->image;
+    }
+
     public function resizeToWidth($width)
     {
         $this->image->scale(width: $width);

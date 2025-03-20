@@ -157,4 +157,11 @@ class Generator implements Engine
 
         return Str::startsWith($mime, 'video');
     }
+
+    public function isImage(): bool
+    {
+        $mime = $this->mime();
+
+        return Str::startsWith($mime, 'image');
+    }
 }
