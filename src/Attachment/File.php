@@ -183,19 +183,27 @@ class File
                 config('cms.attachment.max.width', null) ||
                 config('cms.attachment.max.height', null)
             ) {
-                $helper = new ImageHelper(is_string($this->file) ? $this->file : $this->file->getRealPath());
+                $filepath = is_string($this->file) ? $this->file : $this->file->getRealPath();
+                $helper = new ImageHelper($filepath);
                 if (
                     (config('cms.attachment.max.width') && $helper->image()->width() > config('cms.attachment.max.width')) ||
                     (config('cms.attachment.max.height') && $helper->image()->height() > config('cms.attachment.max.height'))
                 ) {
-                    $helper->scaleDown(
-                        config('cms.attachment.max.width', null),
-                        config('cms.attachment.max.height', null)
-                    );
-                    $helper->save(
-                        is_string($this->file) ? $this->file : $this->file->getRealPath(),
-                        quality: 100
-                    );
+                    if (config('cms.attachment.max.driver') == 'imagick') {
+                        $maxWidth = config('cms.attachment.max.width');
+                        $maxHeight = config('cms.attachment.max.height');
+                        shell_exec("magick {$filepath} -scale {$maxWidth}x{$maxHeight} {$filepath}");
+
+                    } else {
+                        $helper->scaleDown(
+                            config('cms.attachment.max.width', null),
+                            config('cms.attachment.max.height', null)
+                        );
+                        $helper->save(
+                            is_string($this->file) ? $this->file : $this->file->getRealPath(),
+                            quality: 100
+                        );
+                    }
                 }
             }
         }
