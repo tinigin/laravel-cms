@@ -16,6 +16,7 @@ use LaravelCms\Attachment\Models\Attachment;
 use LaravelCms\Events\ReplicateFileEvent;
 use LaravelCms\Events\UploadFileEvent;
 use LaravelCms\Support\ImageHelper;
+use LaravelCms\Support\Imagemagick;
 use LaravelCms\Support\ImageResize;
 
 /**
@@ -184,17 +185,30 @@ class File
                 config('cms.attachment.max.height', null)
             ) {
                 $filepath = is_string($this->file) ? $this->file : $this->file->getRealPath();
-                $helper = new ImageHelper($filepath);
-                if (
-                    (config('cms.attachment.max.width') && $helper->image()->width() > config('cms.attachment.max.width')) ||
-                    (config('cms.attachment.max.height') && $helper->image()->height() > config('cms.attachment.max.height'))
-                ) {
-                    if (config('cms.attachment.max.driver') == 'imagick') {
-                        $maxWidth = config('cms.attachment.max.width');
-                        $maxHeight = config('cms.attachment.max.height');
-                        shell_exec("magick {$filepath} -scale {$maxWidth}x{$maxHeight} {$filepath}");
+                $maxWidth = config('cms.attachment.max.width');
+                $maxHeight = config('cms.attachment.max.height');
 
-                    } else {
+                if (config('cms.attachment.max.driver') == 'imagick') {
+                    $imagick = new Imagemagick($filepath);
+                    list($width, $height) = $imagick->getimagesize();
+
+                    if (
+                        ($maxWidth && $width > $maxWidth) ||
+                        ($maxHeight && $height > $maxHeight)
+                    ) {
+                        $imagick->scale(
+                            config('cms.attachment.max.width'),
+                            $maxHeight
+                        );
+                    }
+
+                } else {
+                    $helper = new ImageHelper($filepath);
+
+                    if (
+                        ($maxWidth && $helper->image()->width() > $maxWidth) ||
+                        ($maxHeight && $helper->image()->height() > $maxHeight)
+                    ) {
                         $helper->scaleDown(
                             config('cms.attachment.max.width', null),
                             config('cms.attachment.max.height', null)
