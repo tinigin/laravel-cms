@@ -513,11 +513,6 @@ class ModuleController extends BaseController
             }
         }
 
-        if ($this->objectId && $this->model->timestamps) {
-            $this->model->updated_at = now();
-            $this->model->save();
-        }
-
         Toast::success('Данные успешно сохранены');
         if ($this->mode == 'simple')
             Alert::success('Данные успешно сохранены', 'Данные успешно сохранены');
