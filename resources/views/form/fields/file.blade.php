@@ -54,7 +54,7 @@
                                                     data-image-tippy="true"
                                                     data-tippy-content="<img src='{{ $file->thumbnailUrl($data['w'] . 'x' . $data['h']) }}?{{ \Illuminate\Support\Str::random() }}' style='max-width: 200px; max-height: 200px;' />"
                                                 >
-                                                    {{ $data['w'] . 'x' . $data['h'] }}
+                                                    {{ $data['w'] . 'x' . $data['h'] }} @if (isset($data['title']) && $data['title'])({{ $data['title'] }})@endif
                                                 </a>
                                             @endif
                                             @if (isset($settings['resize']) && $settings['resize'] && !$readonly)
