@@ -233,7 +233,7 @@ class File
 
             foreach ($this->thumbnails as $thumbnailData) {
                 $filename = $thumbnailData['w'] . 'x' . $thumbnailData['h'] . '_' . $this->engine->fullName();
-                $tmpFile = tempnam(sys_get_temp_dir(), $filename);
+                $tmpFile = tempnam(sys_get_temp_dir(), $thumbnailData['w'] . 'x' . $thumbnailData['h'] . '_' . $this->engine->name()) . ".{$this->engine->extension()}";
 
                 $imageHelper = new ImageHelper(is_string($this->file) ? $this->file : $this->file->getRealPath());
                 switch ($thumbnailData['mode']) {
@@ -290,6 +290,11 @@ class File
 
                 if (isset($thumbnailData['watermark'])) {
                     $imageHelper->watermark($thumbnailData['watermark']);
+                }
+
+                if (isset($thumbnailData['format']) && in_array($thumbnailData['format'], ['jpg', 'png', 'webp'])) {
+                    $filename = str_replace(".{$this->engine->extension()}", ".{$thumbnailData['format']}", $filename);
+                    $tmpFile = str_replace(".{$this->engine->extension()}", ".{$thumbnailData['format']}", $tmpFile);
                 }
 
                 $imageHelper->save($tmpFile);

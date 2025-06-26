@@ -304,6 +304,11 @@ class ImageHelper {
         $this->image->save($filename, quality: $quality);
     }
 
+    public function encode($format)
+    {
+        return $this->image->encodeByMediaType("image/{$format}");
+    }
+
     public function watermark($path)
     {
         if ($path === true || $path == 'true')
