@@ -154,13 +154,14 @@
                                 <div class="form-group">
                                     @switch($field)
                                         @case('title')
+                                        @case('alt')
                                             <input
                                                 type="text"
                                                 data-name="{{ $field }}"
                                                 class="form-control"
                                                 name="{{ $attributes['id'] }}_{{ $field }}"
                                                 placeholder="{{ $fieldTitle }}"
-                                                value="{{ $file->getAdditionalByKey($field) }}"
+                                                value="{{ $file->$field }}"
                                                 {{ $readonly ? 'readonly' : '' }}
                                             />
                                             @break
@@ -173,7 +174,7 @@
                                                 name="{{ $attributes['id'] }}_{{ $field }}"
                                                 placeholder="{{ $fieldTitle }}"
                                                 {{ $readonly ? 'readonly' : '' }}
-                                            >{{ $file->getAdditionalByKey($field) }}</textarea>
+                                            >{{ $file->$field }}</textarea>
                                             @break
                                     @endswitch
                                 </div>

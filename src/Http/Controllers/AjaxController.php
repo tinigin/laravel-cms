@@ -103,15 +103,9 @@ class AjaxController extends BaseController
             unset($postData['id']);
 
             if ($item) {
-                $info = $item->additional;
-                if (!$info)
-                    $info = [];
-
                 foreach ($postData as $key => $value) {
-                    $info[$key] = $value;
+                    $item->$key = $value;
                 }
-
-                $item->additional = $info;
                 $item->save();
 
                 $parent = $item->getParentModel();
