@@ -319,7 +319,9 @@ class File
             'group'         => $this->group,
             'user_id'       => Auth::id(),
             'user_type'     => Auth::user() ? get_class(Auth::user()) : '',
-            'additional'    => $additional
+            'additional'    => $additional,
+            'alt'           => isset($additional['alt']) ? $additional['alt'] : (isset($additional['title']) ? $additional['title'] : null),
+            'description'   => isset($additional['description']) ? $additional['description'] : null,
         ]);
 
         event(new UploadFileEvent($attachment, $this->engine->time()));
