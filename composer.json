@@ -18,7 +18,7 @@
     ],
     "require": {
         "php": "^8.0",
-        "illuminate/support": "^10.0|^11.0",
+        "illuminate/support": "^10.0|^11.0|^12.0",
         "myclabs/php-enum": "^1.8",
         "socialiteproviders/yandex": "^4.1",
         "laravel/ui": "^4.0",
