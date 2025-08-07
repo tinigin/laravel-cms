@@ -32,7 +32,7 @@ class InstallCommand extends Command
         $this->executeCommand('storage:link');
 
         $this->info('Updating error handler and encrypted cookies..');
-        $this->updateErrorHandler()->updateEncryptedCookies();
+        // $this->updateErrorHandler()->updateEncryptedCookies();
 
         $this->info('Creating sections records in DB..');
         $this->executeCommand('cms:init-sections');
