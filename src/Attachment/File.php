@@ -15,6 +15,7 @@ use LaravelCms\Attachment\Engines\Generator;
 use LaravelCms\Attachment\Models\Attachment;
 use LaravelCms\Events\ReplicateFileEvent;
 use LaravelCms\Events\UploadFileEvent;
+use LaravelCms\Exceptions\ImageSizeException;
 use LaravelCms\Support\ImageHelper;
 use LaravelCms\Support\Imagemagick;
 use LaravelCms\Support\ImageResize;
@@ -66,6 +67,8 @@ class File
 
     protected $additional = [];
 
+    protected $settings = [];
+
     /**
      * File constructor.
      *
@@ -80,7 +83,8 @@ class File
         string $rename = 'orig',
         array $thumbnails = [],
         bool|int $trim = false,
-        array $additional = []
+        array $additional = [],
+        array $settings = []
     ) {
         abort_if($file->getSize() === false, 415, 'File failed to load.');
 
@@ -98,6 +102,7 @@ class File
         $this->thumbnails = $thumbnails;
         $this->additional = $additional;
         $this->trim = $trim;
+        $this->settings = $settings;
     }
 
     /**
@@ -163,8 +168,44 @@ class File
         $isImage = $this->engine->isImage();
 
         if ($isImage) {
+            $filepath = is_string($this->file) ? $this->file : $this->file->getRealPath();
+            $filename = $this->file ? $this->file->getClientOriginalName() : 'unknown';
+
+            if (config('cms.attachment.max.driver') == 'imagick') {
+                $imagick = new Imagemagick($filepath);
+                list($width, $height) = $imagick->getimagesize();
+
+            } else {
+                $helper = new ImageHelper($filepath);
+                $width = $helper->image()->width();
+                $height = $helper->image()->height();
+            }
+
+            if (isset($this->settings['size']['min'])) {
+                $min = $this->settings['size']['min'];
+
+                if (
+                    isset($min['any']) &&
+                    !($width >= $min['any'] || $height >= $min['any'])
+                ) {
+                    throw new ImageSizeException("Изображение ({$filename}) ни по одной из сторон ({$width}х{$height}) не превышает минимального значения ({$min['any']}px)");
+                }
+
+                if (
+                    isset($min['w']) && $width < $min['w']
+                ) {
+                    throw new \ImageSizeException("Ширина ({$width}) изображения ({$filename}) меньше допустимого значения ({$min['w']}px)");
+                }
+
+                if (
+                    isset($min['h']) && $width < $min['h']
+                ) {
+                    throw new \ImageSizeException("Высота ({$height}) изображения ({$filename}) меньше допустимого значения ({$min['h']}px)");
+                }
+            }
+
             if ($this->trim) {
-                $trimer = new ImageHelper(is_string($this->file) ? $this->file : $this->file->getRealPath());
+                $trimer = new ImageHelper($filepath);
 
                 if (!is_bool($this->trim)) {
                     $trimer->trimWithBorder(
@@ -175,7 +216,7 @@ class File
                 }
 
                 $trimer->save(
-                    is_string($this->file) ? $this->file : $this->file->getRealPath(),
+                    $filepath,
                     quality: 100
                 );
             }
@@ -184,14 +225,10 @@ class File
                 config('cms.attachment.max.width', null) ||
                 config('cms.attachment.max.height', null)
             ) {
-                $filepath = is_string($this->file) ? $this->file : $this->file->getRealPath();
                 $maxWidth = config('cms.attachment.max.width');
                 $maxHeight = config('cms.attachment.max.height');
 
                 if (config('cms.attachment.max.driver') == 'imagick') {
-                    $imagick = new Imagemagick($filepath);
-                    list($width, $height) = $imagick->getimagesize();
-
                     if (
                         ($maxWidth && $width > $maxWidth) ||
                         ($maxHeight && $height > $maxHeight)
@@ -206,8 +243,8 @@ class File
                     $helper = new ImageHelper($filepath);
 
                     if (
-                        ($maxWidth && $helper->image()->width() > $maxWidth) ||
-                        ($maxHeight && $helper->image()->height() > $maxHeight)
+                        ($maxWidth && $width > $maxWidth) ||
+                        ($maxHeight && $height > $maxHeight)
                     ) {
                         $helper->scaleDown(
                             config('cms.attachment.max.width', null),

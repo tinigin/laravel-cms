@@ -491,15 +491,25 @@ class ModuleController extends BaseController
                     $files = [$files];
 
                 if (is_array($files) && $files) {
+                    $warnings = [];
                     foreach ($files as $file) {
-                        $f = new File(
-                            $file,
-                            group: $key,
-                            rename: $field->get('rename'),
-                            thumbnails: isset($settings['thumbnails']) ? $settings['thumbnails'] : [],
-                            trim: isset($settings['trim']) ? $settings['trim'] : false
-                        );
-                        $attachments[] = $f->path($this->model->getUploadPath())->allowDuplicates()->load();
+                        try {
+                            $f = new File(
+                                $file,
+                                group: $key,
+                                rename: $field->get('rename'),
+                                thumbnails: isset($settings['thumbnails']) ? $settings['thumbnails'] : [],
+                                trim: isset($settings['trim']) ? $settings['trim'] : false,
+                                settings: $settings
+                            );
+                            $attachments[] = $f->path($this->model->getUploadPath())->allowDuplicates()->load();
+                        } catch (\Exception $e) {
+                            $warnings[] = $e->getMessage();
+                        }
+                    }
+
+                    if ($warnings) {
+                        Toast::error(implode('<br /><br />', $warnings));
                     }
                 }
 
@@ -513,9 +523,11 @@ class ModuleController extends BaseController
             }
         }
 
-        Toast::success('Данные успешно сохранены');
-        if ($this->mode == 'simple')
-            Alert::success('Данные успешно сохранены', 'Данные успешно сохранены');
+        if (!Toast::check()) {
+            Toast::success('Данные успешно сохранены');
+            if ($this->mode == 'simple')
+                Alert::success('Данные успешно сохранены', 'Данные успешно сохранены');
+        }
 
         if (method_exists($this, 'afterUpdate'))
             $this->afterUpdate();
