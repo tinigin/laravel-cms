@@ -485,7 +485,7 @@ class ModuleController extends BaseController
                                 if (isset($attachmentsThumbnails[$thumbnailSize])) {
                                     $physicalPath = $attachment->physicalThumbnailPath($thumbnailSize);
 
-                                    $tmpThumbnailFile = storage_path("tmp/{$attachmentsThumbnails[$thumbnailSize]}");
+                                    $tmpThumbnailFile = "/tmp/{$attachmentsThumbnails[$thumbnailSize]}";
                                     $imageHelper = new ImageHelper($thumbnailFile->getPathname());
                                     $imageHelper->save($tmpThumbnailFile);
 
