@@ -5,7 +5,9 @@ namespace LaravelCms\Http\Controllers;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use LaravelCms\Attachment\Models\Attachment;
 use LaravelCms\Facades\Alert;
 use LaravelCms\Facades\Toast;
 use LaravelCms\Form\Actions\Link;
@@ -15,11 +17,13 @@ use Illuminate\Database\Eloquent\Model;
 
 use LaravelCms\Http\Controllers\BaseController;
 use Illuminate\Support\Facades\Auth;
+use LaravelCms\Support\ImageHelper;
 use LaravelCms\Table\Grid;
 
 use LaravelCms\Form\Actions\Button;
 use LaravelCms\Form\Builder;
 use LaravelCms\Attachment\File;
+use Illuminate\Http\UploadedFile;
 
 class ModuleController extends BaseController
 {
@@ -471,55 +475,79 @@ class ModuleController extends BaseController
         if (request()->allFiles()) {
             $attachments = [];
             foreach (request()->allFiles() as $key => $files) {
-                $field = $this->getFieldByKey($key);
-                if (!$field)
-                    continue;
+                if ($key == 'thumbnails') {
+                    foreach ($files as $attachmentId => $attachmentFiles) {
+                        $attachment = Attachment::find($attachmentId);
+                        if ($attachment) {
+                            $attachmentsThumbnails = $attachment->getAdditionalByKey('thumbnails');
 
-                $settings = $field->getSettings();
-                $multiple = $field->get('multiple');
+                            foreach ($attachmentFiles as $thumbnailSize => $thumbnailFile) {
+                                if (isset($attachmentsThumbnails[$thumbnailSize])) {
+                                    $physicalPath = $attachment->physicalThumbnailPath($thumbnailSize);
 
-                if (!$multiple) {
-                    $exitsFiles = $this->model->attachment($key)->get();
-                    if ($exitsFiles) {
-                        foreach ($exitsFiles as $exitsFile) {
-                            $exitsFile->delete();
+                                    $tmpThumbnailFile = storage_path("tmp/{$attachmentsThumbnails[$thumbnailSize]}");
+                                    $imageHelper = new ImageHelper($thumbnailFile->getPathname());
+                                    $imageHelper->save($tmpThumbnailFile);
+
+                                    $uploadedFile = new \Symfony\Component\HttpFoundation\File\File($tmpThumbnailFile);
+
+                                    Storage::disk($attachment->disk)->put($physicalPath, $uploadedFile->getContent());
+                                    unlink($tmpThumbnailFile);
+                                }
+                            }
                         }
                     }
-                }
+                } else {
+                    $field = $this->getFieldByKey($key);
+                    if (!$field)
+                        continue;
 
-                if (!is_array($files))
-                    $files = [$files];
+                    $settings = $field->getSettings();
+                    $multiple = $field->get('multiple');
 
-                if (is_array($files) && $files) {
-                    $warnings = [];
-                    foreach ($files as $file) {
-                        try {
-                            $f = new File(
-                                $file,
-                                group: $key,
-                                rename: $field->get('rename'),
-                                thumbnails: isset($settings['thumbnails']) ? $settings['thumbnails'] : [],
-                                trim: isset($settings['trim']) ? $settings['trim'] : false,
-                                settings: $settings
-                            );
-                            $attachments[] = $f->path($this->model->getUploadPath())->allowDuplicates()->load();
-                        } catch (\Exception $e) {
-                            $warnings[] = $e->getMessage();
+                    if (!$multiple) {
+                        $exitsFiles = $this->model->attachment($key)->get();
+                        if ($exitsFiles) {
+                            foreach ($exitsFiles as $exitsFile) {
+                                $exitsFile->delete();
+                            }
                         }
                     }
 
-                    if ($warnings) {
-                        Toast::error(implode('<br /><br />', $warnings));
+                    if (!is_array($files))
+                        $files = [$files];
+
+                    if (is_array($files) && $files) {
+                        $warnings = [];
+                        foreach ($files as $file) {
+                            try {
+                                $f = new File(
+                                    $file,
+                                    group: $key,
+                                    rename: $field->get('rename'),
+                                    thumbnails: isset($settings['thumbnails']) ? $settings['thumbnails'] : [],
+                                    trim: isset($settings['trim']) ? $settings['trim'] : false,
+                                    settings: $settings
+                                );
+                                $attachments[] = $f->path($this->model->getUploadPath())->allowDuplicates()->load();
+                            } catch (\Exception $e) {
+                                $warnings[] = $e->getMessage();
+                            }
+                        }
+
+                        if ($warnings) {
+                            Toast::error(implode('<br /><br />', $warnings));
+                        }
                     }
+
+                    $attachmentIds = array_map(function ($item) {
+                        return $item->id;
+                    }, $attachments);
+
+                    $this->model->attachment()->syncWithoutDetaching(
+                        $attachmentIds
+                    );
                 }
-
-                $attachmentIds = array_map(function ($item) {
-                    return $item->id;
-                }, $attachments);
-
-                $this->model->attachment()->syncWithoutDetaching(
-                    $attachmentIds
-                );
             }
         }
 

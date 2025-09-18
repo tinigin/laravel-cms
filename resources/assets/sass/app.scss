@@ -589,3 +589,26 @@ $img-tab: 'data:image/svg+xml,%3Csvg preserveAspectRatio="xMinYMid meet" viewBox
         opacity: 0.4;
     }
 }
+
+.custom-file-upload {
+    position: relative;
+    color: #6c757d;
+
+    &:hover {
+        color: #007bff;
+    }
+
+    label {
+        cursor: pointer;
+    }
+
+    span {
+        position: absolute;
+        color: #bd2130;
+        font-size: 22px;
+        font-weight: 400;
+        line-height: 0;
+        top: 0;
+        right: -3px;
+    }
+}
