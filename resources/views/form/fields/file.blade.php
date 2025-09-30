@@ -75,9 +75,9 @@
                                             @endif
                                             @if (isset($settings['upload-thumbnails']) && $settings['upload-thumbnails'] && !$readonly)
                                                 <span class="ml-2 custom-file-upload">
-                                                    <input type="file" accept="{{ $attributes['accept'] }}" id="file-{{$file->getKey()}}-thumbnail-{{$size}}" name="thumbnails[{{$file->getKey()}}][{{$size}}]" hidden />
-                                                    <label for="file-{{$file->getKey()}}-thumbnail-{{$size}}"><i class="fa fa-upload"></i></label>
-                                                    <span id="file-{{$file->getKey()}}-thumbnail-{{$size}}-selected"></span>
+                                                    <input type="file" accept="{{ $attributes['accept'] }}" id="file-{{$file->getKey()}}-thumbnail-{{ $data['w'] . 'x' . $data['h'] }}" name="thumbnails[{{$file->getKey()}}][{{ $data['w'] . 'x' . $data['h'] }}]" hidden />
+                                                    <label for="file-{{$file->getKey()}}-thumbnail-{{ $data['w'] . 'x' . $data['h'] }}"><i class="fa fa-upload"></i></label>
+                                                    <span id="file-{{$file->getKey()}}-thumbnail-{{ $data['w'] . 'x' . $data['h'] }}-selected"></span>
                                                 </span>
                                             @endif
                                         </span>
