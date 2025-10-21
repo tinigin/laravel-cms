@@ -162,6 +162,6 @@ class Generator implements Engine
     {
         $mime = $this->mime();
 
-        return Str::startsWith($mime, 'image');
+        return Str::startsWith($mime, 'image') && $mime !== 'image/svg+xml';
     }
 }
