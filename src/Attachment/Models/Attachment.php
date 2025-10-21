@@ -292,7 +292,18 @@ class Attachment extends Model
 
     public function isImage(): bool
     {
-        return Str::startsWith($this->getMimeType(), 'image');
+        $mime = $this->getMimeType();
+
+        return
+            Str::startsWith($mime, 'image') &&
+            in_array(
+                $mime,
+                [
+                    'image/png',
+                    'image/jpeg',
+                    'image/webp'
+                ]
+            );
     }
 
     public function isVideo(): bool
