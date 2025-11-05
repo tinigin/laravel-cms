@@ -12,7 +12,7 @@ class Imagemagick {
     {
         $colorspace = shell_exec("identify -format '%[colorspace]' {$this->filepath}");
         if ($colorspace == 'CMYK') {
-            shell_exec("convert {$this->filepath} -colorspace sRGB -type truecolor {$this->filepath}");
+            shell_exec("magick convert {$this->filepath} -colorspace sRGB -type truecolor {$this->filepath}");
         }
     }
 
@@ -23,7 +23,7 @@ class Imagemagick {
 
     public function getimagesize()
     {
-        $result = shell_exec("identify -format \"%wx%h\" {$this->filepath}");
+        $result = shell_exec("magick identify -format \"%wx%h\" {$this->filepath}");
         
         return explode("x", $result);
     }
