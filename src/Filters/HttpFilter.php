@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class HttpFilter
@@ -185,6 +186,20 @@ class HttpFilter
             $query->when($value['max'] ?? null, function (Builder $query) use ($property, $value) {
                 return $query->where($property, '<=', $value['max']);
             });
+        } elseif ($model->hasCast($property, ['json', 'array'])) {
+            if (is_array($value)) {
+                $parts = [];
+                foreach ($value as $item) {
+                    if (is_numeric($item)) {
+                        $item = (int) $item;
+                    }
+                    $parts[] = "({$property})::jsonb @> '" . json_encode([$item]) . "'";
+                }
+                $query->whereRaw(DB::raw('(' . implode(' OR ', $parts) . ')'));
+
+            } else {
+                $query->whereRaw(DB::raw("({$property})::jsonb @> '" . json_encode([$value]) . "'"));
+            }
         } elseif (is_array($value)) {
             $query->whereIn($property, $value);
 
