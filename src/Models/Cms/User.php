@@ -126,7 +126,7 @@ class User extends Authenticatable
         return self::$all;
     }
 
-    public static function pluck(string $column, string $key = null): array
+    public static function pluck(string $column, ?string $key = null): array
     {
         $data = [];
 

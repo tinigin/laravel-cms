@@ -33,7 +33,7 @@ trait Filterable
      *
      * @return Builder
      */
-    public function scopeFilters(Builder $builder, HttpFilter $httpFilter = null): Builder
+    public function scopeFilters(Builder $builder, ?HttpFilter $httpFilter = null): Builder
     {
         $filter = $httpFilter ?? new HttpFilter();
         $filter->build($builder);

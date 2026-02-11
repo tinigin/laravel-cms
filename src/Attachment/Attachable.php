@@ -15,7 +15,7 @@ trait Attachable
      *
      * @return MorphToMany
      */
-    public function attachment(string|array $group = null): MorphToMany
+    public function attachment(string|array|null $group = null): MorphToMany
     {
         $query = $this->morphToMany(
             Attachment::class,
@@ -41,7 +41,7 @@ trait Attachable
      *
      * @return MorphToMany
      */
-    public function images(string|array $group = null): MorphToMany
+    public function images(string|array|null $group = null): MorphToMany
     {
         $query = $this->attachment($group);
 
@@ -65,7 +65,7 @@ trait Attachable
      *
      * @return MorphToMany
      */
-    public function files(string|array $group = null): MorphToMany
+    public function files(string|array|null $group = null): MorphToMany
     {
         $query = $this->attachment($group);
 
