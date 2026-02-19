@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -9,6 +10,10 @@ Route::name('cms.')->group(function() {
     Route::prefix(config('cms.url_prefix'))
         ->middleware(['web', 'cms.auth:cms'])
         ->group(function() {
+            Config::set('session.cookie', Str::slug(config('app.name'), '_').'_cms_session');
+            Config::set('session.path', '/cms');
+            Config::set('session.driver', 'database');
+
             // Auth
             Route::get('login', [\LaravelCms\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])
                 ->name('login')

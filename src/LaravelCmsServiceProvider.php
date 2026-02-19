@@ -119,17 +119,9 @@ class LaravelCmsServiceProvider extends ServiceProvider
             'throttle' => 60,
         ]);
 
-        if (Str::startsWith(request()->path(), config('cms.url_prefix'))) {
-            Config::set('session.cookie', Str::slug(config('app.name'), '_').'_cms_session');
-            Config::set('session.path', '/cms');
-            Config::set('session.driver', 'database');
-        }
-
-        if (Str::startsWith(request()->path(), config('cms.url_prefix'))) {
-            $router = $this->app->make(Router::class);
-            $router->aliasMiddleware('cms.auth', Authenticate::class);
-            $router->aliasMiddleware('cms.guest', RedirectIfAuthenticated::class);
-            $router->aliasMiddleware('cms.logout_if_timelimit', LogoutIfTimelimit::class);
-        }
+        $router = $this->app->make(Router::class);
+        $router->aliasMiddleware('cms.auth', Authenticate::class);
+        $router->aliasMiddleware('cms.guest', RedirectIfAuthenticated::class);
+        $router->aliasMiddleware('cms.logout_if_timelimit', LogoutIfTimelimit::class);
     }
 }
