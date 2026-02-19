@@ -90,6 +90,11 @@ class LaravelCmsServiceProvider extends ServiceProvider
         Blade::directive('generateId', function ($length = 10) {
             return "<?php $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; echo substr(str_shuffle(str_repeat($x, ceil($length / strlen($x)))), 1, $length); ?>";
         });
+
+        $this->app->booted(function () {
+            $router = $this->app->make(Router::class);
+            $router->pushMiddlewareToGroup('web', \LaravelCms\Http\Middleware\CmsSessionDriver::class);
+        });
     }
 
     /**
