@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 // CMS routes
 Route::name('cms.')->group(function() {
     Route::prefix(config('cms.url_prefix'))
-        ->middleware(['web', 'cms.auth:cms'])
+        ->middleware(['cms.session_driver', 'web', 'cms.auth:cms'])
         ->group(function() {
             // Auth
             Route::get('login', [\LaravelCms\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])

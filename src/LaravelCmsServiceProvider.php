@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Config;
 use LaravelCms\Console\ModelCommand;
 use LaravelCms\Console\PublishCommand;
 use LaravelCms\Http\Middleware\Authenticate;
+use LaravelCms\Http\Middleware\CmsSessionDriver;
 use LaravelCms\Http\Middleware\LogoutIfTimelimit;
 use LaravelCms\Http\Middleware\RedirectIfAuthenticated;
 use LaravelCms\View\Components\GridTable;
@@ -90,11 +91,6 @@ class LaravelCmsServiceProvider extends ServiceProvider
         Blade::directive('generateId', function ($length = 10) {
             return "<?php $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; echo substr(str_shuffle(str_repeat($x, ceil($length / strlen($x)))), 1, $length); ?>";
         });
-
-        $this->app->booted(function () {
-            $router = $this->app->make(Router::class);
-            $router->pushMiddlewareToGroup('web', \LaravelCms\Http\Middleware\CmsSessionDriver::class);
-        });
     }
 
     /**
@@ -125,6 +121,7 @@ class LaravelCmsServiceProvider extends ServiceProvider
         ]);
 
         $router = $this->app->make(Router::class);
+        $router->aliasMiddleware('cms.session_driver', CmsSessionDriver::class);
         $router->aliasMiddleware('cms.auth', Authenticate::class);
         $router->aliasMiddleware('cms.guest', RedirectIfAuthenticated::class);
         $router->aliasMiddleware('cms.logout_if_timelimit', LogoutIfTimelimit::class);
