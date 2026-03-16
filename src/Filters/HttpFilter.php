@@ -121,7 +121,7 @@ class HttpFilter
 
                 $builder->whereHas($relation, function($query) use($key, $value, $property) {
                     if (is_array($value)) {
-                        $query->whereIn($key, $value);
+                        $query->whereIn($property . '.' . $key, $value);
                     } else {
                         if (
                             in_array($key, ['name', 'title', 'vendor_code', 'internal_id']) ||
