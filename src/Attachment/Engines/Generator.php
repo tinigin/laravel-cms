@@ -146,8 +146,8 @@ class Generator implements Engine
      */
     public function mime(): string
     {
-        return $this->mimes->getMimeType($this->extension())
-            ?? $this->mimes->getMimeType($this->file->getClientMimeType())
+        return $this->mimes->guessMimeType($this->file->path())
+            ?? $this->file->getClientMimeType()
             ?? 'unknown';
     }
 

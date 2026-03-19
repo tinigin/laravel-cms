@@ -41,4 +41,14 @@ class MimeTypes
     {
         return Arr::first($this->mime->getMimeTypes($ext), null, $default);
     }
+
+    public function guessMimeType(string $path, string $default = null): ?string
+    {
+        return $this->mime->guessMimeType($path, $default);
+    }
+
+    public function guessExtension(string $path, string $default = null)
+    {
+        return $this->mime->guessExtension($path, $default);
+    }
 }
