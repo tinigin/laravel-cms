@@ -193,12 +193,12 @@ class HttpFilter
                     if (is_numeric($item)) {
                         $item = (int) $item;
                     }
-                    $parts[] = "({$property})::jsonb @> '" . json_encode([$item]) . "'";
+                    $parts[] = "(\"{$property}\")::jsonb @> '" . json_encode([$item]) . "'";
                 }
                 $query->whereRaw(DB::raw('(' . implode(' OR ', $parts) . ')'));
 
             } else {
-                $query->whereRaw(DB::raw("({$property})::jsonb @> '" . json_encode([$value]) . "'"));
+                $query->whereRaw(DB::raw("(\"{$property}\")::jsonb @> '" . json_encode([$value]) . "'"));
             }
         } elseif (is_array($value)) {
             $query->whereIn($property, $value);
