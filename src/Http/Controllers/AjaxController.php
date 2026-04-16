@@ -203,7 +203,6 @@ class AjaxController extends BaseController
         $user = Auth::user();
 
         if (!$user) {
-            return 123;
             abort(404);
         }
 

@@ -12,6 +12,8 @@ use LaravelCms\Models\Cms\Section;
 use Illuminate\Support\Arr;
 
 class Grid {
+    protected $data = [];
+
     protected $options = [
         'limit' => 20,
         'sortable' => false,
@@ -103,8 +105,6 @@ class Grid {
     {
         $this->section = $section;
         $this->initOptions($options);
-
-        $this->process();
     }
 
     /**
@@ -179,7 +179,7 @@ class Grid {
         return $result;
     }
 
-    protected function process()
+    public function process(): \Illuminate\Http\RedirectResponse|bool
     {
         $this->setOption(
             'all',
@@ -192,10 +192,10 @@ class Grid {
 
         // Clean query string
         if (request()->has('filter-submit')) {
-            redirect()->to($url . (empty($activeQueryParams) ?: '?' . http_build_query($activeQueryParams)))->send();
+            return redirect()->to($url . (empty($activeQueryParams) ?: '?' . http_build_query($activeQueryParams)));
 
         } else if (request()->has('filter-reset')) {
-            redirect()->to($url)->withoutCookie('grid_filter', request()->getPathInfo())->send();
+            return redirect()->to($url)->withoutCookie('grid_filter', request()->getPathInfo());
         }
 
         $this->query = $this->className::filters();
@@ -205,7 +205,7 @@ class Grid {
             if ($query) {
                 $query = json_decode($query, associative: true);
                 if ($query) {
-                    redirect()->to($url . (empty($query) ?: '?' . http_build_query($query)))->send();
+                    return redirect()->to($url . (empty($query) ?: '?' . http_build_query($query)));
                 } else {
                     cookie()->queue(cookie(
                         'grid_filter',
@@ -352,6 +352,8 @@ class Grid {
         }
 
         $this->data = $data;
+
+        return true;
     }
 
     /**

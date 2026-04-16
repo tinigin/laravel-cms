@@ -154,10 +154,15 @@ class ModuleController extends BaseController
                 }
             }
 
-            redirect()->to(request()->fullUrl())->send();
+            return redirect()->to(request()->fullUrl());
         }
 
         $grid = new Grid($this->getGridOptions(), $this->getSection());
+        $response = $grid->process();
+
+        if ($response instanceof \Illuminate\Http\RedirectResponse) {
+            return $response;
+        }
 
         if ($this->mode == 'simple')
             return view('cms::simple.module')
