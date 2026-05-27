@@ -210,13 +210,16 @@
 
             @if (!$readonly && $attributes['multiple'])
                 <p class="m-0 text-right">
-                    <a
-                        href="#"
-                        data-url="/cms/ajax/remove-file"
-                        class="btn btn-danger disabled"
-                        data-remove=""
-                        data-button-multiple-delete=""
-                    >Удалить выбранные</a>
+                    <span class="btn-group">
+                        <a
+                            href="#"
+                            data-url="/cms/ajax/remove-file"
+                            class="btn btn-danger disabled"
+                            data-remove=""
+                            data-button-multiple-delete=""
+                        >Удалить выбранные</a>
+                        <a href="#" class="btn btn-warning" data-invert="">#</a>
+                    </span>
                 </p>
             @endif
         </div>

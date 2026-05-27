@@ -486,6 +486,15 @@ function multipleDelete(element) {
                 self.setFilesForDelete();
             });
         });
+        
+        this.invertButton.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            self.wrapper.querySelectorAll('input[type=checkbox].multiple-select').forEach(function(input) {
+                input.checked = !input.checked;
+                input.dispatchEvent(new Event('change'));
+            });
+        });
 
         this.button.addEventListener('click', function() {
 
