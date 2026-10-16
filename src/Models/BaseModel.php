@@ -91,7 +91,7 @@ class BaseModel extends Model
                 mkdir($tmpPath);
 
             $filepath = "{$tmpPath}/{$filename}";
-            $response = Http::withHeaders(['Accept-Encoding' => 'gzip, deflate'])->timeout(30)->get($file);
+            $response = Http::withOptions(['decode_content' => false])->timeout(30)->get($file);
             if ($response->successful()) {
                 $body = $response->body();
                 if (file_put_contents($filepath, $body)) {
@@ -136,7 +136,7 @@ class BaseModel extends Model
             mkdir($tmpPath);
 
         $filepath = "{$tmpPath}/{$filename}";
-        $response = Http::withHeaders(['Accept-Encoding' => 'gzip, deflate'])->timeout(30)->get($url);
+        $response = Http::withOptions(['decode_content' => false])->timeout(30)->get($url);
         if ($response->successful()) {
             $body = $response->body();
             if (file_put_contents($filepath, $body)) {
